@@ -1,0 +1,775 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Detection | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING PAGE DESIGN (PROTECTED)
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: #176b35 !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        #languageSelector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+           DISEASE DETECTION PAGE STYLES
+        ========================================== */
+        .disease-page {
+            min-height: calc(100vh - 150px);
+            padding-bottom: 60px;
+        }
+
+        /* HEADER */
+        .disease-header {
+            background: #eaf5eb;
+            text-align: center;
+            padding: 45px 20px;
+            border-bottom: 1px solid #d4e8d5;
+        }
+
+        .disease-header h1 {
+            margin: 0 0 12px;
+            font-size: 36px;
+            font-weight: 800;
+            color: #183d25;
+        }
+
+        .disease-header p {
+            max-width: 720px;
+            margin: auto;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #5c6e60;
+        }
+
+        /* CONTAINER */
+        .disease-container {
+            width: 90%;
+            max-width: 950px;
+            margin: 45px auto;
+        }
+
+        /* CARD */
+        .disease-card {
+            background: #ffffff;
+            border-radius: 17px;
+            padding: 40px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.06);
+        }
+
+        .upload-icon {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .disease-card h2 {
+            text-align: center;
+            color: #183d25;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #5c6e60;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        /* FORM GROUP */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            color: #245b32;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 9px;
+            background: #ffffff;
+            font-size: 15px;
+            color: #24352a;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group select:focus {
+            border-color: #176b35;
+            box-shadow: 0 0 0 3px rgba(23, 107, 53, 0.1);
+        }
+
+        /* UPLOAD */
+        .upload-box {
+            border: 2px dashed #a2d2a9;
+            border-radius: 15px;
+            padding: 35px 20px;
+            background: #f8fcf8;
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .upload-box label {
+            display: inline-block;
+            background: #e2f2df;
+            color: #176b35;
+            padding: 13px 24px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .upload-box label:hover {
+            background: #cce8c8;
+        }
+
+        .upload-box input {
+            display: none;
+        }
+
+        #file-name {
+            margin-top: 14px;
+            color: #5c6e60;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* BUTTON */
+        .detect-btn {
+            display: block;
+            margin: auto;
+            border: none;
+            background: #176b35;
+            color: white;
+            padding: 14px 35px;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 13px rgba(23, 107, 53, 0.18);
+        }
+
+        .detect-btn:hover {
+            background: #0e5127;
+            transform: translateY(-2px);
+        }
+
+        /* INFO */
+        .info-section {
+            margin-top: 35px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 15px rgba(30, 80, 40, 0.04);
+        }
+
+        .info-card .icon {
+            font-size: 35px;
+        }
+
+        .info-card h3 {
+            color: #176b35;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .info-card p {
+            color: #5c6e60;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* BACK */
+        .back-home {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .back-home a {
+            color: #176b35;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .disease-header h1 {
+                font-size: 28px;
+            }
+
+            .disease-card {
+                padding: 25px;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar-top {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .nav-links {
+                gap: 4px !important;
+                padding: 9px 5px !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px !important;
+                padding: 7px 8px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="languageSelector">Language:</label>
+                <select id="languageSelector" onchange="changeDiseaseLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" class="active" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="/about/" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <div class="disease-page">
+
+        <!-- HEADER -->
+        <section class="disease-header">
+            <h1 data-translate="pageTitle">🌿 Plant Disease Detection</h1>
+            <p data-translate="pageDescription">
+                Select your crop, choose the possible disease and upload a clear plant or leaf image.
+                Get useful information about symptoms and treatment.
+            </p>
+        </section>
+
+
+        <div class="disease-container">
+
+            <!-- MAIN CARD -->
+            <div class="disease-card">
+                <div class="upload-icon">📷🌱</div>
+                <h2 data-translate="detectionTitle">Plant Disease Detection</h2>
+                <p class="description" data-translate="detectionDescription">
+                    Provide crop information and upload a clear image of the affected plant.
+                </p>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- CROP -->
+                    <div class="form-group">
+                        <label for="crop" data-translate="selectCrop">🌱 Select Crop</label>
+                        <select id="crop" name="crop" required>
+                            <option value="" data-translate="selectCropOption">-- Select Crop --</option>
+                            <option value="Tomato">🍅 Tomato</option>
+                            <option value="Potato">🥔 Potato</option>
+                            <option value="Cotton">🌿 Cotton</option>
+                        </select>
+                    </div>
+
+                    <!-- DISEASE -->
+                    <div class="form-group">
+                        <label for="disease" data-translate="selectDisease">🔍 Select Possible Disease</label>
+                        <select id="disease" name="disease" required>
+                            <option value="" data-translate="selectCropFirst">-- Select Crop First --</option>
+                        </select>
+                    </div>
+
+                    <!-- IMAGE -->
+                    <div class="upload-box">
+                        <label for="plant_image" data-translate="chooseImage">📁 Choose Plant Image</label>
+                        <input type="file" id="plant_image" name="plant_image" accept="image/*" required>
+                        <div id="file-name" data-translate="noImage">No image selected</div>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button type="submit" class="detect-btn" data-translate="detectButton">
+                        🔍 Detect Disease
+                    </button>
+                </form>
+            </div>
+
+
+            <!-- INFORMATION -->
+            <div class="info-section">
+                <div class="info-card">
+                    <div class="icon">🌱</div>
+                    <h3 data-translate="selectCropInfo">Select Crop</h3>
+                    <p data-translate="selectCropInfoText">Choose the crop affected by the disease.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">📷</div>
+                    <h3 data-translate="uploadImageInfo">Upload Image</h3>
+                    <p data-translate="uploadImageInfoText">Upload a clear photo of the affected plant leaf.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon">💊</div>
+                    <h3 data-translate="getSolution">Get Solution</h3>
+                    <p data-translate="getSolutionText">View symptoms and recommended treatment information.</p>
+                </div>
+            </div>
+
+
+            <!-- BACK -->
+            <div class="back-home">
+                <a href="/" data-translate="backHome">← Back to Home</a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">🌱 AgroHarvest Hub</div>
+        <p data-translate="footerDescription">Smart Farming & Agriculture Products Platform</p>
+        <div class="footer-bottom" data-translate="footerCopyright">© 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const diseaseTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+
+                pageTitle: "🌿 Plant Disease Detection",
+                pageDescription: "Select your crop, choose the possible disease and upload a clear plant or leaf image. Get useful information about symptoms and treatment.",
+                detectionTitle: "Plant Disease Detection",
+                detectionDescription: "Provide crop information and upload a clear image of the affected plant.",
+                selectCrop: "🌱 Select Crop",
+                selectCropOption: "-- Select Crop --",
+                selectDisease: "🔍 Select Possible Disease",
+                selectCropFirst: "-- Select Crop First --",
+                chooseImage: "📁 Choose Plant Image",
+                noImage: "No image selected",
+                detectButton: "🔍 Detect Disease",
+                selectCropInfo: "Select Crop",
+                selectCropInfoText: "Choose the crop affected by the disease.",
+                uploadImageInfo: "Upload Image",
+                uploadImageInfoText: "Upload a clear photo of the affected plant leaf.",
+                getSolution: "Get Solution",
+                getSolutionText: "View symptoms and recommended treatment information.",
+                backHome: "← Back to Home",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+
+                pageTitle: "🌿 वनस्पती रोग ओळख",
+                pageDescription: "तुमचे पीक निवडा, संभाव्य रोग निवडा आणि प्रभावित झाडाची किंवा पानाची स्पष्ट प्रतिमा अपलोड करा. लक्षणे आणि उपचारांची उपयुक्त माहिती मिळवा.",
+                detectionTitle: "वनस्पती रोग ओळख",
+                detectionDescription: "पिकाची माहिती द्या आणि प्रभावित झाडाची स्पष्ट प्रतिमा अपलोड करा.",
+                selectCrop: "🌱 पीक निवडा",
+                selectCropOption: "-- पीक निवडा --",
+                selectDisease: "🔍 संभाव्य रोग निवडा",
+                selectCropFirst: "-- प्रथम पीक निवडा --",
+                chooseImage: "📁 झाडाची प्रतिमा निवडा",
+                noImage: "कोणतीही प्रतिमा निवडलेली नाही",
+                detectButton: "🔍 रोग ओळखा",
+                selectCropInfo: "पीक निवडा",
+                selectCropInfoText: "रोगाने प्रभावित झालेले पीक निवडा.",
+                uploadImageInfo: "प्रतिमा अपलोड करा",
+                uploadImageInfoText: "प्रभावित झाडाच्या पानाचा स्पष्ट फोटो अपलोड करा.",
+                getSolution: "उपाय मिळवा",
+                getSolutionText: "लक्षणे आणि शिफारस केलेल्या उपचारांची माहिती पहा.",
+                backHome: "← मुख्यपृष्ठावर परत जा",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                pageTitle: "🌿 पौधों के रोग की पहचान",
+                pageDescription: "अपनी फसल चुनें, संभावित रोग चुनें और प्रभावित पौधे या पत्ते की स्पष्ट तस्वीर अपलोड करें। लक्षण और उपचार की उपयोगी जानकारी प्राप्त करें।",
+                detectionTitle: "पौधों के रोग की पहचान",
+                detectionDescription: "फसल की जानकारी दें और प्रभावित पौधे की स्पष्ट तस्वीर अपलोड करें।",
+                selectCrop: "🌱 फसल चुनें",
+                selectCropOption: "-- फसल चुनें --",
+                selectDisease: "🔍 संभावित रोग चुनें",
+                selectCropFirst: "-- पहले फसल चुनें --",
+                chooseImage: "📁 पौधे की तस्वीर चुनें",
+                noImage: "कोई तस्वीर नहीं चुनी गई",
+                detectButton: "🔍 रोग पहचानें",
+                selectCropInfo: "फसल चुनें",
+                selectCropInfoText: "रोग से प्रभावित फसल चुनें।",
+                uploadImageInfo: "तस्वीर अपलोड करें",
+                uploadImageInfoText: "प्रभावित पौधे की पत्ती की स्पष्ट तस्वीर अपलोड करें।",
+                getSolution: "समाधान प्राप्त करें",
+                getSolutionText: "लक्षण और सुझाए गए उपचार की जानकारी देखें।",
+                backHome: "← होम पर वापस जाएँ",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट खेती प्लेटफॉर्म"
+            }
+        };
+
+        function applyDiseaseLanguage(language) {
+            const translation = diseaseTranslations[language] || diseaseTranslations.en;
+            document.documentElement.lang = language;
+
+            // 1. NAVBAR LINKS (Using data-nav-key)
+            document.querySelectorAll("[data-nav-key]").forEach(function (element) {
+                const key = element.getAttribute("data-nav-key");
+                if (translation[key]) {
+                    element.textContent = translation[key];
+                }
+            });
+
+            // 2. DATA-TRANSLATE ELEMENTS
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (translation[key]) {
+                    element.textContent = translation[key];
+                }
+            });
+
+            // 3. LANGUAGE SELECTOR
+            const selector = document.getElementById("languageSelector");
+            if (selector) {
+                selector.value = language;
+            }
+
+            localStorage.setItem("selectedLanguage", language);
+        }
+
+        function changeDiseaseLanguage(language) {
+            applyDiseaseLanguage(language);
+        }
+
+        // IMAGE FILE NAME
+        const imageInput = document.getElementById("plant_image");
+        const fileName = document.getElementById("file-name");
+
+        if (imageInput) {
+            imageInput.addEventListener("change", function () {
+                if (this.files.length > 0) {
+                    fileName.textContent = "Selected: " + this.files[0].name;
+                } else {
+                    const language = localStorage.getItem("selectedLanguage") || "en";
+                    fileName.textContent = diseaseTranslations[language].noImage;
+                }
+            });
+        }
+
+        // CROP → DISEASE DROPDOWN LOGIC
+        const cropSelect = document.getElementById("crop");
+        const diseaseSelect = document.getElementById("disease");
+
+        const diseases = {
+            "Tomato": ["Early Blight", "Late Blight", "Leaf Mold"],
+            "Potato": ["Early Blight", "Late Blight"],
+            "Cotton": ["Leaf Spot", "Bacterial Blight"]
+        };
+
+        if (cropSelect && diseaseSelect) {
+            cropSelect.addEventListener("change", function () {
+                const selectedCrop = this.value;
+                const language = localStorage.getItem("selectedLanguage") || "en";
+                const placeholder = language === 'mr' ? '-- प्रथम पीक निवडा --' : (language === 'hi' ? '-- पहले फसल चुनें --' : '-- Select Crop First --');
+
+                diseaseSelect.innerHTML = `<option value="">${placeholder}</option>`;
+
+                if (diseases[selectedCrop]) {
+                    diseases[selectedCrop].forEach(function (disease) {
+                        const option = document.createElement("option");
+                        option.value = disease;
+                        option.textContent = disease;
+                        diseaseSelect.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // PAGE LOAD
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            applyDiseaseLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

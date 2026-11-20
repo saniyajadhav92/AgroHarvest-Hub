@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        #language-selector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        .success-container {
+            width: 90%;
+            max-width: 650px;
+            margin: 60px auto 90px;
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 20px;
+            padding: 50px 35px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(30, 80, 40, 0.06);
+        }
+
+        .success-icon {
+            font-size: 65px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 1.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .success-container h1 {
+            color: #183d25;
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #5c6e60;
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .order-details-box {
+            background: #f7fbf7;
+            border: 1px solid #d8ebd9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .order-details-box h3 {
+            color: #176b35;
+            font-size: 18px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #d4e8d5;
+            padding-bottom: 8px;
+        }
+
+        .order-details-box p {
+            color: #33483b;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .success-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary-custom {
+            background: #176b35;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(23, 107, 53, 0.2);
+        }
+
+        .btn-primary-custom:hover {
+            background: #0e5127;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-custom {
+            background: #e6f4ea;
+            color: #176b35;
+            border: 1px solid #cde4ce;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #d4e8d5;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .success-container {
+                padding: 35px 20px;
+            }
+
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector" data-translate="languageLabel">Language:</label>
+                <select id="language-selector" onchange="changeSuccessLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-translate="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-translate="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-translate="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-translate="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-translate="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-translate="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-translate="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-translate="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-translate="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-translate="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-translate="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-translate="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-translate="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-translate="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-translate="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- ORDER SUCCESS CONTENT -->
+    <main class="success-container">
+        <div class="success-icon">🎉</div>
+        <h1 data-translate="title">Order Placed Successfully!</h1>
+        <p data-translate="subtitle">
+            Thank you for shopping with AgroHarvest Hub. Your order has been placed and is being processed.
+        </p>
+
+        {% if order %}
+        <div class="order-details-box">
+            <h3 data-translate="orderDetailsTitle">📦 Order Summary</h3>
+            <!-- इथे order.id ऐवजी युजरचा सिरियल order_number लावला आहे -->
+            <p><strong>Order ID:</strong> #{{ order_number }}</p>
+            <p><strong>Total Amount:</strong> ₹{{ total|default:"0.00" }}</p>
+            <p><strong>Payment Status:</strong> {{ order.payment_method|default:"Cash on Delivery" }}</p>
+        </div>
+        {% endif %}
+
+        <div class="success-actions">
+            <a href="{% url 'my_orders' %}" class="btn-primary-custom" data-translate="viewOrders">
+                📦 View My Orders
+            </a>
+            <a href="{% url 'products' %}" class="btn-secondary-custom" data-translate="continueShopping">
+                🌱 Continue Shopping
+            </a>
+        </div>
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">
+            🌱 AgroHarvest Hub
+        </div>
+        <p data-translate="footerDescription">
+            Smart Farming & Agriculture Products Platform
+        </p>
+        <div class="footer-bottom" data-translate="footerCopyright">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+
+    <!-- LANGUAGE TRANSLATION SCRIPT -->
+    <script>
+        const successTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                languageLabel: "Language:",
+
+                title: "Order Placed Successfully!",
+                subtitle: "Thank you for shopping with AgroHarvest Hub. Your order has been placed and is being processed.",
+                orderDetailsTitle: "📦 Order Summary",
+                viewOrders: "📦 View My Orders",
+                continueShopping: "🌱 Continue Shopping",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "ऑर्डर यशस्वीरित्या पूर्ण झाली!",
+                subtitle: "AgroHarvest Hub कडून खरेदी केल्याबद्दल धन्यवाद. तुमची ऑर्डर नोंदवली गेली आहे.",
+                orderDetailsTitle: "📦 ऑर्डर तपशील",
+                viewOrders: "📦 माझ्या ऑर्डर्स पहा",
+                continueShopping: "🌱 खरेदी सुरू ठेवा",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "ऑर्डर सफलतापूर्वक दे दिया गया है!",
+                subtitle: "AgroHarvest Hub से खरीदारी करने for धन्यवाद। आपका ऑर्डर सफलतापूर्वक ले लिया गया है।",
+                orderDetailsTitle: "📦 ऑर्डर सारांश",
+                viewOrders: "📦 मेरे ऑर्डर देखें",
+                continueShopping: "🌱 खरीदारी जारी रखें",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | सर्वाधिकार सुरक्षित"
+            }
+        };
+
+        function changeSuccessLanguage(language) {
+            const t = successTranslations[language] || successTranslations.en;
+
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            document.documentElement.lang = language;
+            localStorage.setItem("selectedLanguage", language);
+
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("language-selector");
+
+            if (selector) {
+                selector.value = savedLanguage;
+            }
+
+            changeSuccessLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

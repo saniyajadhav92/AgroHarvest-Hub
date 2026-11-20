@@ -1,0 +1,667 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING PAGE DESIGN (PROTECTED)
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: #176b35 !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        .language-selector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+           CONTACT PAGE STYLES
+        ========================================== */
+        .contact-page {
+            min-height: 75vh;
+            padding: 50px 7%;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .contact-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #183d25;
+            margin-bottom: 10px;
+        }
+
+        .contact-header p {
+            color: #5c6e60;
+            font-size: 16px;
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .contact-info,
+        .contact-form-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 17px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.06);
+        }
+
+        .contact-info h2,
+        .contact-form-card h2 {
+            color: #183d25;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .contact-info p {
+            color: #5c6e60;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 14.5px;
+        }
+
+        .contact-detail {
+            padding: 14px 0;
+            border-bottom: 1px solid #eef4ee;
+            color: #334237;
+            font-size: 15px;
+        }
+
+        .contact-form-card label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 7px;
+            font-weight: 700;
+            color: #245b32;
+            font-size: 14px;
+        }
+
+        .contact-form-card input,
+        .contact-form-card textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d4e8d5;
+            border-radius: 9px;
+            font-size: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: #ffffff;
+            color: #24352a;
+            transition: 0.3s;
+        }
+
+        .contact-form-card input:focus,
+        .contact-form-card textarea:focus {
+            outline: none;
+            border-color: #176b35;
+            box-shadow: 0 0 0 3px rgba(23, 107, 53, 0.1);
+        }
+
+        .contact-form-card textarea {
+            resize: vertical;
+        }
+
+        .contact-submit-btn {
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+            background: #176b35;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 13px rgba(23, 107, 53, 0.18);
+        }
+
+        .contact-submit-btn:hover {
+            background: #0e5127;
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #176b35;
+            padding: 12px 15px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .contact-page {
+                padding: 30px 5%;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-header h1 {
+                font-size: 28px;
+            }
+
+            .contact-info,
+            .contact-form-card {
+                padding: 22px;
+            }
+
+            .navbar-top {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .nav-links {
+                gap: 4px !important;
+                padding: 9px 5px !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px !important;
+                padding: 7px 8px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="languageSelector">Language:</label>
+                <select id="languageSelector" class="language-selector" onchange="changeContactLanguage(this.value)"
+                    aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-translate="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-translate="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-translate="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-translate="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-translate="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-translate="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-translate="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" class="active" data-translate="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-translate="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-translate="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-translate="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-translate="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-translate="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-translate="login">👤 Login</a>
+            <a href="/signup/" data-translate="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- CONTACT PAGE -->
+    <section class="contact-page">
+
+        <div class="contact-header">
+            <h1 id="contactTitle">📩 Contact Us</h1>
+            <p id="contactSubtitle">Have a question or need help? Send us a message.</p>
+        </div>
+
+
+        <div class="contact-container">
+            <!-- CONTACT INFORMATION -->
+            <div class="contact-info">
+                <h2 id="companyTitle">🌱 AgroHarvest Hub</h2>
+                <p id="companyDescription">
+                    We are here to help farmers with quality agricultural products and better farming solutions.
+                </p>
+
+                <div class="contact-detail">
+                    <strong>Project Name:</strong> AgroHarvest Hub
+                </div>
+
+                <div class="contact-detail">
+                    <strong>Developed By:</strong> Saniya Jadhav
+                </div>
+
+                <div class="contact-detail">
+                    📞 <strong id="phoneLabel">Phone:</strong> +91 77881 12233
+                </div>
+
+                <div class="contact-detail">
+                    📧 <strong id="emailLabel">Email:</strong> support@agroharvesthub.com
+                </div>
+
+                <div class="contact-detail">
+                    📍 <strong id="locationLabel">Location:</strong> <span id="locationText">Maharashtra, India</span>
+                </div>
+            </div>
+
+            <!-- CONTACT FORM -->
+            <div class="contact-form-card">
+                <h2 id="formTitle">Send Us a Message</h2>
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="success-message">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <label for="name" id="nameLabel">Your Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+                    <label for="email" id="emailAddressLabel">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                    <label for="subject" id="subjectLabel">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Enter subject" required>
+
+                    <label for="message" id="messageLabel">Your Message</label>
+                    <textarea id="message" name="message" rows="6" placeholder="Write your message..."
+                        required></textarea>
+
+                    <button type="submit" class="contact-submit-btn" id="sendButton">
+                        📩 Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">🌱 AgroHarvest Hub</div>
+        <p id="footerDescription">Smart Farming & Agriculture Products Platform</p>
+        <div class="footer-bottom" id="footerCopyright">© 2026 AgroHarvest Hub | Smart Farming Platform</div>
+    </footer>
+
+
+    <!-- LANGUAGE TRANSLATION SCRIPT -->
+    <script>
+        const contactTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+
+                contactTitle: "📩 Contact Us",
+                contactSubtitle: "Have a question or need help? Send us a message.",
+                companyTitle: "🌱 AgroHarvest Hub",
+                companyDescription: "We are here to help farmers with quality agricultural products and better farming solutions.",
+                phoneLabel: "Phone:",
+                emailLabel: "Email:",
+                locationLabel: "Location:",
+                locationText: "Maharashtra, India",
+                formTitle: "Send Us a Message",
+                nameLabel: "Your Name",
+                namePlaceholder: "Enter your name",
+                emailAddressLabel: "Email Address",
+                emailPlaceholder: "Enter your email",
+                subjectLabel: "Subject",
+                subjectPlaceholder: "Enter subject",
+                messageLabel: "Your Message",
+                messagePlaceholder: "Write your message...",
+                sendButton: "📩 Send Message",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+
+                contactTitle: "📩 आमच्याशी संपर्क साधा",
+                contactSubtitle: "तुम्हाला काही प्रश्न आहेत किंवा मदत हवी आहे? आम्हाला संदेश पाठवा.",
+                companyTitle: "🌱 AgroHarvest Hub",
+                companyDescription: "दर्जेदार कृषी उत्पादने आणि चांगल्या शेती उपायांसाठी आम्ही शेतकऱ्यांना मदत करण्यासाठी येथे आहोत.",
+                phoneLabel: "फोन:",
+                emailLabel: "ईमेल:",
+                locationLabel: "ठिकाण:",
+                locationText: "महाराष्ट्र, भारत",
+                formTitle: "आम्हाला संदेश पाठवा",
+                nameLabel: "तुमचे नाव",
+                namePlaceholder: "तुमचे नाव लिहा",
+                emailAddressLabel: "ईमेल पत्ता",
+                emailPlaceholder: "तुमचा ईमेल लिहा",
+                subjectLabel: "विषय",
+                subjectPlaceholder: "विषय लिहा",
+                messageLabel: "तुमचा संदेश",
+                messagePlaceholder: "तुमचा संदेश लिहा...",
+                sendButton: "📩 संदेश पाठवा",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएं",
+                crop: "🤖 फसल सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                contactTitle: "📩 हमसे संपर्क करें",
+                contactSubtitle: "क्या आपका कोई सवाल है या मदद चाहिए? हमें संदेश भेजें।",
+                companyTitle: "🌱 AgroHarvest Hub",
+                companyDescription: "हम किसानों को गुणवत्तापूर्ण कृषि उत्पाद और बेहतर खेती के समाधान प्रदान करने में मदद करने के लिए यहां हैं।",
+                phoneLabel: "फोन:",
+                emailLabel: "ईमेल:",
+                locationLabel: "स्थान:",
+                locationText: "महाराष्ट्र, भारत",
+                formTitle: "हमें संदेश भेजें",
+                nameLabel: "आपका नाम",
+                namePlaceholder: "अपना नाम दर्ज करें",
+                emailAddressLabel: "ईमेल पता",
+                emailPlaceholder: "अपना ईमेल दर्ज करें",
+                subjectLabel: "विषय",
+                subjectPlaceholder: "विषय दर्ज करें",
+                messageLabel: "आपका संदेश",
+                messagePlaceholder: "अपना संदेश लिखें...",
+                sendButton: "📩 संदेश भेजें",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट खेती प्लेटफॉर्म"
+            }
+        };
+
+        function applyContactLanguage(language) {
+            const t = contactTranslations[language] || contactTranslations.en;
+            document.documentElement.lang = language;
+
+            // NAVBAR LINKS
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            // CONTACT HEADER
+            document.getElementById("contactTitle").textContent = t.contactTitle;
+            document.getElementById("contactSubtitle").textContent = t.contactSubtitle;
+
+            // CONTACT INFORMATION
+            document.getElementById("companyTitle").textContent = t.companyTitle;
+            document.getElementById("companyDescription").textContent = t.companyDescription;
+            document.getElementById("phoneLabel").textContent = t.phoneLabel;
+            document.getElementById("emailLabel").textContent = t.emailLabel;
+            document.getElementById("locationLabel").textContent = t.locationLabel;
+            document.getElementById("locationText").textContent = t.locationText;
+
+            // CONTACT FORM
+            document.getElementById("formTitle").textContent = t.formTitle;
+            document.getElementById("nameLabel").textContent = t.nameLabel;
+            document.getElementById("name").placeholder = t.namePlaceholder;
+            document.getElementById("emailAddressLabel").textContent = t.emailAddressLabel;
+            document.getElementById("email").placeholder = t.emailPlaceholder;
+            document.getElementById("subjectLabel").textContent = t.subjectLabel;
+            document.getElementById("subject").placeholder = t.subjectPlaceholder;
+            document.getElementById("messageLabel").textContent = t.messageLabel;
+            document.getElementById("message").placeholder = t.messagePlaceholder;
+            document.getElementById("sendButton").textContent = t.sendButton;
+
+            // FOOTER
+            document.getElementById("footerDescription").textContent = t.footerDescription;
+            document.getElementById("footerCopyright").textContent = t.footerCopyright;
+
+            // SAVE SELECTED LANGUAGE
+            localStorage.setItem("selectedLanguage", language);
+            const selector = document.getElementById("languageSelector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        function changeContactLanguage(language) {
+            applyContactLanguage(language);
+        }
+
+        // LOAD SAVED LANGUAGE
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("languageSelector");
+            if (selector) {
+                selector.value = savedLanguage;
+            }
+            applyContactLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1012 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Farming Assistant | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4faf5;
+            color: #173d26;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - UNIFIED PLATFORM STANDARD DESIGN
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        #language-selector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ================= PAGE ================= */
+
+        .assistant-page {
+            min-height: calc(100vh - 82px);
+            padding: 45px 20px 55px;
+        }
+
+        .assistant-header {
+            max-width: 760px;
+            margin: 0 auto 28px;
+            text-align: center;
+        }
+
+        .ai-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: #daf1dd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        .assistant-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #153c25;
+        }
+
+        .assistant-header h1 span {
+            color: #25813a;
+        }
+
+        .assistant-header p {
+            color: #65756a;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* ================= CHAT ================= */
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            border: 1px solid #dfece2;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(23, 107, 53, 0.10);
+        }
+
+        .chat-top {
+            padding: 18px 22px;
+            background: #176b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            color: #176b35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            flex-shrink: 0;
+        }
+
+        .bot-info {
+            flex: 1;
+        }
+
+        .bot-info h3 {
+            font-size: 17px;
+            margin-bottom: 3px;
+        }
+
+        .bot-info p {
+            font-size: 12px;
+            color: #d7efdc;
+        }
+
+        /* ================= CLEAR CHAT ================= */
+
+        .clear-form {
+            margin-left: auto;
+        }
+
+        .clear-btn {
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            padding: 9px 14px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: white;
+            color: #176b35;
+        }
+
+        .chat-area {
+            min-height: 340px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding: 25px;
+            background: #fbfefb;
+        }
+
+        /* ================= MESSAGES ================= */
+
+        .welcome-message,
+        .ai-message {
+            max-width: 680px;
+            padding: 15px 18px;
+            background: #e9f6eb;
+            border-radius: 5px 16px 16px 16px;
+            color: #294c35;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .welcome-message strong,
+        .ai-message strong {
+            color: #176b35;
+        }
+
+        .user-message {
+            max-width: 680px;
+            margin: 0 0 18px auto;
+            padding: 14px 18px;
+            background: #176b35;
+            color: white;
+            border-radius: 16px 5px 16px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .message-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .ai-answer {
+            white-space: pre-wrap;
+        }
+
+        /* ================= SUGGESTIONS ================= */
+
+        .suggestions {
+            margin-top: 24px;
+        }
+
+        .suggestions p {
+            margin-bottom: 10px;
+            color: #68786e;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .suggestion-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .suggestion {
+            border: 1px solid #cfe5d3;
+            background: white;
+            color: #28753d;
+            border-radius: 20px;
+            padding: 8px 13px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            background: #e7f5e9;
+        }
+
+        /* ================= INPUT ================= */
+
+        .chat-input {
+            padding: 18px;
+            border-top: 1px solid #e5eee7;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: 1px solid #d3e3d6;
+            border-radius: 10px;
+            padding: 14px 15px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input input:focus {
+            border-color: #25813a;
+            box-shadow: 0 0 0 3px rgba(37, 129, 58, 0.08);
+        }
+
+        .ask-btn {
+            border: none;
+            background: #21813b;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ask-btn:hover {
+            background: #176b35;
+        }
+
+        .language-note {
+            margin-top: 20px;
+            text-align: center;
+            color: #718078;
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 600px) {
+            .assistant-header h1 {
+                font-size: 28px;
+            }
+
+            .chat-input {
+                flex-direction: column;
+            }
+
+            .ask-btn {
+                width: 100%;
+            }
+
+            .chat-top {
+                flex-wrap: wrap;
+            }
+
+            .clear-form {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .clear-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector" data-key="languageLabel">Language:</label>
+                <select id="language-selector">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-key="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" class="active" data-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-key="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-key="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-key="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-key="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-key="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- ================= AI ASSISTANT ================= -->
+
+    <main class="assistant-page">
+
+        <div class="assistant-header">
+
+            <div class="ai-icon">
+                🤖
+            </div>
+
+            <h1 id="pageTitle">
+                AI <span>Farming Assistant</span>
+            </h1>
+
+            <p id="pageDescription">
+                Ask questions about crops, seeds, fertilizers, irrigation,
+                diseases and farming in Marathi, Hindi or English.
+            </p>
+
+        </div>
+
+
+        <div class="chat-container">
+
+            <div class="chat-top">
+
+                <div class="bot-avatar">
+                    🌱
+                </div>
+
+                <div class="bot-info">
+
+                    <h3>AgroHarvest AI</h3>
+
+                    <p id="statusText">
+                        ● Ready to help with farming questions
+                    </p>
+
+                </div>
+
+
+                <!-- CLEAR CHAT BUTTON -->
+
+                <form method="POST" action="{% url 'ai_assistant' %}" class="clear-form"
+                    onsubmit="return confirmClearChat();">
+
+                    {% csrf_token %}
+
+                    <button type="submit" name="clear_chat" value="1" class="clear-btn" id="clearButton">
+
+                        🗑️ Clear Chat
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ================= CHAT HISTORY ================= -->
+
+            <div class="chat-area" id="chatArea">
+
+                {% if chat_history %}
+
+                {% for chat in chat_history %}
+
+                <div class="user-message">
+
+                    <span class="message-label">
+                        👤 You
+                    </span>
+
+                    {{ chat.question }}
+
+                </div>
+
+
+                <div class="ai-message">
+
+                    <span class="message-label">
+                        🤖 AgroHarvest AI
+                    </span>
+
+                    <div class="ai-answer">
+                        {{ chat.answer }}
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+                {% else %}
+
+                <div class="welcome-message">
+
+                    <strong id="welcomeTitle">
+                        🤖 Hello! I am your AI Farming Assistant.
+                    </strong>
+
+                    <br><br>
+
+                    <span id="welcomeText">
+                        Ask me about crops, seeds, fertilizers,
+                        irrigation, plant diseases, pests and farming.
+                    </span>
+
+                    <br><br>
+
+                    तुम्ही तुमचा प्रश्न मराठीत विचारू शकता.
+
+                    <br>
+
+                    आप अपना सवाल हिंदी में भी पूछ सकते हैं.
+
+                </div>
+
+
+                <div class="suggestions">
+
+                    <p id="tryAsking">
+                        TRY ASKING:
+                    </p>
+
+                    <div class="suggestion-buttons">
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('Tomato leaves are turning yellow. What should I do?')">
+
+                            Tomato leaves turning yellow
+
+                        </button>
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('टोमॅटोची पाने पिवळी पडत आहेत, काय करावे?')">
+
+                            टोमॅटोची पाने पिवळी पडत आहेत
+
+                        </button>
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('गेहूं की फसल में कौन सा खाद उपयोग करें?')">
+
+                            गेहूं के लिए खाद
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================= QUESTION FORM ================= -->
+
+            <form method="POST" action="{% url 'ai_assistant' %}" class="chat-input">
+
+                {% csrf_token %}
+
+                <input type="text" id="questionInput" name="question" placeholder="Ask your farming question..."
+                    autocomplete="off" required>
+
+                <!-- 🎤 VOICE INPUT MIC BUTTON -->
+                <button type="button" id="micBtn" onclick="startVoiceInput()" title="Speak your question"
+                    style="background: #e6f4ea; color: #176b35; border: 1px solid #cde4ce; padding: 12px 16px; border-radius: 10px; cursor: pointer; font-size: 18px; transition: 0.2s;">
+                    🎤
+                </button>
+
+                <button type="submit" class="ask-btn" id="askButton">
+
+                    🤖 Ask AI
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="language-note">
+            🌐 English &nbsp;•&nbsp; मराठी &nbsp;•&nbsp; हिन्दी
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* ================= QUESTION SUGGESTION ================= */
+
+        function setQuestion(question) {
+            const input = document.getElementById("questionInput");
+
+            input.value = question;
+            input.focus();
+        }
+
+
+        /* ================= VOICE INPUT (MIC) FUNCTION ================= */
+
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert("Sorry, your browser does not support voice input. Please try using Google Chrome.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+
+            const currentLang = localStorage.getItem("selectedLanguage") || "en";
+            if (currentLang === "mr") {
+                recognition.lang = "mr-IN";
+            } else if (currentLang === "hi") {
+                recognition.lang = "hi-IN";
+            } else {
+                recognition.lang = "en-US";
+            }
+
+            const micBtn = document.getElementById("micBtn");
+            micBtn.style.background = "#ffc9c9";
+            micBtn.textContent = "🔴";
+
+            recognition.onstart = function () {
+                console.log("Voice listening started...");
+            };
+
+            recognition.onresult = function (event) {
+                const spokenText = event.results[0][0].transcript;
+                document.getElementById("questionInput").value = spokenText;
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error", event.error);
+                alert("Voice recognition error. Please try again.");
+            };
+
+            recognition.onend = function () {
+                micBtn.style.background = "#e6f4ea";
+                micBtn.textContent = "🎤";
+            };
+
+            recognition.start();
+        }
+
+
+        /* ================= TRANSLATIONS ================= */
+
+        const translations = {
+
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                languageLabel: "Language:",
+
+                title: "AI Farming Assistant",
+
+                description:
+                    "Ask questions about crops, seeds, fertilizers, irrigation, diseases and farming in Marathi, Hindi or English.",
+
+                status:
+                    "● Ready to help with farming questions",
+
+                clear:
+                    "🗑️ Clear Chat",
+
+                ask:
+                    "🤖 Ask AI",
+
+                placeholder:
+                    "Ask your farming question...",
+
+                welcome:
+                    "🤖 Hello! I am your AI Farming Assistant.",
+
+                welcomeText:
+                    "Ask me about crops, seeds, fertilizers, irrigation, plant diseases, pests and farming.",
+
+                tryAsking:
+                    "TRY ASKING:",
+
+                confirmClear:
+                    "Do you want to clear the complete chat history?"
+            },
+
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "AI शेती सहाय्यक",
+
+                description:
+                    "पिके, बियाणे, खते, सिंचन, रोग आणि शेतीविषयी तुमचे प्रश्न विचारा.",
+
+                status:
+                    "● शेतीविषयक प्रश्नांसाठी मदतीस तयार",
+
+                clear:
+                    "🗑️ चॅट साफ करा",
+
+                ask:
+                    "🤖 AI ला विचारा",
+
+                placeholder:
+                    "तुमचा शेतीविषयक प्रश्न विचारा...",
+
+                welcome:
+                    "🤖 नमस्कार! मी तुमचा AI शेती सहाय्यक आहे.",
+
+                welcomeText:
+                    "पिके, बियाणे, खते, सिंचन, वनस्पती रोग, कीड आणि शेतीविषयी मला विचारा.",
+
+                tryAsking:
+                    "हे प्रश्न विचारून पहा:",
+
+                confirmClear:
+                    "संपूर्ण चॅट इतिहास साफ करायचा आहे का?"
+            },
+
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल सुझाव",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा सूची",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "AI कृषि सहायक",
+
+                description:
+                    "फसलों, बीजों, उर्वरकों, सिंचाई, रोगों और खेती के बारे में प्रश्न पूछें।",
+
+                status:
+                    "● खेती के सवालों में मदद के लिए तैयार",
+
+                clear:
+                    "🗑️ चैट साफ करें",
+
+                ask:
+                    "🤖 AI से पूछें",
+
+                placeholder:
+                    "खेती से जुड़ा अपना प्रश्न पूछें...",
+
+                welcome:
+                    "🤖 नमस्ते! मैं आपका AI कृषि सहायक हूँ।",
+
+                welcomeText:
+                    "फसलों, बीजों, उर्वरकों, सिंचाई, पौधों के रोग, कीट और खेती के बारे में पूछें।",
+
+                tryAsking:
+                    "ये प्रश्न पूछकर देखें:",
+
+                confirmClear:
+                    "क्या आप पूरी चैट हिस्ट्री साफ करना चाहते हैं?"
+            }
+
+        };
+
+
+        /* ================= APPLY LANGUAGE ================= */
+
+        function applyLanguage(language) {
+
+            const t = translations[language] || translations.en;
+
+            document.querySelectorAll("[data-key]").forEach(function (link) {
+
+                const key = link.getAttribute("data-key");
+
+                if (t[key]) {
+                    link.textContent = t[key];
+                }
+
+            });
+
+
+            const pageTitle =
+                document.getElementById("pageTitle");
+
+            if (pageTitle) {
+                pageTitle.innerHTML = language === 'mr' ? 'AI <span>शेती सहाय्यक</span>' : (language === 'hi' ? 'AI <span>कृषि सहायक</span>' : 'AI <span>Farming Assistant</span>');
+            }
+
+
+            const pageDescription =
+                document.getElementById("pageDescription");
+
+            if (pageDescription) {
+                pageDescription.textContent = t.description;
+            }
+
+
+            const statusText =
+                document.getElementById("statusText");
+
+            if (statusText) {
+                statusText.textContent = t.status;
+            }
+
+
+            const clearButton =
+                document.getElementById("clearButton");
+
+            if (clearButton) {
+                clearButton.textContent = t.clear;
+            }
+
+
+            const askButton =
+                document.getElementById("askButton");
+
+            if (askButton) {
+                askButton.textContent = t.ask;
+            }
+
+
+            const questionInput =
+                document.getElementById("questionInput");
+
+            if (questionInput) {
+                questionInput.placeholder = t.placeholder;
+            }
+
+
+            const welcomeTitle =
+                document.getElementById("welcomeTitle");
+
+            if (welcomeTitle) {
+                welcomeTitle.textContent = t.welcome;
+            }
+
+
+            const welcomeText =
+                document.getElementById("welcomeText");
+
+            if (welcomeText) {
+                welcomeText.textContent = t.welcomeText;
+            }
+
+
+            const tryAsking =
+                document.getElementById("tryAsking");
+
+            if (tryAsking) {
+                tryAsking.textContent = t.tryAsking;
+            }
+        }
+
+
+        /* ================= LANGUAGE SELECTOR ================= */
+
+        const languageSelector =
+            document.getElementById("language-selector");
+
+        const savedLanguage =
+            localStorage.getItem("selectedLanguage") || "en";
+
+        languageSelector.value = savedLanguage;
+
+        applyLanguage(savedLanguage);
+
+
+        languageSelector.addEventListener(
+            "change",
+            function () {
+
+                const selectedLanguage = this.value;
+
+                localStorage.setItem(
+                    "selectedLanguage",
+                    selectedLanguage
+                );
+
+                applyLanguage(selectedLanguage);
+            }
+        );
+
+
+        /* ================= CLEAR CONFIRMATION ================= */
+
+        function confirmClearChat() {
+
+            const language =
+                localStorage.getItem("selectedLanguage") || "en";
+
+            const t =
+                translations[language] || translations.en;
+
+            return confirm(t.confirmClear);
+        }
+
+
+        /* ================= AUTO SCROLL ================= */
+
+        window.addEventListener("load", function () {
+
+            const chatArea =
+                document.getElementById("chatArea");
+
+            if (chatArea) {
+                chatArea.scrollTop =
+                    chatArea.scrollHeight;
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1036 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f2;
+            color: #263629;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #176b36;
+            color: white;
+            padding: 12px 4%;
+        }
+
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-bottom: 10px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 23px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 30px;
+        }
+
+        .checkout-language {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-left: auto;
+        }
+
+        .checkout-language label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checkout-language select {
+            padding: 9px 12px;
+            border: none;
+            border-radius: 6px;
+            background: white;
+            color: #263629;
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-top: 1px solid rgba(255, 255, 255, .25);
+            padding-top: 10px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            background: #0e5128;
+        }
+
+        .page-heading {
+            text-align: center;
+            padding: 32px 15px 24px;
+        }
+
+        .page-heading h1 {
+            color: #176b36;
+            font-size: 34px;
+            margin-bottom: 5px;
+        }
+
+        .page-heading p {
+            color: #657267;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(280px, .9fr);
+            gap: 25px;
+            width: 92%;
+            max-width: 1150px;
+            margin: 0 auto 55px;
+            align-items: start;
+        }
+
+        .checkout-card {
+            background: white;
+            border-radius: 12px;
+            padding: 26px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .07);
+            min-width: 0;
+        }
+
+        .checkout-card h2 {
+            color: #176b36;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd8cd;
+            border-radius: 7px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: 2px solid #b4dfbe;
+            border-color: #176b36;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #d7e2d7;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background: white;
+            transition: background .2s;
+        }
+
+        .payment-option:hover {
+            background: #f3f9f2;
+        }
+
+        .payment-option input {
+            width: 17px;
+            height: 17px;
+            accent-color: #176b36;
+            flex-shrink: 0;
+        }
+
+        .payment-option strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .payment-option small {
+            display: block;
+            color: #657267;
+            font-size: 12px;
+        }
+
+        .online-payment-types {
+            margin: 15px 0;
+            padding: 16px;
+            background: #f4f8f2;
+            border: 1px solid #cbdcca;
+            border-radius: 10px;
+        }
+
+        .online-payment-types[hidden] {
+            display: none !important;
+        }
+
+        .online-payment-types h3 {
+            color: #176b36;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .online-payment-types .payment-option {
+            margin-bottom: 9px;
+        }
+
+        .payment-note {
+            color: #805b16;
+            background: #fff8e7;
+            border: 1px solid #f1dfb2;
+            border-radius: 7px;
+            padding: 11px;
+            margin: 13px 0 17px;
+            font-size: 13px;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            background: #176b36;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .place-order-btn:hover {
+            background: #10552a;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 13px 0;
+            border-bottom: 1px solid #e5ece5;
+        }
+
+        .item-name {
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .item-quantity {
+            color: #69766b;
+            font-size: 13px;
+        }
+
+        .item-price {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 2px solid #dce7dc;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .total-amount {
+            color: #176b36;
+            white-space: nowrap;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #176b36;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 25px 5px;
+        }
+
+        .footer {
+            text-align: center;
+            background: #e4eee3;
+            padding: 18px;
+            color: #526454;
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                max-width: 650px;
+            }
+
+            .page-heading h1 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .navbar {
+                padding: 12px 4%;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .logo-icon {
+                font-size: 25px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+                padding: 7px 8px;
+            }
+
+            .checkout-container {
+                width: 94%;
+                gap: 17px;
+            }
+
+            .checkout-card {
+                padding: 18px;
+            }
+
+            .page-heading {
+                padding-top: 24px;
+            }
+
+            .page-heading h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="navbar-top">
+
+            <div class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </div>
+
+            <div class="checkout-language">
+                <label for="checkout-language-selector" id="language-label">Language:</label>
+
+                <select id="checkout-language-selector">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{% url 'landing' %}" data-nav="home">🏠 Home</a>
+
+            <a href="{% url 'products' %}" data-nav="products">📄 Products</a>
+
+            <a href="{% url 'ai_assistant' %}" data-nav="aiAssistant">🤖 AI Assistant</a>
+
+            <a href="{% url 'reviews' %}" data-nav="reviews">⭐ Reviews</a>
+
+            <a href="{% url 'crop_recommendation' %}" data-nav="crop">🤖 Crop Recommendation</a>
+
+            <a href="{% url 'disease_detection' %}" data-nav="disease">🌿 Disease Detection</a>
+
+            <a href="{% url 'about' %}" data-nav="about">ℹ️ About</a>
+
+            <a href="{% url 'contact' %}" data-nav="contact">📞 Contact</a>
+
+            <a href="{% url 'cart' %}" data-nav="cart">🛒 Cart</a>
+
+            <a href="{% url 'wishlist' %}" data-nav="wishlist">❤️ Wishlist</a>
+
+            <a href="{% url 'my_orders' %}" data-nav="orders">📦 My Orders</a>
+
+            <a href="{% url 'dashboard' %}" data-nav="dashboard">👤 Dashboard</a>
+
+            <a href="{% url 'login' %}" data-nav="login">👤 Login</a>
+
+            <a href="{% url 'signup' %}" data-nav="signup">👤 Sign Up</a>
+
+        </div>
+    </nav>
+
+
+    <!-- PAGE HEADING -->
+    <header class="page-heading">
+
+        <h1 id="checkout-title">Checkout</h1>
+
+        <p id="checkout-subtitle">
+            Enter your delivery details to complete your order.
+        </p>
+
+    </header>
+
+
+    <!-- CHECKOUT CONTENT -->
+    <main class="checkout-container">
+
+        <section class="checkout-card">
+
+            <h2 id="delivery-heading">Delivery Information</h2>
+
+            <form method="POST" action="{% url 'place_order' %}" id="checkout-form">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="full_name" id="name-label">Full Name</label>
+
+                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="mobile" id="mobile-label">Mobile Number</label>
+
+                    <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number"
+                        pattern="[0-9]{10}" maxlength="10" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="address" id="address-label">Full Address</label>
+
+                    <textarea id="address" name="address" placeholder="House number, street, area" required></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="city" id="city-label">City / Village</label>
+
+                    <input type="text" id="city" name="city" placeholder="Enter city or village" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="pin_code" id="pin-label">PIN Code</label>
+
+                    <input type="text" id="pin_code" name="pin_code" placeholder="Enter 6-digit PIN code"
+                        pattern="[0-9]{6}" maxlength="6" required>
+
+                </div>
+
+
+                <!-- PAYMENT -->
+                <h2 id="payment-heading">Payment Method</h2>
+
+                <label class="payment-option">
+
+                    <input type="radio" name="payment_method" value="COD" checked required>
+
+                    <span>
+                        <strong id="cod-label">💵 Cash on Delivery</strong>
+                        <small id="cod-description">Pay when your order arrives.</small>
+                    </span>
+
+                </label>
+
+                <label class="payment-option">
+
+                    <input type="radio" name="payment_method" value="Online" required>
+
+                    <span>
+                        <strong id="online-label">💳 Online Payment</strong>
+                        <small id="online-description">UPI, Cards, Net Banking and Wallets</small>
+                    </span>
+
+                </label>
+
+
+                <!-- ONLINE PAYMENT TYPES -->
+                <div id="online-payment-types" class="online-payment-types" hidden>
+
+                    <h3 id="online-types-heading">Select Online Payment Type</h3>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="UPI">
+                        <span>📱 UPI</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="Google Pay">
+                        <span>🟢 Google Pay</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="PhonePe">
+                        <span>🟣 PhonePe</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="Card">
+                        <span>💳 Debit / Credit Card</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="Netbanking">
+                        <span>🏦 Net Banking</span>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment_type" value="Wallet">
+                        <span>👛 Wallet</span>
+                    </label>
+
+                    <p class="payment-note" id="payment-note">
+                        These are display options only. Real online payment requires a payment gateway.
+                    </p>
+
+                </div>
+
+
+                <button type="submit" class="place-order-btn" id="place-order-button">
+                    Place Order
+                </button>
+
+            </form>
+
+            <a href="{% url 'cart' %}" class="back-link" id="back-cart-link">
+                ← Back to Cart
+            </a>
+
+        </section>
+
+
+        <!-- ORDER SUMMARY -->
+        <aside class="checkout-card">
+
+            <h2 id="summary-heading">Order Summary</h2>
+
+            {% if cart_items %}
+
+            {% for item in cart_items %}
+
+            <div class="order-item">
+
+                <div>
+
+                    <div class="item-name" data-product-en="{{ item.product.name }}"
+                        data-product-mr="{{ item.product.name_mr|default:item.product.name }}"
+                        data-product-hi="{{ item.product.name_hi|default:item.product.name }}">
+
+                        {{ item.product.name }}
+
+                    </div>
+
+                    <div class="item-quantity">
+
+                        <span class="quantity-label">Quantity: </span>{{ item.quantity }}
+
+                    </div>
+
+                </div>
+
+                <div class="item-price">
+                    ₹{{ item.total_price }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+            <div class="total-row">
+
+                <span id="total-label">Total</span>
+
+                <span class="total-amount">
+                    ₹{{ total|default:"0.00" }}
+                </span>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-cart">
+
+                <p id="empty-cart-message">Your cart is empty.</p>
+
+                <a href="{% url 'products' %}" class="back-link" id="browse-products-link">
+                    Browse Products
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </aside>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer-text">
+        © 2026 AgroHarvest Hub | Smart Farming Platform
+    </footer>
+
+
+    <script>
+
+        // =====================================
+        // TRANSLATIONS
+        // =====================================
+
+        const translations = {
+
+            en: {
+
+                language: "Language:",
+                title: "Checkout",
+                subtitle: "Enter your delivery details to complete your order.",
+                delivery: "Delivery Information",
+                name: "Full Name",
+                namePlaceholder: "Enter your full name",
+                mobile: "Mobile Number",
+                mobilePlaceholder: "Enter your mobile number",
+                address: "Full Address",
+                addressPlaceholder: "House number, street, area",
+                city: "City / Village",
+                cityPlaceholder: "Enter city or village",
+                pin: "PIN Code",
+                pinPlaceholder: "Enter 6-digit PIN code",
+                payment: "Payment Method",
+                cod: "💵 Cash on Delivery",
+                codDescription: "Pay when your order arrives.",
+                online: "💳 Online Payment",
+                onlineDescription: "UPI, Cards, Net Banking and Wallets",
+                onlineTypes: "Select Online Payment Type",
+                note: "These are display options only. Real online payment requires a payment gateway.",
+                placeOrder: "Place Order",
+                back: "← Back to Cart",
+                summary: "Order Summary",
+                quantity: "Quantity: ",
+                total: "Total",
+                empty: "Your cart is empty.",
+                browse: "Browse Products",
+                footer: "© 2026 AgroHarvest Hub | Smart Farming Platform",
+                onlineAlert: "Online payment is not connected yet. Please choose Cash on Delivery for now."
+
+            },
+
+            mr: {
+
+                language: "भाषा:",
+                title: "चेकआउट",
+                subtitle: "ऑर्डर पूर्ण करण्यासाठी डिलिव्हरीची माहिती भरा.",
+                delivery: "डिलिव्हरीची माहिती",
+                name: "पूर्ण नाव",
+                namePlaceholder: "तुमचे पूर्ण नाव लिहा",
+                mobile: "मोबाईल क्रमांक",
+                mobilePlaceholder: "१० अंकी मोबाईल क्रमांक लिहा",
+                address: "पूर्ण पत्ता",
+                addressPlaceholder: "घर क्रमांक, रस्ता, परिसर",
+                city: "शहर / गाव",
+                cityPlaceholder: "शहर किंवा गावाचे नाव लिहा",
+                pin: "पिन कोड",
+                pinPlaceholder: "६ अंकी पिन कोड लिहा",
+                payment: "पेमेंट पद्धत",
+                cod: "💵 वस्तू मिळाल्यावर पैसे द्या",
+                codDescription: "ऑर्डर मिळाल्यावर पैसे द्या.",
+                online: "💳 ऑनलाइन पेमेंट",
+                onlineDescription: "UPI, कार्ड, नेट बँकिंग आणि वॉलेट",
+                onlineTypes: "ऑनलाइन पेमेंटचा प्रकार निवडा",
+                note: "हे पर्याय सध्या फक्त दाखवण्यासाठी आहेत. प्रत्यक्ष ऑनलाइन पेमेंटसाठी पेमेंट गेटवे आवश्यक आहे.",
+                placeOrder: "ऑर्डर द्या",
+                back: "← कार्टमध्ये परत जा",
+                summary: "ऑर्डरचा सारांश",
+                quantity: "प्रमाण: ",
+                total: "एकूण",
+                empty: "तुमची कार्ट रिकामी आहे.",
+                browse: "उत्पादने पहा",
+                footer: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म",
+                onlineAlert: "ऑनलाइन पेमेंट अजून जोडलेले नाही. सध्या कृपया वस्तू मिळाल्यावर पैसे द्या हा पर्याय निवडा."
+
+            },
+
+            hi: {
+
+                language: "भाषा:",
+                title: "चेकआउट",
+                subtitle: "ऑर्डर पूरी करने के लिए डिलीवरी की जानकारी भरें।",
+                delivery: "डिलीवरी की जानकारी",
+                name: "पूरा नाम",
+                namePlaceholder: "अपना पूरा नाम लिखें",
+                mobile: "मोबाइल नंबर",
+                mobilePlaceholder: "10 अंकों का मोबाइल नंबर लिखें",
+                address: "पूरा पता",
+                addressPlaceholder: "मकान नंबर, सड़क, क्षेत्र",
+                city: "शहर / गाँव",
+                cityPlaceholder: "शहर या गाँव का नाम लिखें",
+                pin: "पिन कोड",
+                pinPlaceholder: "6 अंकों का पिन कोड लिखें",
+                payment: "भुगतान का तरीका",
+                cod: "💵 डिलीवरी पर नकद भुगतान",
+                codDescription: "ऑर्डर मिलने पर भुगतान करें।",
+                online: "💳 ऑनलाइन भुगतान",
+                onlineDescription: "UPI, कार्ड, नेट बैंकिंग और वॉलेट",
+                onlineTypes: "ऑनलाइन भुगतान का प्रकार चुनें",
+                note: "ये विकल्प अभी केवल दिखाने के लिए हैं। वास्तविक ऑनलाइन भुगतान के लिए पेमेंट गेटवे आवश्यक है।",
+                placeOrder: "ऑर्डर दें",
+                back: "← कार्ट पर वापस जाएँ",
+                summary: "ऑर्डर का सारांश",
+                quantity: "मात्रा: ",
+                total: "कुल",
+                empty: "आपकी कार्ट खाली है।",
+                browse: "उत्पाद देखें",
+                footer: "© 2026 AgroHarvest Hub | स्मार्ट फार्मिंग प्लेटफ़ॉर्म",
+                onlineAlert: "ऑनलाइन भुगतान अभी जुड़ा नहीं है। फिलहाल कृपया डिलीवरी पर नकद भुगतान चुनें।"
+
+            }
+
+        };
+
+
+        // =====================================
+        // NAVBAR TRANSLATIONS
+        // =====================================
+
+        const navTranslations = {
+
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ पुनरावलोकने",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग निदान",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा यादी",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएं",
+                crop: "🤖 फसल सुझाव",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा सूची",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप"
+            }
+
+        };
+
+
+        // =====================================
+        // APPLY LANGUAGE
+        // =====================================
+
+        function applyLanguage(language) {
+
+            const t = translations[language] || translations.en;
+            const nav = navTranslations[language] || navTranslations.en;
+
+            document.documentElement.lang = language;
+
+
+            // TEXT ELEMENTS
+            const textMap = {
+
+                "language-label": t.language,
+                "checkout-title": t.title,
+                "checkout-subtitle": t.subtitle,
+                "delivery-heading": t.delivery,
+                "name-label": t.name,
+                "mobile-label": t.mobile,
+                "address-label": t.address,
+                "city-label": t.city,
+                "pin-label": t.pin,
+                "payment-heading": t.payment,
+                "cod-label": t.cod,
+                "cod-description": t.codDescription,
+                "online-label": t.online,
+                "online-description": t.onlineDescription,
+                "online-types-heading": t.onlineTypes,
+                "payment-note": t.note,
+                "place-order-button": t.placeOrder,
+                "back-cart-link": t.back,
+                "summary-heading": t.summary,
+                "total-label": t.total,
+                "empty-cart-message": t.empty,
+                "browse-products-link": t.browse,
+                "footer-text": t.footer
+
+            };
+
+
+            Object.entries(textMap).forEach(([id, value]) => {
+
+                const element = document.getElementById(id);
+
+                if (element) {
+                    element.textContent = value;
+                }
+
+            });
+
+
+            // INPUT PLACEHOLDERS
+            document.getElementById("full_name").placeholder = t.namePlaceholder;
+            document.getElementById("mobile").placeholder = t.mobilePlaceholder;
+            document.getElementById("address").placeholder = t.addressPlaceholder;
+            document.getElementById("city").placeholder = t.cityPlaceholder;
+            document.getElementById("pin_code").placeholder = t.pinPlaceholder;
+
+
+            // QUANTITY
+            document.querySelectorAll(".quantity-label").forEach(element => {
+
+                element.textContent = t.quantity;
+
+            });
+
+
+            // PRODUCT NAMES
+            document.querySelectorAll(".item-name").forEach(element => {
+
+                const productName = element.getAttribute("data-product-" + language);
+
+                if (productName) {
+                    element.textContent = productName;
+                }
+
+            });
+
+
+            // NAVBAR
+            document.querySelectorAll(".nav-links a[data-nav]").forEach(element => {
+
+                const key = element.dataset.nav;
+
+                if (nav[key]) {
+                    element.textContent = nav[key];
+                }
+
+            });
+
+
+            document.title = t.title + " | AgroHarvest Hub";
+
+        }
+
+
+        // =====================================
+        // LOAD SAVED LANGUAGE
+        // =====================================
+
+        const languageSelector = document.getElementById(
+            "checkout-language-selector"
+        );
+
+        let savedLanguage = "en";
+
+        try {
+
+            savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+
+        } catch (error) {
+
+            savedLanguage = "en";
+
+        }
+
+        if (!translations[savedLanguage]) {
+            savedLanguage = "en";
+        }
+
+        languageSelector.value = savedLanguage;
+
+        applyLanguage(savedLanguage);
+
+
+        languageSelector.addEventListener("change", function () {
+
+            const language = this.value;
+
+            try {
+
+                localStorage.setItem("selectedLanguage", language);
+
+            } catch (error) {
+
+                // Language change still works without localStorage.
+
+            }
+
+            applyLanguage(language);
+
+        });
+
+
+        // =====================================
+        // ONLINE PAYMENT OPTIONS
+        // =====================================
+
+        const paymentRadios = document.querySelectorAll(
+            'input[name="payment_method"]'
+        );
+
+        const onlineTypes = document.getElementById(
+            "online-payment-types"
+        );
+
+        const typeRadios = document.querySelectorAll(
+            'input[name="payment_type"]'
+        );
+
+
+        function updatePaymentOptions() {
+
+            const selected = document.querySelector(
+                'input[name="payment_method"]:checked'
+            );
+
+            const isOnline = selected && selected.value === "Online";
+
+            onlineTypes.hidden = !isOnline;
+
+            typeRadios.forEach(radio => {
+
+                radio.required = Boolean(isOnline);
+
+                if (!isOnline) {
+                    radio.checked = false;
+                }
+
+            });
+
+        }
+
+
+        paymentRadios.forEach(radio => {
+
+            radio.addEventListener("change", updatePaymentOptions);
+
+        });
+
+        updatePaymentOptions();
+
+
+        // =====================================
+        // ONLINE PAYMENT WARNING
+        // =====================================
+
+        document.getElementById("checkout-form").addEventListener(
+            "submit",
+            function (event) {
+
+                const selected = document.querySelector(
+                    'input[name="payment_method"]:checked'
+                );
+
+                if (selected && selected.value === "Online") {
+
+                    event.preventDefault();
+
+                    const language = languageSelector.value;
+                    const t = translations[language] || translations.en;
+
+                    alert(t.onlineAlert);
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,926 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING PAGE DESIGN
+        ========================================== */
+        .navbar {
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 29px;
+        }
+
+        .logo strong {
+            color: #b7e66d;
+        }
+
+        .checkout-language {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #language-selector {
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #176b35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 3%;
+            background: #176b35;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff;
+            color: #176b35;
+        }
+
+        .nav-links form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .nav-links button {
+            color: #176b35;
+            background: #ffffff;
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5;
+        }
+
+        /* ==========================================
+           PRODUCTS MAIN SECTION
+        ========================================== */
+        .products-container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 55px 25px;
+        }
+
+        .products-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            color: #176b35;
+            background: #e2f2df;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }
+
+        .products-heading h1 {
+            color: #183d25;
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .products-heading p {
+            color: #5c6e60;
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 650px;
+            margin: auto;
+        }
+
+        /* SEARCH BAR */
+        .search-form {
+            width: min(650px, 95%);
+            margin: 30px auto 38px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px;
+            background: #ffffff;
+            border: 1px solid #d4e8d5;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(23, 107, 53, 0.08);
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            padding: 13px 16px;
+            font-size: 14px;
+            color: #24352a;
+            background: transparent;
+        }
+
+        .search-form button {
+            background: #176b35;
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 25px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-form button:hover {
+            background: #0e5127;
+        }
+
+        /* CATEGORY FILTER */
+        .category-section {
+            width: 100%;
+            text-align: center;
+            margin: 30px auto 40px;
+        }
+
+        .category-heading {
+            font-size: 16px;
+            font-weight: 800;
+            color: #19482a;
+            margin-bottom: 15px;
+        }
+
+        .category-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 11px;
+        }
+
+        .category-link {
+            display: inline-block;
+            color: #245b32;
+            background: #ffffff;
+            border: 1px solid #d4e8d5;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .category-link:hover,
+        .category-link.active {
+            background: #176b35;
+            border-color: #176b35;
+            color: #ffffff;
+        }
+
+        /* PRODUCT GRID */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 17px;
+            overflow: hidden;
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.04);
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(30, 90, 40, 0.11);
+            border-color: #9dc89f;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: #e8f5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.4s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-icon {
+            font-size: 65px;
+        }
+
+        /* PRODUCT DETAILS */
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: #e2f2df;
+            color: #176b35;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #183d25;
+            margin: 14px 0 8px;
+            line-height: 1.4;
+        }
+
+        .product-description {
+            color: #5c6e60;
+            font-size: 13.5px;
+            line-height: 1.6;
+            min-height: 44px;
+            margin-bottom: 18px;
+        }
+
+        .product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-top: 1px solid #edf2ed;
+            padding-top: 16px;
+        }
+
+        .product-price {
+            font-size: 21px;
+            font-weight: 800;
+            color: #176b35;
+        }
+
+        .product-stock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #245b32;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #36a765;
+        }
+
+        .view-product {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 16px;
+            border-radius: 9px;
+            background: #176b35;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .view-product:hover {
+            background: #0e5127;
+            transform: translateY(-2px);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 20px;
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #183d25;
+            font-size: 22px;
+            margin-bottom: 9px;
+        }
+
+        .empty-state p {
+            color: #5c6e60;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            background: #176b35;
+            color: #ffffff;
+            padding: 12px 22px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* FOOTER - EXACT LANDING PAGE DESIGN */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2%;
+                padding-right: 2%;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px;
+                padding: 7px 9px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .products-container {
+                padding: 35px 17px;
+            }
+
+            .products-heading h1 {
+                font-size: 30px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .navbar-top {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .nav-links {
+                gap: 4px;
+                padding: 9px 5px;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px;
+                padding: 7px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR (EXACT MATCH WITH LANDING PAGE) -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector">Language:</label>
+                <select id="language-selector" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" class="active" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="/about/" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
+
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- PRODUCTS MAIN -->
+    <main class="products-container">
+
+        <section class="products-heading">
+            <span class="section-tag" id="store-label">AGRICULTURE STORE</span>
+            <h1 id="products-title">Our Agriculture Products</h1>
+            <p id="products-description">
+                Explore quality farming products and find everything you need for smarter and better farming.
+            </p>
+        </section>
+
+        <!-- SEARCH -->
+        <form method="GET" action="{% url 'products' %}" class="search-form">
+            <input type="text" name="search" id="product-search" placeholder="Search agricultural products..."
+                value="{{ search_query|default:'' }}">
+            <button type="submit" id="search-button">Search</button>
+        </form>
+
+        <!-- CATEGORY FILTERS -->
+        <section class="category-section">
+            <div class="category-heading" id="category-heading">Browse By Category</div>
+            <div class="category-list">
+                <a href="{% url 'products' %}" class="category-link {% if not request.GET.category %}active{% endif %}"
+                    id="category-all">All Products</a>
+                <a href="{% url 'products' %}?category=Seeds"
+                    class="category-link {% if request.GET.category == 'Seeds' %}active{% endif %}"
+                    id="category-seeds">Seeds</a>
+                <a href="{% url 'products' %}?category=Fertilizer"
+                    class="category-link {% if request.GET.category == 'Fertilizer' %}active{% endif %}"
+                    id="category-fertilizer">Fertilizer</a>
+                <a href="{% url 'products' %}?category=Tools"
+                    class="category-link {% if request.GET.category == 'Tools' %}active{% endif %}"
+                    id="category-tools">Tools</a>
+                <a href="{% url 'products' %}?category=Irrigation"
+                    class="category-link {% if request.GET.category == 'Irrigation' %}active{% endif %}"
+                    id="category-irrigation">Irrigation</a>
+            </div>
+        </section>
+
+        <!-- PRODUCT CARDS -->
+        <section class="products-grid">
+            {% if products %}
+            {% for product in products %}
+            <article class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                    {% else %}
+                    <span class="product-icon">🌾</span>
+                    {% endif %}
+                </div>
+
+                <div class="product-info">
+                    <span class="product-category" data-category="{{ product.category|lower }}">
+                        {{ product.category }}
+                    </span>
+
+                    <h2 class="product-title product-name" data-name-en="{{ product.name|default:''|escape }}"
+                        data-name-mr="{{ product.name_mr|default:''|escape }}"
+                        data-name-hi="{{ product.name_hi|default:''|escape }}">
+                        {{ product.name }}
+                    </h2>
+
+                    <p class="product-description product-description-text"
+                        data-description-en="{{ product.description|default:''|escape }}"
+                        data-description-mr="{{ product.description_mr|default:''|escape }}"
+                        data-description-hi="{{ product.description_hi|default:''|escape }}">
+                        {{ product.description }}
+                    </p>
+
+                    <div class="product-bottom">
+                        <div>
+                            <div class="product-price">₹{{ product.price }}</div>
+                            <div class="product-stock">
+                                <span class="stock-dot"></span>
+                                <span class="available-text">Available</span>
+                            </div>
+                        </div>
+
+                        <a href="/product/{{ product.name|slugify }}/" class="view-product">
+                            <span class="view-product-text">View Product</span>
+                            <span aria-hidden="true">&nbsp;→</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🌱</div>
+                <h3 id="no-products-title">No Products Found</h3>
+                <p id="no-products-description">We couldn't find any products. Try another search or category.</p>
+                <a href="{% url 'products' %}" id="view-all-products">View All Products</a>
+            </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <!-- FOOTER (EXACT MATCH WITH LANDING PAGE) -->
+    <footer>
+        <div class="footer-logo">
+            🌱 AgroHarvest Hub
+        </div>
+        <p id="footer-description">
+            Smart Farming & Agriculture Products Platform
+        </p>
+        <div class="footer-bottom" id="footer-copyright">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+    <!-- LANGUAGE TRANSLATION SCRIPT (NAVBAR + PRODUCTS) -->
+    <script>
+        const translations = {
+            en: {
+                // Navbar Keys
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+
+                // Products Page Keys
+                storeLabel: "AGRICULTURE STORE",
+                productsTitle: "Our Agriculture Products",
+                productsDescription: "Explore quality farming products and find everything you need for smarter and better farming.",
+                searchPlaceholder: "Search agricultural products...",
+                search: "Search",
+
+                categoryHeading: "Browse By Category",
+                allProducts: "All Products",
+                seeds: "Seeds",
+                fertilizer: "Fertilizer",
+                tools: "Tools",
+                irrigation: "Irrigation",
+
+                available: "Available",
+                viewProduct: "View Product",
+
+                noProducts: "No Products Found",
+                noProductsText: "We couldn't find any products. Try another search or category.",
+                viewAllProducts: "View All Products",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                // Navbar Keys
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+
+                // Products Page Keys
+                storeLabel: "शेती उत्पादने स्टोअर",
+                productsTitle: "आमची शेती उत्पादने",
+                productsDescription: "उत्तम शेतीसाठी आवश्यक दर्जेदार शेती उत्पादने येथे शोधा.",
+                searchPlaceholder: "शेती उत्पादने शोधा...",
+                search: "शोधा",
+
+                categoryHeading: "श्रेणीनुसार उत्पादने",
+                allProducts: "सर्व उत्पादने",
+                seeds: "बियाणे",
+                fertilizer: "खते",
+                tools: "शेतीची साधने",
+                irrigation: "सिंचन",
+
+                available: "उपलब्ध",
+                viewProduct: "उत्पादन पहा",
+
+                noProducts: "उत्पादने सापडली नाहीत",
+                noProductsText: "आम्हाला कोणतीही उत्पादने सापडली नाहीत. दुसरे नाव किंवा श्रेणी शोधा.",
+                viewAllProducts: "सर्व उत्पादने पहा",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                // Navbar Keys
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                // Products Page Keys
+                storeLabel: "कृषि उत्पाद स्टोर",
+                productsTitle: "हमारे कृषि उत्पाद",
+                productsDescription: "बेहतर खेती के लिए आवश्यक गुणवत्तापूर्ण कृषि उत्पाद यहाँ खोजें।",
+                searchPlaceholder: "कृषि उत्पाद खोजें...",
+                search: "खोजें",
+
+                categoryHeading: "श्रेणी के अनुसार उत्पाद",
+                allProducts: "सभी उत्पाद",
+                seeds: "बीज",
+                fertilizer: "उर्वरक",
+                tools: "कृषि उपकरण",
+                irrigation: "सिंचाई",
+
+                available: "उपलब्ध",
+                viewProduct: "उत्पाद देखें",
+
+                noProducts: "कोई उत्पाद नहीं मिला",
+                noProductsText: "हमें कोई उत्पाद नहीं मिला। कोई दूसरा नाम या श्रेणी खोजें।",
+                viewAllProducts: "सभी उत्पाद देखें",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट खेती प्लेटफॉर्म"
+            }
+        };
+
+        // CHANGE LANGUAGE
+        function changeLanguage(language) {
+            localStorage.setItem("selectedLanguage", language);
+            applyLanguage(language);
+        }
+
+        // APPLY LANGUAGE
+        function applyLanguage(language) {
+            const t = translations[language] || translations.en;
+            document.documentElement.lang = language;
+
+            // 1. TRANSLATE NAVBAR LINKS (Using data-nav-key just like Landing Page)
+            document.querySelectorAll("[data-nav-key]").forEach(function (element) {
+                const key = element.getAttribute("data-nav-key");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            function setText(id, value) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            }
+
+            // 2. TRANSLATE PAGE HEADING & SEARCH
+            setText("store-label", t.storeLabel);
+            setText("products-title", t.productsTitle);
+            setText("products-description", t.productsDescription);
+
+            const searchInput = document.getElementById("product-search");
+            if (searchInput) {
+                searchInput.placeholder = t.searchPlaceholder;
+            }
+            setText("search-button", t.search);
+
+            // 3. TRANSLATE CATEGORIES
+            setText("category-heading", t.categoryHeading);
+            setText("category-all", t.allProducts);
+            setText("category-seeds", t.seeds);
+            setText("category-fertilizer", t.fertilizer);
+            setText("category-tools", t.tools);
+            setText("category-irrigation", t.irrigation);
+
+            // 4. TRANSLATE PRODUCT NAMES
+            document.querySelectorAll(".product-name").forEach(function (element) {
+                const english = element.dataset.nameEn || "";
+                const marathi = element.dataset.nameMr || english;
+                const hindi = element.dataset.nameHi || english;
+
+                if (language === "mr") {
+                    element.textContent = marathi || english;
+                } else if (language === "hi") {
+                    element.textContent = hindi || english;
+                } else {
+                    element.textContent = english;
+                }
+            });
+
+            // 5. TRANSLATE PRODUCT DESCRIPTIONS
+            document.querySelectorAll(".product-description-text").forEach(function (element) {
+                const english = element.dataset.descriptionEn || "";
+                const marathi = element.dataset.descriptionMr || english;
+                const hindi = element.dataset.descriptionHi || english;
+
+                if (language === "mr") {
+                    element.textContent = marathi || english;
+                } else if (language === "hi") {
+                    element.textContent = hindi || english;
+                } else {
+                    element.textContent = english;
+                }
+            });
+
+            // 6. TRANSLATE PRODUCT CATEGORY BADGES
+            document.querySelectorAll(".product-category").forEach(function (element) {
+                const category = (element.dataset.category || "").toLowerCase();
+                const categoryTranslations = {
+                    seeds: t.seeds,
+                    fertilizer: t.fertilizer,
+                    tools: t.tools,
+                    irrigation: t.irrigation
+                };
+
+                if (categoryTranslations[category]) {
+                    element.textContent = categoryTranslations[category];
+                }
+            });
+
+            // 7. STOCK, BUTTONS, EMPTY STATE & FOOTER
+            document.querySelectorAll(".available-text").forEach(el => el.textContent = t.available);
+            document.querySelectorAll(".view-product-text").forEach(el => el.textContent = t.viewProduct);
+
+            setText("no-products-title", t.noProducts);
+            setText("no-products-description", t.noProductsText);
+            setText("view-all-products", t.viewAllProducts);
+
+            setText("footer-description", t.footerDescription);
+            setText("footer-copyright", t.footerCopyright);
+        }
+
+        // INITIALIZE SAVED LANGUAGE ON PAGE LOAD
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLang = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = savedLang;
+            }
+            applyLanguage(savedLang);
+        });
+    </script>
+</body>
+
+</html>

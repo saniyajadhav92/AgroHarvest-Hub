@@ -1,0 +1,882 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT UNIFIED PLATFORM DESIGN
+        ========================================== */
+        .navbar {
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 29px;
+        }
+
+        .logo strong {
+            color: #b7e66d;
+        }
+
+        .checkout-language {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #product-detail-language-selector {
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #176b35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 3%;
+            background: #176b35;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff;
+            color: #176b35;
+        }
+
+        .nav-links form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .nav-links button {
+            color: #176b35;
+            background: #ffffff;
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5;
+        }
+
+        /* ==========================================
+           PRODUCT DETAIL PAGE STYLES
+        ========================================== */
+        .product-detail-page {
+            min-height: 70vh;
+            padding: 45px 5%;
+            background: #f4faf5;
+        }
+
+        .product-detail-card {
+            max-width: 1120px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #dce8df;
+            border-radius: 22px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(165, 252, 194, 0.08);
+        }
+
+        .product-detail-image {
+            width: 100%;
+            height: 400px;
+            background: #edf7ef;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        .product-detail-icon {
+            font-size: 100px;
+        }
+
+        .product-detail-info {
+            padding: 10px;
+        }
+
+        .product-detail-info .product-category {
+            display: inline-block;
+            width: fit-content;
+            color: #16803a;
+            background: #edf8ef;
+            padding: 7px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .product-detail-info h1 {
+            color: #14251a;
+            font-size: 38px;
+            margin: 5px 0 18px;
+            line-height: 1.2;
+        }
+
+        .product-detail-description {
+            color: #59675e;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .product-detail-price {
+            color: #176b24;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .add-cart-btn {
+            display: inline-block;
+            padding: 13px 24px;
+            background: #176b24;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: 700;
+            transition: 0.3s ease;
+            margin-right: 8px;
+        }
+
+        .add-cart-btn:hover {
+            background: #12571d;
+            transform: translateY(-2px);
+        }
+
+        .wishlist-detail-btn,
+        .wishlist-added-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 11px 22px;
+            border-radius: 9px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .wishlist-detail-btn {
+            background: #eaf6ed;
+            color: #176b24;
+            border: 1px solid #bcdac4;
+        }
+
+        .wishlist-detail-btn:hover {
+            background: #dcefe1;
+        }
+
+        .wishlist-added-btn {
+            background: #edf8ef;
+            color: #16803a;
+            border: 1px solid #bcdac4;
+            cursor: default;
+        }
+
+        .back-products-btn {
+            display: inline-block;
+            margin-top: 22px;
+            color: #176b24;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .back-products-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* REVIEWS SECTION */
+        .reviews-section {
+            width: 86%;
+            max-width: 1050px;
+            margin: 60px auto;
+            padding: 40px;
+            background: #ffffff;
+            border: 1px solid #dce8df;
+            border-radius: 18px;
+            box-shadow: 0 7px 22px rgba(20, 80, 40, 0.06);
+        }
+
+        .reviews-title {
+            text-align: center;
+            color: #14251a;
+            font-size: 28px;
+            margin-bottom: 35px;
+        }
+
+        .review-form {
+            background: #f2f8f3;
+            border: 1px solid #dce9df;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+        }
+
+        .review-form h3 {
+            color: #176b24;
+            margin-bottom: 18px;
+        }
+
+        .rating-select {
+            width: 100%;
+            max-width: 280px;
+            padding: 11px;
+            border: 1px solid #cddbd0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            background: white;
+            outline: none;
+        }
+
+        .review-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 13px;
+            border: 1px solid #cddbd0;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .review-submit-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #176b24;
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s ease;
+        }
+
+        .review-submit-btn:hover {
+            background: #12571d;
+        }
+
+        .login-review-message {
+            background: #f1f8f2;
+            border: 1px solid #d7e7da;
+            padding: 16px;
+            border-radius: 9px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #52635a;
+        }
+
+        .login-review-message a {
+            color: #176b24;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .review-card {
+            border: 1px solid #dce8df;
+            padding: 20px;
+            border-radius: 11px;
+            margin-bottom: 15px;
+            background: #fbfdfb;
+        }
+
+        .review-user {
+            font-weight: 700;
+            color: #26352b;
+            margin-bottom: 7px;
+        }
+
+        .review-rating {
+            color: #f5a623;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .review-comment {
+            color: #56635a;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .review-date {
+            color: #89938d;
+            font-size: 12px;
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: #737e77;
+            background: #f5f9f5;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .review-photo img {
+            max-width: 220px;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 800px) {
+            .product-detail-card {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="product-detail-language-selector" data-translate="languageLabel">Language:</label>
+                <select id="product-detail-language-selector" onchange="changeProductDetailLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" data-nav="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-nav="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-nav="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-nav="contact">📩 Contact</a>
+            <a href="{% url 'cart' %}" data-nav="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-nav="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-nav="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-nav="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- PRODUCT DETAIL -->
+    <section class="product-detail-page">
+        <div class="product-detail-card">
+            <div class="product-detail-image">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <div class="product-detail-icon">
+                    {{ product.icon|default:"🌱" }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="product-detail-info">
+                <span class="product-category" data-original-category="{{ product.category }}">
+                    {{ product.category }}
+                </span>
+
+                <h1 data-name-en="{{ product.name|default:''|escape }}"
+                    data-name-mr="{{ product.name_mr|default:''|escape }}"
+                    data-name-hi="{{ product.name_hi|default:''|escape }}">
+                    {{ product.name }}
+                </h1>
+
+                <p class="product-detail-description" data-description-en="{{ product.description|default:''|escape }}"
+                    data-description-mr="{{ product.description_mr|default:''|escape }}"
+                    data-description-hi="{{ product.description_hi|default:''|escape }}">
+                    {{ product.description }}
+                </p>
+
+                <div class="product-detail-price">
+                    ₹{{ product.price }}
+                </div>
+
+                <a href="{% url 'add_to_cart' product.id %}" class="add-cart-btn" data-translate="addCart">
+                    🛒 Add to Cart
+                </a>
+
+                {% if in_wishlist %}
+                <a href="/wishlist/" class="wishlist-added-btn" data-translate="addedWishlist">
+                    ❤️ Added to Wishlist
+                </a>
+                {% else %}
+                <a href="{% url 'add_to_wishlist' product.slug %}" class="wishlist-detail-btn" id="add-wishlist-btn"
+                    data-translate="addWishlist">
+                    ❤️ Add to Wishlist
+                </a>
+                {% endif %}
+
+                <div>
+                    <br>
+                    <a href="/products/" class="back-products-btn" data-translate="back">
+                        ← Back to Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEWS & RATINGS -->
+    <section class="reviews-section">
+        <h2 class="reviews-title" data-translate="reviewsTitle">
+            ⭐ Product Reviews & Ratings
+        </h2>
+
+        {% if user.is_authenticated %}
+        <div class="review-form">
+            <h3 data-translate="writeReview">Write a Review</h3>
+            <form method="POST" action="{% url 'add_review' product.name|slugify %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <select name="rating" class="rating-select" required>
+                    <option value="" data-translate="selectRating">Select Rating</option>
+                    <option value="5" data-translate="excellent">⭐⭐⭐⭐⭐ - Excellent</option>
+                    <option value="4" data-translate="veryGood">⭐⭐⭐⭐ - Very Good</option>
+                    <option value="3" data-translate="good">⭐⭐⭐ - Good</option>
+                    <option value="2" data-translate="average">⭐⭐ - Average</option>
+                    <option value="1" data-translate="poor">⭐ - Poor</option>
+                </select>
+
+                <textarea name="comment" class="review-textarea" placeholder="Write your review about this product..."
+                    required></textarea>
+
+                <input type="file" name="photo" accept="image/*">
+
+                <button type="submit" class="review-submit-btn" data-translate="submit">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="login-review-message">
+            🔐 <span data-translate="loginBefore">Please </span>
+            <a href="/login/" data-translate="loginLink">Login</a>
+            <span data-translate="loginAfter"> to write a review.</span>
+        </div>
+        {% endif %}
+
+        <h3 class="customer-reviews-heading" data-translate="customerReviews">
+            Customer Reviews
+        </h3>
+
+        {% for review in product.reviews.all %}
+        <div class="review-card">
+            <div class="review-user">
+                👤 {{ review.user.username }}
+            </div>
+
+            <div class="review-rating">
+                {% if review.rating == 5 %}⭐⭐⭐⭐⭐{% elif review.rating == 4 %}⭐⭐⭐⭐{% elif review.rating == 3 %}⭐⭐⭐{% elif
+                review.rating == 2 %}⭐⭐{% else %}⭐{% endif %}
+            </div>
+
+            <div class="review-comment">
+                {{ review.comment }}
+            </div>
+
+            {% if review.photo %}
+            <div class="review-photo">
+                <img src="{{ review.photo.url }}" alt="Customer Product Photo">
+            </div>
+            {% endif %}
+
+            <div class="review-date">
+                {{ review.created_at|date:"d M Y" }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-reviews" data-translate="noReviews">
+            No reviews yet. Be the first to review this product! 🌱
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">
+            🌱 AgroHarvest Hub
+        </div>
+        <p data-translate="footerDescription">
+            Smart Farming & Agriculture Products Platform
+        </p>
+        <div class="footer-bottom" data-translate="footerCopyright">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+    <!-- LANGUAGE TRANSLATION -->
+    <script>
+        const productDetailTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📩 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                languageLabel: "Language:",
+
+                addCart: "🛒 Add to Cart",
+                addWishlist: "❤️ Add to Wishlist",
+                addedWishlist: "❤️ Added to Wishlist",
+                back: "← Back to Products",
+
+                reviewsTitle: "⭐ Product Reviews & Ratings",
+                writeReview: "Write a Review",
+                selectRating: "Select Rating",
+                excellent: "⭐⭐⭐⭐⭐ - Excellent",
+                veryGood: "⭐⭐⭐⭐ - Very Good",
+                good: "⭐⭐⭐ - Good",
+                average: "⭐⭐ - Average",
+                poor: "⭐ - Poor",
+
+                placeholder: "Write your review about this product...",
+                submit: "Submit Review",
+                customerReviews: "Customer Reviews",
+
+                loginBefore: "🔐 Please ",
+                loginLink: "Login",
+                loginAfter: " to write a review.",
+
+                noReviews: "No reviews yet. Be the first to review this product! 🌱",
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                addCart: "🛒 कार्टमध्ये जोडा",
+                addWishlist: "❤️ आवडत्या यादीत जोडा",
+                addedWishlist: "❤️ आवडत्या यादीत जोडले",
+                back: "← उत्पादनांकडे परत जा",
+
+                reviewsTitle: "⭐ उत्पादन अभिप्राय आणि रेटिंग",
+                writeReview: "अभिप्राय लिहा",
+                selectRating: "रेटिंग निवडा",
+                excellent: "⭐⭐⭐⭐⭐ - उत्कृष्ट",
+                veryGood: "⭐⭐⭐⭐ - खूप चांगले",
+                good: "⭐⭐⭐ - चांगले",
+                average: "⭐⭐ - सरासरी",
+                poor: "⭐ - खराब",
+
+                placeholder: "या उत्पादनाबद्दल तुमचा अभिप्राय लिहा...",
+                submit: "अभिप्राय सबमिट करा",
+                customerReviews: "ग्राहकांचे अभिप्राय",
+
+                loginBefore: "🔐 अभिप्राय लिहिण्यासाठी कृपया ",
+                loginLink: "लॉगिन",
+                loginAfter: " करा.",
+
+                noReviews: "अद्याप अभिप्राय नाहीत. या उत्पादनाचा अभिप्राय देणारे पहिले व्हा! 🌱",
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                addCart: "🛒 कार्ट में जोड़ें",
+                addWishlist: "❤️ पसंदीदा में जोड़ें",
+                addedWishlist: "❤️ पसंदीदा में जोड़ा गया",
+                back: "← उत्पादों पर वापस जाएं",
+
+                reviewsTitle: "⭐ उत्पाद समीक्षाएं और रेटिंग",
+                writeReview: "समीक्षा लिखें",
+                selectRating: "रेटिंग चुनें",
+                excellent: "⭐⭐⭐⭐⭐ - उत्कृष्ट",
+                veryGood: "⭐⭐⭐⭐ - बहुत अच्छा",
+                good: "⭐⭐⭐ - अच्छा",
+                average: "⭐⭐ - औसत",
+                poor: "⭐ - खराब",
+
+                placeholder: "इस उत्पाद के बारे में अपनी समीक्षा लिखें...",
+                submit: "समीक्षा सबमिट करें",
+                customerReviews: "ग्राहक समीक्षाएं",
+
+                loginBefore: "🔐 समीक्षा लिखने के लिए कृपया ",
+                loginLink: "लॉगिन",
+                loginAfter: " करें।",
+
+                noReviews: "अभी तक कोई समीक्षा नहीं है। इस उत्पाद की समीक्षा करने वाले पहले व्यक्ति बनें! 🌱",
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | सर्वाधिकार सुरक्षित"
+            }
+        };
+
+        function changeProductDetailLanguage(language) {
+            if (!productDetailTranslations[language]) {
+                language = "en";
+            }
+            localStorage.setItem("selectedLanguage", language);
+            applyProductDetailLanguage(language);
+        }
+
+        function applyProductDetailLanguage(language) {
+            const t = productDetailTranslations[language];
+            if (!t) return;
+
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            const navKeys = [
+                "home", "products", "ai", "reviews", "crop", "disease",
+                "about", "contact", "cart", "wishlist", "orders",
+                "dashboard", "login", "signup", "logout"
+            ];
+
+            document.querySelectorAll(".nav-links a[data-nav]").forEach(function (link) {
+                const key = link.dataset.nav;
+                if (t[key]) {
+                    link.textContent = t[key];
+                }
+            });
+
+            const logoutBtn = document.querySelector(".nav-links button");
+            if (logoutBtn) {
+                logoutBtn.textContent = t.logout;
+            }
+
+            const productName = document.querySelector("[data-name-en]");
+            if (productName) {
+                let name = productName.dataset.nameEn;
+                if (language === "mr") name = productName.dataset.nameMr || name;
+                if (language === "hi") name = productName.dataset.nameHi || name;
+                productName.textContent = name;
+            }
+
+            const description = document.querySelector("[data-description-en]");
+            if (description) {
+                let text = description.dataset.descriptionEn;
+                if (language === "mr") text = description.dataset.descriptionMr || text;
+                if (language === "hi") text = description.dataset.descriptionHi || text;
+                description.textContent = text;
+            }
+
+            const category = document.querySelector("[data-original-category]");
+            if (category) {
+                const original = category.dataset.originalCategory.trim();
+                const categoryMR = { "Seeds": "बियाणे", "Fertilizer": "खत", "Tools": "शेतीची साधने", "Irrigation": "सिंचन" };
+                const categoryHI = { "Seeds": "बीज", "Fertilizer": "उर्वरक", "Tools": "कृषि उपकरण", "Irrigation": "सिंचाई" };
+
+                if (language === "mr") {
+                    category.textContent = categoryMR[original] || original;
+                } else if (language === "hi") {
+                    category.textContent = categoryHI[original] || original;
+                } else {
+                    category.textContent = original;
+                }
+            }
+
+            const textarea = document.querySelector(".review-textarea");
+            if (textarea) {
+                textarea.placeholder = t.placeholder;
+            }
+
+            const selector = document.getElementById("product-detail-language-selector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("product-detail-language-selector");
+            if (selector) {
+                selector.value = savedLanguage;
+            }
+            applyProductDetailLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>
