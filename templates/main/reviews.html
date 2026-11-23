@@ -1,0 +1,647 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING PAGE DESIGN
+        ========================================== */
+        .navbar {
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 29px;
+        }
+
+        .logo strong {
+            color: #b7e66d;
+        }
+
+        .checkout-language {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #language-selector {
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #176b35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 3%;
+            background: #176b35;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff;
+            color: #176b35;
+        }
+
+        .nav-links form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .nav-links button {
+            color: #176b35;
+            background: #ffffff;
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5;
+        }
+
+        /* ==========================================
+           REVIEWS MAIN SECTION
+        ========================================== */
+        .reviews-page {
+            width: 90%;
+            max-width: 1150px;
+            margin: 45px auto 80px;
+        }
+
+        .reviews-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            color: #176b35;
+            background: #e2f2df;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }
+
+        .reviews-header h1 {
+            color: #183d25;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .reviews-header p {
+            color: #5c6e60;
+            font-size: 16px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .review-card {
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(30, 80, 40, 0.05);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(30, 90, 40, 0.10);
+            border-color: #9dc89f;
+        }
+
+        .review-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 14px;
+        }
+
+        .review-user {
+            font-weight: 800;
+            color: #176b35;
+            font-size: 17px;
+        }
+
+        .review-rating {
+            color: #efa900;
+            font-size: 18px;
+            white-space: nowrap;
+        }
+
+        .review-product {
+            display: inline-block;
+            background: #e8f5e5;
+            color: #176b35;
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+
+        .review-comment {
+            color: #4f5d54;
+            line-height: 1.7;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .review-photo {
+            margin-top: 10px;
+            margin-bottom: 16px;
+        }
+
+        .review-photo img {
+            width: 100%;
+            max-width: 340px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #e1eee1;
+            display: block;
+        }
+
+        .review-date {
+            color: #8a958d;
+            font-size: 13px;
+            border-top: 1px solid #f0f5f0;
+            padding-top: 12px;
+        }
+
+        /* EMPTY STATE */
+        .no-reviews {
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 16px;
+            padding: 55px 20px;
+            color: #5c6e60;
+            box-shadow: 0 5px 18px rgba(30, 80, 40, 0.04);
+        }
+
+        .no-reviews h3 {
+            color: #176b35;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        /* ACTION BUTTON */
+        .reviews-action {
+            text-align: center;
+            margin-top: 45px;
+        }
+
+        .reviews-action a {
+            display: inline-block;
+            background: #176b35;
+            color: #ffffff;
+            padding: 13px 26px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 5px 13px rgba(23, 107, 53, 0.18);
+        }
+
+        .reviews-action a:hover {
+            background: #0e5127;
+            transform: translateY(-3px);
+        }
+
+        /* ==========================================
+           FOOTER - EXACT LANDING PAGE DESIGN
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2%;
+                padding-right: 2%;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px;
+                padding: 7px 9px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reviews-header h1 {
+                font-size: 28px;
+            }
+
+            .review-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .review-photo img {
+                max-width: 100%;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .navbar-top {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .nav-links {
+                gap: 4px;
+                padding: 9px 5px;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px;
+                padding: 7px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR (EXACT MATCH WITH LANDING & PRODUCTS PAGE) -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector">Language:</label>
+                <select id="language-selector" onchange="changeReviewsLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" data-translate="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-translate="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-translate="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" class="active" data-translate="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-translate="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-translate="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-translate="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-translate="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-translate="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-translate="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-translate="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-translate="dashboard">👤 Dashboard</a>
+
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-translate="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-translate="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-translate="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- REVIEWS PAGE -->
+    <main class="reviews-page">
+
+        <div class="reviews-header">
+            <span class="section-tag" data-translate="badge">CUSTOMER FEEDBACK</span>
+            <h1 data-translate="title">⭐ Customer Reviews</h1>
+            <p data-translate="description">
+                See what farmers are saying about AgroHarvest Hub.
+            </p>
+        </div>
+
+        {% if reviews %}
+
+        <div class="reviews-grid">
+
+            {% for review in reviews %}
+
+            <div class="review-card">
+                <div>
+                    <div class="review-top">
+                        <div class="review-user">
+                            👤 {{ review.user.username }}
+                        </div>
+
+                        <div class="review-rating">
+                            {% for star in "12345" %}
+                            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %} {% endfor %} </div>
+                        </div>
+
+                        <div class="review-product">
+                            🌱 {{ review.product.name }}
+                        </div>
+
+                        <div class="review-comment">
+                            “{{ review.comment }}”
+                        </div>
+
+                        {% if review.photo %}
+                        <div class="review-photo">
+                            <img src="{{ review.photo.url }}" alt="Customer Product Photo" loading="lazy">
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="review-date">
+                        📅 {{ review.created_at|date:"d M Y" }}
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="no-reviews">
+                <h3 data-translate="noReviews">⭐ No Reviews Yet</h3>
+                <p data-translate="firstReview">
+                    Be the first to share your experience with AgroHarvest Hub.
+                </p>
+            </div>
+
+            {% endif %}
+
+            <div class="reviews-action">
+                <a href="{% url 'products' %}" data-translate="explore">
+                    🛒 Explore Products →
+                </a>
+            </div>
+
+    </main>
+
+
+    <!-- FOOTER (EXACT MATCH WITH LANDING PAGE) -->
+    <footer>
+        <div class="footer-logo">
+            🌱 AgroHarvest Hub
+        </div>
+        <p data-translate="footerDescription">
+            Smart Farming & Agriculture Products Platform
+        </p>
+        <div class="footer-bottom" data-translate="footerCopyright">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+
+    <!-- LANGUAGE TRANSLATION SCRIPT -->
+    <script>
+        const reviewsTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+
+                badge: "CUSTOMER FEEDBACK",
+                title: "⭐ Customer Reviews",
+                description: "See what farmers are saying about AgroHarvest Hub.",
+                noReviews: "⭐ No Reviews Yet",
+                firstReview: "Be the first to share your experience with AgroHarvest Hub.",
+                explore: "🛒 Explore Products →",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+
+                badge: "ग्राहकांचा अनुभव",
+                title: "⭐ ग्राहकांचे अभिप्राय",
+                description: "शेतकरी AgroHarvest Hub बद्दल काय सांगतात ते पहा.",
+                noReviews: "⭐ अजून कोणतेही अभिप्राय नाहीत",
+                firstReview: "AgroHarvest Hub बद्दलचा तुमचा अनुभव सर्वप्रथम शेअर करा.",
+                explore: "🛒 उत्पादने पहा →",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                badge: "ग्राहक प्रतिक्रिया",
+                title: "⭐ ग्राहक समीक्षाएँ",
+                description: "जानें कि किसान AgroHarvest Hub के बारे में क्या कह रहे हैं।",
+                noReviews: "⭐ अभी तक कोई समीक्षा नहीं",
+                firstReview: "AgroHarvest Hub के साथ अपना अनुभव सबसे पहले साझा करें।",
+                explore: "🛒 उत्पाद देखें →",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट खेती प्लेटफॉर्म"
+            }
+        };
+
+        function changeReviewsLanguage(language) {
+            const t = reviewsTranslations[language] || reviewsTranslations.en;
+
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            document.documentElement.lang = language;
+            localStorage.setItem("selectedLanguage", language);
+
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            changeReviewsLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

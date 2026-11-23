@@ -1,0 +1,293 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | AgroHarvest Hub</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        .language-box {
+            margin-left: 15px;
+        }
+
+        .language-box select {
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid #176b24;
+            background: white;
+            color: #176b24;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <span class="logo-icon">🌱</span>
+            <span>AgroHarvest <strong>Hub</strong></span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{% url 'landing' %}" data-en="🏠 Home" data-mr="🏠 मुख्यपृष्ठ" data-hi="🏠 होम">
+                🏠 Home
+            </a>
+
+            <a href="{% url 'products' %}" data-en="📄 Products" data-mr="📄 उत्पादने" data-hi="📄 उत्पाद">
+                📄 Products
+            </a>
+
+            <a href="{% url 'reviews' %}" data-en="⭐ Reviews" data-mr="⭐ अभिप्राय" data-hi="⭐ समीक्षाएँ">
+                ⭐ Reviews
+            </a>
+
+            <a href="{% url 'crop_recommendation' %}" data-en="🤖 Crop Recommendation" data-mr="🤖 पीक शिफारस"
+                data-hi="🤖 फसल सुझाव">
+                🤖 Crop Recommendation
+            </a>
+
+            <a href="{% url 'disease_detection' %}" data-en="🌿 Disease Detection" data-mr="🌿 रोग ओळख"
+                data-hi="🌿 रोग पहचान">
+                🌿 Disease Detection
+            </a>
+
+            <a href="{% url 'about' %}" data-en="ℹ️ About" data-mr="ℹ️ आमच्याबद्दल" data-hi="ℹ️ हमारे बारे में">
+                ℹ️ About
+            </a>
+
+            <a href="{% url 'contact' %}" data-en="📞 Contact" data-mr="📞 संपर्क" data-hi="📞 संपर्क">
+                📞 Contact
+            </a>
+
+            <a href="{% url 'cart' %}" data-en="🛒 Cart" data-mr="🛒 कार्ट" data-hi="🛒 कार्ट">
+                🛒 Cart
+            </a>
+
+            <a href="{% url 'wishlist' %}" data-en="❤️ Wishlist" data-mr="❤️ इच्छा यादी" data-hi="❤️ इच्छा सूची">
+                ❤️ Wishlist
+            </a>
+
+            <a href="{% url 'my_orders' %}" data-en="📦 My Orders" data-mr="📦 माझ्या ऑर्डर्स" data-hi="📦 मेरे ऑर्डर">
+                📦 My Orders
+            </a>
+
+            <a href="{% url 'dashboard' %}" data-en="👤 Dashboard" data-mr="👤 डॅशबोर्ड" data-hi="👤 डैशबोर्ड">
+                👤 Dashboard
+            </a>
+
+            <a href="/login/" class="login-link" style="
+                   background: #176b24 !important;
+                   color: white !important;
+                   border: 1px solid #176b24 !important;
+                   padding: 8px 14px !important;
+                   border-radius: 6px !important;
+                   text-decoration: none !important;
+               " data-en="👤 Login" data-mr="👤 लॉगिन" data-hi="👤 लॉगिन">
+                👤 Login
+            </a>
+
+            <a href="{% url 'signup' %}" class="active signup-link" data-en="👤 Sign Up" data-mr="👤 नोंदणी"
+                data-hi="👤 साइन अप">
+                👤 Sign Up
+            </a>
+
+            <!-- LANGUAGE SELECTOR -->
+            <div class="language-box">
+                <select id="language-selector" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- SIGNUP SECTION -->
+    <div class="auth-page">
+
+        <div class="auth-card">
+
+            <div class="auth-icon">🌱</div>
+
+            <h1 data-en="Create Account" data-mr="खाते तयार करा" data-hi="खाता बनाएँ">
+                Create Account
+            </h1>
+
+            <p class="auth-subtitle" data-en="Join AgroHarvest Hub" data-mr="AgroHarvest Hub मध्ये सामील व्हा"
+                data-hi="AgroHarvest Hub से जुड़ें">
+                Join AgroHarvest Hub
+            </p>
+
+
+            <form method="POST">
+                {% csrf_token %}
+
+
+                <!-- USERNAME -->
+                <div class="form-group">
+
+                    <label data-en="Username" data-mr="वापरकर्तानाव" data-hi="उपयोगकर्ता नाम">
+                        Username
+                    </label>
+
+                    <input type="text" name="username" placeholder="Enter username" data-placeholder-en="Enter username"
+                        data-placeholder-mr="वापरकर्तानाव टाका" data-placeholder-hi="उपयोगकर्ता नाम दर्ज करें" required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="form-group">
+
+                    <label data-en="Email" data-mr="ईमेल" data-hi="ईमेल">
+                        Email
+                    </label>
+
+                    <input type="email" name="email" placeholder="Enter email" data-placeholder-en="Enter email"
+                        data-placeholder-mr="ईमेल टाका" data-placeholder-hi="ईमेल दर्ज करें" required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+
+                    <label data-en="Password" data-mr="पासवर्ड" data-hi="पासवर्ड">
+                        Password
+                    </label>
+
+                    <input type="password" name="password" placeholder="Enter password"
+                        data-placeholder-en="Enter password" data-placeholder-mr="पासवर्ड टाका"
+                        data-placeholder-hi="पासवर्ड दर्ज करें" required>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="form-group">
+
+                    <label data-en="Confirm Password" data-mr="पासवर्ड पुन्हा टाका" data-hi="पासवर्ड की पुष्टि करें">
+                        Confirm Password
+                    </label>
+
+                    <input type="password" name="confirm_password" placeholder="Confirm password"
+                        data-placeholder-en="Confirm password" data-placeholder-mr="पासवर्ड पुन्हा टाका"
+                        data-placeholder-hi="पासवर्ड की पुष्टि करें" required>
+
+                </div>
+
+
+                <!-- CREATE ACCOUNT BUTTON -->
+                <button type="submit" class="auth-btn" data-en="Create Account" data-mr="खाते तयार करा"
+                    data-hi="खाता बनाएँ">
+                    Create Account
+                </button>
+
+            </form>
+
+
+            <!-- LOGIN LINK -->
+            <p class="auth-bottom">
+
+                <span data-en="Already have an account?" data-mr="आधीच खाते आहे का?"
+                    data-hi="क्या आपके पास पहले से खाता है?">
+                    Already have an account?
+                </span>
+
+                <a href="{% url 'login' %}" data-en="Login" data-mr="लॉगिन" data-hi="लॉगिन">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer data-en="© 2026 AgroHarvest Hub | Smart Farming Platform"
+        data-mr="© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+        data-hi="© 2026 AgroHarvest Hub | स्मार्ट फार्मिंग प्लेटफॉर्म">
+        © 2026 AgroHarvest Hub | Smart Farming Platform
+    </footer>
+
+
+    <!-- LANGUAGE SCRIPT -->
+    <script>
+
+        function changeLanguage(language) {
+
+            localStorage.setItem("selectedLanguage", language);
+
+            applyLanguage(language);
+        }
+
+
+        function applyLanguage(language) {
+
+            // Translate normal text
+            document.querySelectorAll("[data-en]").forEach(function (element) {
+
+                const text = element.getAttribute("data-" + language);
+
+                if (text) {
+                    element.textContent = text;
+                }
+
+            });
+
+
+            // Translate input placeholders
+            document.querySelectorAll("[data-placeholder-en]").forEach(function (input) {
+
+                const placeholder =
+                    input.getAttribute("data-placeholder-" + language);
+
+                if (placeholder) {
+                    input.placeholder = placeholder;
+                }
+
+            });
+
+
+            // Keep selected language
+            const selector =
+                document.getElementById("language-selector");
+
+            if (selector) {
+                selector.value = language;
+            }
+
+        }
+
+
+        // Load saved language
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const savedLanguage =
+                localStorage.getItem("selectedLanguage") || "en";
+
+            applyLanguage(savedLanguage);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

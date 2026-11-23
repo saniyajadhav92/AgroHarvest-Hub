@@ -1,0 +1,725 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Disease Detection Result | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4fff5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING PAGE DESIGN
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: #176b35 !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        #languageSelector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+           RESULT CONTAINER STYLES
+        ========================================== */
+        .result-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h1 {
+            color: #176b35;
+            margin-bottom: 8px;
+        }
+
+        .result-header p {
+            color: #666;
+        }
+
+        .image-box,
+        .info-box,
+        .recommended-section {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-box {
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 500px;
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .info-box h2,
+        .image-box h2,
+        .recommended-section h2 {
+            color: #176b35;
+            margin-top: 0;
+        }
+
+        .info-box p {
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .disease-box {
+            border-left: 6px solid #dc3545;
+        }
+
+        .treatment-box {
+            border-left: 6px solid #218838;
+        }
+
+        .recommended-section {
+            margin-top: 35px;
+        }
+
+        .recommended-section h2 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .recommended-text {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .recommended-products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .product-card {
+            background: #f8fff9;
+            padding: 18px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .product-placeholder {
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f7e9;
+            border-radius: 12px;
+            font-size: 55px;
+        }
+
+        .product-card h3 {
+            color: #234d2c;
+            margin: 15px 0 8px;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #16803c;
+            margin-bottom: 18px;
+        }
+
+        .add-cart-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 22px;
+            background: #218838;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            transition: 0.2s;
+        }
+
+        .add-cart-btn:hover {
+            background: #176b2c;
+            transform: translateY(-2px);
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .no-products a {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            margin-top: 25px;
+            padding: 18px;
+            background: #fff8e1;
+            border-radius: 12px;
+            color: #795548;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .buttons a {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .check-btn {
+            background: #218838;
+            color: white;
+        }
+
+        .products-btn {
+            background: #176b35;
+            color: white;
+        }
+
+        .home-btn {
+            background: #555;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .recommended-products {
+                grid-template-columns: 1fr;
+            }
+
+            .result-container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .navbar-top {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .nav-links {
+                gap: 4px !important;
+                padding: 9px 5px !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px !important;
+                padding: 7px 8px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR - EXACT LANDING PAGE DESIGN -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="{% url 'landing' %}" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="languageSelector">Language:</label>
+                <select id="languageSelector" onchange="changeResultLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-nav-key="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" class="active" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-nav-key="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-nav-key="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-nav-key="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-nav-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <div class="result-container">
+
+        <!-- HEADER -->
+        <div class="result-header">
+            <h1 data-i18n="title">🌿 Disease Detection Result</h1>
+            <p data-i18n="subtitle">Plant image analysis result</p>
+        </div>
+
+
+        <!-- UPLOADED IMAGE -->
+        <div class="image-box">
+
+            <h2 data-i18n="uploaded">📷 Uploaded Plant</h2>
+
+            {% if image_url %}
+            <img src="{{ image_url }}" alt="Uploaded Disease Plant">
+            {% else %}
+            <p style="color:red;font-weight:bold;" data-i18n="unavailable">
+                Image unavailable
+            </p>
+            {% endif %}
+
+        </div>
+
+
+        <!-- SELECTED CROP -->
+        <div class="info-box">
+            <h2 data-i18n="selectedCrop">🌱 Selected Crop</h2>
+            <p><strong>{{ crop }}</strong></p>
+        </div>
+
+
+        <!-- DISEASE -->
+        <div class="info-box disease-box">
+            <h2 data-i18n="detected">🔍 Disease Detected</h2>
+            <p><strong>{{ disease }}</strong></p>
+        </div>
+
+
+        <!-- SYMPTOMS -->
+        <div class="info-box">
+            <h2 data-i18n="symptoms">🔴 Symptoms</h2>
+            <p>{{ symptoms }}</p>
+        </div>
+
+
+        <!-- TREATMENT -->
+        <div class="info-box treatment-box">
+            <h2 data-i18n="treatment">💊 Recommended Treatment</h2>
+            <p>{{ treatment }}</p>
+        </div>
+
+
+        <!-- RECOMMENDED PRODUCTS -->
+        <div class="recommended-section">
+
+            <h2 data-i18n="recommended">🛒 Recommended Products</h2>
+
+            <p class="recommended-text" data-i18n="recommendedText">
+                These products may help support your crop after disease detection.
+            </p>
+
+            {% if recommended_products %}
+
+            <div class="recommended-products">
+
+                {% for product in recommended_products %}
+
+                <div class="product-card">
+
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="product-placeholder">🌱</div>
+                    {% endif %}
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p class="product-price">
+                        ₹{{ product.price }}
+                    </p>
+
+                    <a href="{% url 'add_to_cart' product.id %}" class="add-cart-btn" data-i18n="addCart">
+                        🛒 Add to Cart
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="no-products">
+                <p data-i18n="noProducts">
+                    No recommended products found for this crop.
+                </p>
+
+                <a href="{% url 'products' %}" data-i18n="viewAll">
+                    View All Products →
+                </a>
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- WARNING -->
+        <div class="warning-box">
+            ⚠️ <strong data-i18n="important">Important:</strong>
+            <span data-i18n="warning">
+                This is a demonstration result for the AgroHarvest Hub project.
+                For accurate disease identification, farmers should consult an
+                agricultural expert or use a trained plant-disease detection model.
+            </span>
+        </div>
+
+
+        <!-- BOTTOM BUTTONS -->
+        <div class="buttons">
+
+            <a href="{% url 'disease_detection' %}" class="check-btn" data-i18n="check">
+                🔄 Check Another Plant
+            </a>
+
+            <a href="{% url 'products' %}" class="products-btn" data-i18n="viewProducts">
+                🛒 View Products
+            </a>
+
+            <a href="{% url 'landing' %}" class="home-btn" data-i18n="backHome">
+                🏠 Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- LANGUAGE TRANSLATION SCRIPT -->
+    <script>
+
+        const resultTranslations = {
+
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+
+                title: "🌿 Disease Detection Result",
+                subtitle: "Plant image analysis result",
+                uploaded: "📷 Uploaded Plant",
+                unavailable: "Image unavailable",
+                selectedCrop: "🌱 Selected Crop",
+                detected: "🔍 Disease Detected",
+                symptoms: "🔴 Symptoms",
+                treatment: "💊 Recommended Treatment",
+                recommended: "🛒 Recommended Products",
+                recommendedText: "These products may help support your crop after disease detection.",
+                addCart: "🛒 Add to Cart",
+                noProducts: "No recommended products found for this crop.",
+                viewAll: "View All Products →",
+                important: "Important:",
+                warning: "This is a demonstration result for the AgroHarvest Hub project. For accurate disease identification, farmers should consult an agricultural expert or use a trained plant-disease detection model.",
+                check: "🔄 Check Another Plant",
+                viewProducts: "🛒 View Products",
+                backHome: "🏠 Back to Home"
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा यादी",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                title: "🌿 रोग ओळखण्याचा निकाल",
+                subtitle: "वनस्पती प्रतिमा विश्लेषणाचा निकाल",
+                uploaded: "📷 अपलोड केलेले झाड",
+                unavailable: "प्रतिमा उपलब्ध नाही",
+                selectedCrop: "🌱 निवडलेले पीक",
+                detected: "🔍 ओळखलेला रोग",
+                symptoms: "🔴 लक्षणे",
+                treatment: "💊 शिफारस केलेले उपचार",
+                recommended: "🛒 शिफारस केलेली उत्पादने",
+                recommendedText: "रोग ओळखल्यानंतर ही उत्पादने तुमच्या पिकासाठी उपयुक्त ठरू शकतात.",
+                addCart: "🛒 कार्टमध्ये जोडा",
+                noProducts: "या पिकासाठी शिफारस केलेली उत्पादने उपलब्ध नाहीत.",
+                viewAll: "सर्व उत्पादने पहा →",
+                important: "महत्त्वाचे:",
+                warning: "हा AgroHarvest Hub प्रकल्पासाठी प्रात्यक्षिक निकाल आहे. रोगाची अचूक ओळख करण्यासाठी शेतकऱ्यांनी कृषी तज्ज्ञांचा सल्ला घ्यावा किंवा प्रशिक्षित रोग ओळख मॉडेलचा वापर करावा.",
+                check: "🔄 दुसरे झाड तपासा",
+                viewProducts: "🛒 उत्पादने पहा",
+                backHome: "🏠 मुख्यपृष्ठावर परत जा"
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल सुझाव",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+
+                title: "🌿 रोग पहचान का परिणाम",
+                subtitle: "पौधे की तस्वीर के विश्लेषण का परिणाम",
+                uploaded: "📷 अपलोड किया गया पौधा",
+                unavailable: "तस्वीर उपलब्ध नहीं है",
+                selectedCrop: "🌱 चुनी गई फसल",
+                detected: "🔍 पहचाना गया रोग",
+                symptoms: "🔴 लक्षण",
+                treatment: "💊 सुझाया गया उपचार",
+                recommended: "🛒 सुझाए गए उत्पाद",
+                recommendedText: "रोग की पहचान के बाद ये उत्पाद आपकी फसल के लिए उपयोगी हो सकते हैं।",
+                addCart: "🛒 कार्ट में जोड़ें",
+                noProducts: "इस फसल के लिए कोई सुझाए गए उत्पाद नहीं मिले।",
+                viewAll: "सभी उत्पाद देखें →",
+                important: "महत्वपूर्ण:",
+                warning: "यह AgroHarvest Hub प्रोजेक्ट के लिए एक प्रदर्शन परिणाम है। रोग की सटीक पहचान के लिए किसानों को कृषि विशेषज्ञ से सलाह लेनी चाहिए या प्रशिक्षित पौधों के रोग पहचान मॉडल का उपयोग करना चाहिए।",
+                check: "🔄 दूसरे पौधे की जाँच करें",
+                viewProducts: "🛒 उत्पाद देखें",
+                backHome: "🏠 होम पर वापस जाएँ"
+            }
+
+        };
+
+
+        function changeResultLanguage(language) {
+
+            const translation = resultTranslations[language];
+
+            if (!translation) {
+                return;
+            }
+
+            // 1. NAVBAR LINKS (using data-nav-key)
+            document.querySelectorAll("[data-nav-key]").forEach(function (element) {
+                const key = element.getAttribute("data-nav-key");
+                if (translation[key]) {
+                    element.textContent = translation[key];
+                }
+            });
+
+            // 2. PAGE CONTENT (using data-i18n)
+            document.querySelectorAll("[data-i18n]").forEach(function (element) {
+                const key = element.getAttribute("data-i18n");
+                if (translation[key]) {
+                    element.textContent = translation[key];
+                }
+            });
+
+            const selector = document.getElementById("languageSelector");
+            if (selector) {
+                selector.value = language;
+            }
+
+            document.documentElement.lang = language;
+
+            localStorage.setItem("selectedLanguage", language);
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const savedLanguage =
+                localStorage.getItem("selectedLanguage") || "en";
+
+            changeResultLanguage(savedLanguage);
+
+        });
+
+    </script>
+
+</body>
+
+</html>

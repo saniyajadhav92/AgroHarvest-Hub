@@ -1,0 +1,652 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT REVIEWS & PRODUCTS STYLE
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        #language-selector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+           WISHLIST PAGE STYLES
+        ========================================== */
+        .wishlist-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 45px auto;
+            min-height: 60vh;
+        }
+
+        .wishlist-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .wishlist-title h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #183d25;
+            margin-bottom: 8px;
+        }
+
+        .wishlist-title p,
+        .wishlist-category {
+            color: #5c6e60;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .wishlist-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 6px 20px rgba(30, 80, 40, 0.05);
+            text-align: center;
+            transition: 0.25s ease;
+        }
+
+        .wishlist-card:hover {
+            border-color: #176b35;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(23, 107, 53, 0.08);
+        }
+
+        .wishlist-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: #f7fbf7;
+            padding: 10px;
+        }
+
+        .wishlist-card h3 {
+            margin: 8px 0;
+            font-size: 20px;
+            color: #183d25;
+        }
+
+        .wishlist-category {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .wishlist-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: #176b35;
+            margin-bottom: 18px;
+        }
+
+        .wishlist-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .view-btn,
+        .cart-btn,
+        .remove-btn,
+        .shop-btn {
+            text-decoration: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            font-size: 13px;
+            transition: 0.25s;
+        }
+
+        .view-btn {
+            background: #e6f4ea;
+            color: #176b35;
+            border: 1px solid #cde4ce;
+        }
+
+        .cart-btn {
+            background: #176b35;
+            color: white;
+        }
+
+        .remove-btn {
+            background: #fff0f0;
+            color: #c92a2a;
+            border: 1px solid #ffc9c9;
+        }
+
+        .view-btn:hover {
+            background: #d4e8d5;
+        }
+
+        .cart-btn:hover {
+            background: #0e5127;
+        }
+
+        .remove-btn:hover {
+            background: #c92a2a;
+            color: white;
+        }
+
+        .empty-wishlist {
+            text-align: center;
+            background: white;
+            padding: 60px 20px;
+            border-radius: 18px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.05);
+        }
+
+        .empty-wishlist h2 {
+            margin-bottom: 12px;
+            color: #183d25;
+            font-size: 24px;
+        }
+
+        .empty-wishlist p {
+            color: #5c6e60;
+            font-size: 15px;
+        }
+
+        .shop-btn {
+            margin-top: 20px;
+            padding: 13px 28px;
+            background: #176b35;
+            color: white;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .shop-btn:hover {
+            background: #0e5127;
+        }
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector" data-translate="languageLabel">Language:</label>
+                <select id="language-selector" onchange="changeWishlistLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-translate="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-translate="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-translate="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-translate="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-translate="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-translate="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-translate="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-translate="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-translate="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" class="active" data-translate="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-translate="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-translate="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-translate="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-translate="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-translate="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- WISHLIST -->
+    <div class="wishlist-container">
+        <div class="wishlist-title">
+            <h1 data-translate="title">❤️ My Wishlist</h1>
+            <p data-translate="subtitle">Your favorite farming products</p>
+        </div>
+
+        {% if wishlist_items %}
+        <div class="wishlist-grid">
+            {% for item in wishlist_items %}
+            <div class="wishlist-card">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                <div style="height:190px;display:flex;align-items:center;justify-content:center;background:#f7fbf7;border-radius:12px;margin-bottom:15px;color:#5c6e60;font-weight:600;"
+                    data-translate="noImage">
+                    🌱 No Image
+                </div>
+                {% endif %}
+
+                <h3 class="wishlist-product-name" data-name-en="{{ item.product.name }}"
+                    data-name-mr="{{ item.product.name_mr|default:item.product.name }}"
+                    data-name-hi="{{ item.product.name_hi|default:item.product.name }}">
+                    {{ item.product.name }}
+                </h3>
+
+                <div class="wishlist-category" data-category="{{ item.product.category|lower }}">
+                    {{ item.product.category }}
+                </div>
+
+                <div class="wishlist-price">
+                    ₹{{ item.product.price }}
+                </div>
+
+                <div class="wishlist-buttons">
+                    <a class="view-btn" href="/product/{{ item.product.name|slugify }}/" data-translate="view">
+                        View Product
+                    </a>
+                    <a class="cart-btn" href="{% url 'add_to_cart' item.product.id %}" data-translate="addCart">
+                        🛒 Add to Cart
+                    </a>
+                    <a class="remove-btn" href="/wishlist/remove/{{ item.id }}/" data-translate="remove">
+                        Remove ❤️
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-wishlist">
+            <h2 data-translate="emptyTitle">
+                ❤️ Your Wishlist is Empty
+            </h2>
+            <p data-translate="emptyText">
+                You haven't added any products to your wishlist yet.
+            </p>
+            <a href="{% url 'products' %}" class="shop-btn" data-translate="explore">
+                🌱 Explore Products
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">
+            🌱 AgroHarvest Hub
+        </div>
+        <p data-translate="footerDescription">
+            Smart Farming & Agriculture Products Platform
+        </p>
+        <div class="footer-bottom" data-translate="footerCopyright">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+
+    <!-- LANGUAGE TRANSLATION SCRIPT -->
+    <script>
+        const wishlistTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                languageLabel: "Language:",
+
+                title: "❤️ My Wishlist",
+                subtitle: "Your favorite farming products",
+
+                noImage: "🌱 No Image",
+                view: "View Product",
+                addCart: "🛒 Add to Cart",
+                remove: "Remove ❤️",
+
+                emptyTitle: "❤️ Your Wishlist is Empty",
+                emptyText: "You haven't added any products to your wishlist yet.",
+                explore: "🌱 Explore Products",
+
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform",
+
+                categories: {
+                    seeds: "Seeds",
+                    fertilizer: "Fertilizer",
+                    tools: "Tools",
+                    irrigation: "Irrigation"
+                }
+            },
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "❤️ माझी आवडती उत्पादने",
+                subtitle: "तुमची आवडती शेती उत्पादने",
+
+                noImage: "🌱 फोटो उपलब्ध नाही",
+                view: "उत्पादन पहा",
+                addCart: "🛒 कार्टमध्ये जोडा",
+                remove: "काढून टाका ❤️",
+
+                emptyTitle: "❤️ तुमची आवडती यादी रिकामी आहे",
+                emptyText: "तुम्ही अजून कोणतेही उत्पादन आवडत्या यादीत जोडलेले नाही.",
+                explore: "🌱 उत्पादने पहा",
+
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म",
+
+                categories: {
+                    seeds: "बियाणे",
+                    fertilizer: "खते",
+                    tools: "शेतीची अवजारे",
+                    irrigation: "सिंचन"
+                }
+            },
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल की सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "❤️ मेरी पसंदीदा सूची",
+                subtitle: "आपके पसंदीदा कृषि उत्पाद",
+
+                noImage: "🌱 तस्वीर उपलब्ध नहीं",
+                view: "उत्पाद देखें",
+                addCart: "🛒 कार्ट में जोड़ें",
+                remove: "हटाएँ ❤️",
+
+                emptyTitle: "❤️ आपकी पसंदीदा सूची खाली है",
+                emptyText: "आपने अभी तक कोई उत्पाद अपनी पसंदीदा सूची में नहीं जोड़ा है।",
+                explore: "🌱 उत्पाद देखें",
+
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | सर्वाधिकार सुरक्षित",
+
+                categories: {
+                    seeds: "बीज",
+                    fertilizer: "उर्वरक",
+                    tools: "कृषि उपकरण",
+                    irrigation: "सिंचाई"
+                }
+            }
+        };
+
+        function changeWishlistLanguage(language) {
+            const t = wishlistTranslations[language] || wishlistTranslations.en;
+
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+
+            document.querySelectorAll(".wishlist-product-name").forEach(function (element) {
+                if (language === "mr") {
+                    element.textContent = element.dataset.nameMr;
+                } else if (language === "hi") {
+                    element.textContent = element.dataset.nameHi;
+                } else {
+                    element.textContent = element.dataset.nameEn;
+                }
+            });
+
+            document.querySelectorAll(".wishlist-category").forEach(function (element) {
+                const category = (element.dataset.category || "").trim().toLowerCase();
+                if (t.categories && t.categories[category]) {
+                    element.textContent = t.categories[category];
+                }
+            });
+
+            document.documentElement.lang = language;
+            localStorage.setItem("selectedLanguage", language);
+
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("language-selector");
+
+            if (selector) {
+                selector.value = savedLanguage;
+            }
+
+            changeWishlistLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

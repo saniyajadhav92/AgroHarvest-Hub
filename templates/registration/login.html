@@ -1,0 +1,451 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+            NAVBAR - EXACT TWO-TIER GREEN DESIGN
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: #176b35 !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .language-box {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        .language-box select {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+            LOGIN / AUTH PAGE STYLES
+        ========================================== */
+        .auth-page {
+            min-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 7%;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 17px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.06);
+            text-align: center;
+        }
+
+        .auth-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .auth-card h1 {
+            color: #183d25;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            color: #5c6e60;
+            font-size: 14.5px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 700;
+            color: #245b32;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100% !important;
+            padding: 13px 15px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 9px !important;
+            font-size: 15px !important;
+            box-sizing: border-box !important;
+            font-family: inherit !important;
+            background: #ffffff !important;
+            color: #24352a !important;
+            transition: 0.3s !important;
+            display: block !important;
+        }
+
+        .form-group input:focus {
+            outline: none !important;
+            border-color: #176b35 !important;
+            box-shadow: 0 0 0 3px rgba(23, 107, 53, 0.1) !important;
+        }
+
+        .auth-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            background: #176b35;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 13px rgba(23, 107, 53, 0.18);
+        }
+
+        .auth-btn:hover {
+            background: #0e5127;
+            transform: translateY(-2px);
+        }
+
+        .auth-bottom {
+            margin-top: 20px;
+            color: #5c6e60;
+            font-size: 14px;
+        }
+
+        .auth-bottom a {
+            color: #176b35;
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .auth-bottom a:hover {
+            text-decoration: underline;
+        }
+
+        .errorlist {
+            color: #d32f2f;
+            list-style: none;
+            font-size: 13px;
+            margin-top: 5px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        /* ==========================================
+            FOOTER
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .auth-page {
+                padding: 30px 5%;
+            }
+
+            .auth-card {
+                padding: 25px;
+            }
+
+            .navbar-top {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .nav-links {
+                gap: 4px !important;
+                padding: 9px 5px !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px !important;
+                padding: 7px 8px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <!-- LANGUAGE SELECTOR -->
+            <div class="language-box">
+                <label for="language-selector" data-en="Language:" data-mr="भाषा:" data-hi="भाषा:">Language:</label>
+                <select id="language-selector" onchange="changeLanguage(this.value)" aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-en="🏠 Home" data-mr="🏠 मुख्यपृष्ठ" data-hi="🏠 होम">🏠 Home</a>
+            <a href="{% url 'products' %}" data-en="📄 Products" data-mr="📄 उत्पादने" data-hi="📄 उत्पाद">📄
+                Products</a>
+            <a href="{% url 'ai_assistant' %}" data-en="🤖 AI Assistant" data-mr="🤖 AI सहाय्यक"
+                data-hi="🤖 AI सहायक">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-en="⭐ Reviews" data-mr="⭐ अभिप्राय" data-hi="⭐ समीक्षाएँ">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-en="🤖 Crop Recommendation" data-mr="🤖 पीक शिफारस"
+                data-hi="🤖 फसल सुझाव">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-en="🌿 Disease Detection" data-mr="🌿 रोग ओळख"
+                data-hi="🌿 रोग पहचान">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-en="ℹ️ About" data-mr="ℹ️ आमच्याबद्दल" data-hi="ℹ️ हमारे बारे में">ℹ️
+                About</a>
+            <a href="{% url 'contact' %}" data-en="📞 Contact" data-mr="📞 संपर्क" data-hi="📞 संपर्क">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-en="🛒 Cart" data-mr="🛒 कार्ट" data-hi="🛒 कार्ट">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-en="❤️ Wishlist" data-mr="❤️ इच्छा यादी" data-hi="❤️ इच्छा सूची">❤️
+                Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-en="📦 My Orders" data-mr="📦 माझ्या ऑर्डर्स"
+                data-hi="📦 मेरे ऑर्डर">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-en="👤 Dashboard" data-mr="👤 डॅशबोर्ड" data-hi="👤 डैशबोर्ड">👤
+                Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-en="🚪 Logout" data-mr="🚪 लॉगआउट" data-hi="🚪 लॉगआउट">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" class="active" data-en="👤 Login" data-mr="👤 लॉगिन" data-hi="👤 लॉगिन">👤 Login</a>
+            <a href="{% url 'signup' %}" data-en="👤 Sign Up" data-mr="👤 नोंदणी" data-hi="👤 साइन अप">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- LOGIN SECTION -->
+    <div class="auth-page">
+        <div class="auth-card">
+            <div class="auth-icon">🔐</div>
+
+            <h1 data-en="Welcome Back" data-mr="पुन्हा स्वागत आहे" data-hi="आपका स्वागत है">
+                Welcome Back
+            </h1>
+
+            <p class="auth-subtitle" data-en="Login to AgroHarvest Hub" data-mr="AgroHarvest Hub मध्ये लॉगिन करा"
+                data-hi="AgroHarvest Hub में लॉगिन करें">
+                Login to AgroHarvest Hub
+            </p>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="form-group">
+                    <label for="id_username" data-en="Username" data-mr="वापरकर्तानाव" data-hi="उपयोगकर्ता नाम">
+                        Username
+                    </label>
+                    <input type="text" name="username" id="id_username" required placeholder="Enter username">
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password" data-en="Password" data-mr="पासवर्ड" data-hi="पासवर्ड">
+                        Password
+                    </label>
+                    <input type="password" name="password" id="id_password" required placeholder="Enter password">
+                    {{ form.password.errors }}
+                </div>
+
+                <button type="submit" class="auth-btn" data-en="Login" data-mr="लॉगिन करा" data-hi="लॉगिन करें">
+                    Login
+                </button>
+            </form>
+
+            <p class="auth-bottom">
+                <span data-en="Don't have an account?" data-mr="तुमचे खाते नाही का?" data-hi="क्या आपका खाता नहीं है?">
+                    Don't have an account?
+                </span>
+                <a href="{% url 'signup' %}" data-en="Create Account" data-mr="खाते तयार करा" data-hi="खाता बनाएँ">
+                    Create Account
+                </a>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer data-en="© 2026 AgroHarvest Hub | Smart Farming Platform"
+        data-mr="© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+        data-hi="© 2026 AgroHarvest Hub | स्मार्ट फार्मिंग प्लेटफॉर्म">
+        © 2026 AgroHarvest Hub | Smart Farming Platform
+    </footer>
+
+
+    <!-- LANGUAGE SCRIPT -->
+    <script>
+        function changeLanguage(language) {
+            localStorage.setItem("selectedLanguage", language);
+            applyLanguage(language);
+        }
+
+        function applyLanguage(language) {
+            document.documentElement.lang = language;
+
+            document.querySelectorAll("[data-en]").forEach(function (element) {
+                const text = element.getAttribute("data-" + language);
+                if (text) {
+                    element.textContent = text;
+                }
+            });
+
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = language;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+            applyLanguage(savedLanguage);
+        });
+    </script>
+
+</body>
+
+</html>

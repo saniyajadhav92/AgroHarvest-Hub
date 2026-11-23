@@ -1,0 +1,647 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR - FULL GREEN DESIGN */
+        .navbar {
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 29px;
+        }
+
+        .logo strong {
+            color: #b7e66d;
+        }
+
+        .checkout-language {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #language-selector {
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #176b35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 3%;
+            background: #176b35;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff;
+            color: #176b35;
+        }
+
+        /* CART PAGE LAYOUT */
+        .cart-container {
+            max-width: 1100px;
+            margin: 45px auto;
+            padding: 0 5%;
+            min-height: 60vh;
+        }
+
+        .cart-title {
+            color: #176b35;
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: 800;
+        }
+
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .cart-items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(30, 80, 40, 0.05);
+            border: 1px solid #e2eee2;
+            gap: 20px;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e2eee2;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #183d25;
+            margin-bottom: 6px;
+        }
+
+        .cart-item-price {
+            color: #65a83e;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .cart-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* QUANTITY BUTTONS (- / +) */
+        .qty-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d4e8d5;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fcf7;
+        }
+
+        .qty-btn {
+            background: #e8f5e5;
+            color: #176b35;
+            padding: 6px 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: #176b35;
+            color: white;
+        }
+
+        .qty-value {
+            padding: 0 12px;
+            font-weight: 600;
+            color: #183d25;
+        }
+
+        .remove-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #cc0000;
+        }
+
+        /* CART SUMMARY CARD */
+        .cart-summary {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(30, 80, 40, 0.05);
+            border: 1px solid #e2eee2;
+            height: fit-content;
+        }
+
+        .cart-summary h3 {
+            color: #176b35;
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e2eee2;
+            padding-bottom: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #5c6e60;
+        }
+
+        .summary-total {
+            font-weight: 700;
+            color: #183d25;
+            font-size: 18px;
+            border-top: 1px solid #e2eee2;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            background: #176b35;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: #0e5127;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 14px;
+            color: #718075;
+            border: 1px dashed #c8ddc8;
+            font-size: 16px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 850px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <div class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </div>
+
+            <div class="checkout-language">
+                <label for="language-selector" data-translate="langLabel">Language:</label>
+                <select id="language-selector" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="/about/" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" class="active" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit"
+                    style="background:#fff; color:#176b35; border:0; padding:8px 12px; border-radius:6px; font-weight:700; cursor:pointer;"
+                    data-nav-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- CART CONTENT -->
+    <div class="cart-container">
+        <h1 class="cart-title" data-translate="cartTitle">🛒 Your Shopping Cart</h1>
+
+        {% if cart_items %}
+        <div class="cart-grid">
+            <div class="cart-items-container">
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <!-- प्रॉडक्टचा फोटो -->
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-img">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=200&q=80"
+                        alt="Product" class="cart-item-img">
+                    {% endif %}
+
+                    <div class="cart-item-info">
+                        <div class="cart-item-name product-name">{{ item.product.name }}</div>
+                        <div class="cart-item-price">₹{{ item.product.price }}</div>
+                    </div>
+
+                    <div class="cart-actions">
+                        <!-- क्वांटिटी कमी-जास्त करण्याचे बटण -->
+                        <div class="qty-box">
+                            <a href="{% url 'decrease_quantity' item.id %}" class="qty-btn">-</a>
+                            <span class="qty-value">{{ item.quantity }}</span>
+                            <a href="{% url 'increase_quantity' item.id %}" class="qty-btn">+</a>
+                        </div>
+
+                        <!-- काढा / Remove बटण -->
+                        <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn" data-translate="removeBtn">✕
+                            काढा</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <h3 data-translate="summaryTitle">Order Summary</h3>
+                <div class="summary-row">
+                    <span data-translate="totalItems">Total Items:</span>
+                    <span>{{ cart_items|length }}</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span data-translate="totalAmount">Total Amount:</span>
+                    <span>₹{{ total_price }}</span>
+                </div>
+                <a href="{% url 'checkout' %}" class="checkout-btn" data-translate="checkoutBtn">Proceed to Checkout
+                    →</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-cart" data-translate="emptyCart">
+            Your cart is empty. Start shopping now!
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">🌱 AgroHarvest Hub</div>
+        <p data-translate="footerDesc">Smart Farming & Agriculture Products Platform</p>
+        <div class="footer-bottom" data-translate="footerCopy">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </div>
+    </footer>
+
+    <!-- TRANSLATION SCRIPT -->
+    <script>
+        const translations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                langLabel: "Language:",
+                cartTitle: "🛒 Your Shopping Cart",
+                removeBtn: "✕ Remove",
+                summaryTitle: "Order Summary",
+                totalItems: "Total Items:",
+                totalAmount: "Total Amount:",
+                checkoutBtn: "Proceed to Checkout →",
+                emptyCart: "Your cart is empty. Start shopping now!",
+                footerDesc: "Smart Farming & Agriculture Products Platform",
+                footerCopy: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+            mr: {
+                home: "🏠 होम",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा यादी",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                langLabel: "भाषा:",
+                cartTitle: "🛒 तुमची शॉपिंग कार्ट",
+                removeBtn: "✕ काढा",
+                summaryTitle: "ऑर्डर सारांश",
+                totalItems: "एकूण वस्तू:",
+                totalAmount: "एकूण रक्कम:",
+                checkoutBtn: "चेकआउट पुढे जा →",
+                emptyCart: "तुमची कार्ट रिकामी आहे. खरेदी सुरू करा!",
+                footerDesc: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopy: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएं",
+                crop: "🤖 फसल सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा सूची",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉग आउट",
+                langLabel: "भाषा:",
+                cartTitle: "🛒 आपकी शॉपिंग कार्ट",
+                removeBtn: "✕ निकालें",
+                summaryTitle: "ऑर्डर सारांश",
+                totalItems: "कुल वस्तुएं:",
+                totalAmount: "कुल राशि:",
+                checkoutBtn: "चेकआउट के लिए आगे बढ़ें →",
+                emptyCart: "आपकी कार्ट खाली है। खरीदारी शुरू करें!",
+                footerDesc: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
+                footerCopy: "© 2026 AgroHarvest Hub | स्मार्ट फार्मिंग प्लेटफॉर्म"
+            }
+        };
+
+        const productNameTranslations = {
+            mr: {
+                "Water Storage Tank": "पाणी साठवण टाकी",
+                "Fertigation Venturi Injector": "फर्टिगेशन व्हेंच्युरी इंजेक्टर",
+                "Mini Water Pump": "मिनी पाणी पंप",
+                "Surface Drip Irrigation": "पृष्ठभागावरील ठिबक सिंचन",
+                "Rain Gun": "रेन गन",
+                "Sprinkler Irrigation Kit": "तुषार सिंचन संच",
+                "Water Pump": "पाणी पंप",
+                "Drip Irrigation Kit": "ठिबक सिंचन संच",
+                "Pressure Controller": "दाब नियंत्रक",
+                "Rotavator": "रोटाव्हेटर",
+                "Plough": "शेतीचा नांगर",
+                "Sickle": "शेतीचा विळा",
+                "Pruning Shear": "फांद्या कापण्याची कात्री",
+                "Cultivator": "कल्टीवेटर",
+                "Farming Spray Pump": "शेती फवारणी पंप",
+                "Power Tiller": "पॉवर टिलर",
+                "Garden Shovel": "बागकाम फावडे",
+                "Hand Hoe": "हात कोयता",
+                "Okra Seeds": "भेंडी बियाणे",
+                "Wheat Seeds": "गहू बियाणे",
+                "Groundnut Seeds": "भुईमूग बियाणे",
+                "Chili Seeds": "मिरची बियाणे",
+                "Brinjal Seeds": "वांगी बियाणे",
+                "Cotton Seeds": "कापूस बियाणे",
+                "Soybean Seeds": "सोयाबीन बियाणे",
+                "Onion Seeds": "कांदा बियाणे",
+                "Maize Seeds": "मका बियाणे",
+                "Tomato Seeds": "टोमॅटो बियाणे",
+                "Urea Fertilizer": "युरिया खत",
+                "Potash Fertilizer": "पोटॅश खत",
+                "DAP Fertilizer": "डিপিए खत",
+                "Neem Cake Fertilizer": "कडुनिंब पेंड खत",
+                "NPK Fertilizer": "एनपीके खत",
+                "Bio Fertilizer": "जैविक खत",
+                "Micronutrient Fertilizer": "सूक्ष्म अन्नद्रव्य खत",
+                "Vermicompost": "गांडूळ खत",
+                "Organic Fertilizer": "सेंद्रिय खत"
+            },
+            hi: {
+                "Water Storage Tank": "पानी की टंकी",
+                "Fertigation Venturi Injector": "फर्टिगेशन वेंचुरी इंजेक्टर",
+                "Mini Water Pump": "मिनी वाटर पंप",
+                "Surface Drip Irrigation": "सतह ड्रिप सिंचाई",
+                "Rain Gun": "रेन गन",
+                "Sprinkler Irrigation Kit": "स्प्रिंकलर सिंचाई किट",
+                "Water Pump": "वाटर पंप",
+                "Drip Irrigation Kit": "ड्रिप सिंचाई किट",
+                "Pressure Controller": "प्रेशर कंट्रोलर",
+                "Rotavator": "रोटावेटर",
+                "Plough": "हल",
+                "Sickle": "दराती",
+                "Pruning Shear": "प्रूनिंग शियर",
+                "Cultivator": "कल्टीवेटर",
+                "Farming Spray Pump": "कृषि स्प्रे पंप",
+                "Power Tiller": "पावर टिलर",
+                "Garden Shovel": "गार्डन फावड़ा",
+                "Hand Hoe": "हाथ की कुदाल",
+                "Okra Seeds": "भिंडी के बीज",
+                "Wheat Seeds": "गेहूं के बीज",
+                "Groundnut Seeds": "मूंगफली के बीज",
+                "Chili Seeds": "मिर्च के बीज",
+                "Brinjal Seeds": "बैंगन के बीज",
+                "Cotton Seeds": "कपास के बीज",
+                "Soybean Seeds": "सोयाबीन के बीज",
+                "Onion Seeds": "प्याज के बीज",
+                "Maize Seeds": "मक्का के बीज",
+                "Tomato Seeds": "टमाटर के बीज",
+                "Urea Fertilizer": "यूरिया उर्वरक",
+                "Potash Fertilizer": "पोटाश उर्वरक",
+                "DAP Fertilizer": "डीएपी उर्वरक",
+                "Neem Cake Fertilizer": "नीम खली उर्वरक",
+                "NPK Fertilizer": "एनपीके उर्वरक",
+                "Bio Fertilizer": "जैविक उर्वरक",
+                "Micronutrient Fertilizer": "सूक्ष्म पोषक उर्वरक",
+                "Vermicompost": "वर्मीकंपोस्ट",
+                "Organic Fertilizer": "जैविक खाद"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.en;
+
+            document.querySelectorAll("[data-nav-key]").forEach(el => {
+                const key = el.getAttribute("data-nav-key");
+                if (t[key]) el.textContent = t[key];
+            });
+
+            document.querySelectorAll("[data-translate]").forEach(el => {
+                const key = el.getAttribute("data-translate");
+                if (t[key]) el.textContent = t[key];
+            });
+
+            document.querySelectorAll(".product-name").forEach(el => {
+                if (!el.hasAttribute("data-original-name")) {
+                    el.setAttribute("data-original-name", el.textContent.trim());
+                }
+                const originalName = el.getAttribute("data-original-name");
+
+                if (lang === "en") {
+                    el.textContent = originalName;
+                } else if (productNameTranslations[lang] && productNameTranslations[lang][originalName]) {
+                    el.textContent = productNameTranslations[lang][originalName];
+                }
+            });
+
+            localStorage.setItem("selectedLanguage", lang);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem("selectedLanguage") || "en";
+            const selector = document.getElementById("language-selector");
+            if (selector) {
+                selector.value = savedLang;
+            }
+            changeLanguage(savedLang);
+        });
+    </script>
+
+</body>
+
+</html>

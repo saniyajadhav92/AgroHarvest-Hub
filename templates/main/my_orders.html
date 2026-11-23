@@ -1,0 +1,1025 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | AgroHarvest Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7fbf7;
+            color: #24352a;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT TWO-TIER GREEN DESIGN
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: #176b35 !important;
+        }
+
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .logo-icon {
+            font-size: 29px !important;
+        }
+
+        .logo strong {
+            color: #b7e66d !important;
+        }
+
+        .language-box {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        .language-box select {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
+
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ==========================================
+           ORDERS PAGE STYLES
+        ========================================== */
+        .orders-page {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 5%;
+            min-height: 60vh;
+        }
+
+        .orders-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .orders-header h1 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #183d25;
+            margin-bottom: 8px;
+        }
+
+        .orders-header p {
+            color: #5c6e60;
+            font-size: 15px;
+        }
+
+        .orders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .order-card {
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid #e1eee1;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.05);
+        }
+
+        .order-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eef5ee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .order-top h2 {
+            font-size: 20px;
+            color: #183d25;
+            font-weight: 700;
+        }
+
+        .order-top p {
+            font-size: 14px;
+            color: #5c6e60;
+            margin-top: 4px;
+        }
+
+        .order-status-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .order-status {
+            padding: 6px 14px;
+            background: #e6f4ea;
+            color: #176b35;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .order-status[data-status="Cancelled"] {
+            background: #ffe3e3;
+            color: #c92a2a;
+        }
+
+        /* Cancel Order Button */
+        .cancel-order-btn {
+            background: #fff0f0;
+            color: #c92a2a;
+            border: 1.5px solid #ffc9c9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .cancel-order-btn:hover {
+            background: #c92a2a;
+            color: #ffffff;
+        }
+
+        /* Tracking Section */
+        .tracking-section {
+            background: #f7fbf7;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #d4e8d5;
+            margin-bottom: 25px;
+        }
+
+        .tracking-section h3 {
+            font-size: 16px;
+            color: #176b35;
+            margin-bottom: 12px;
+        }
+
+        .estimated-delivery {
+            font-size: 14px;
+            color: #5c6e60;
+            margin-bottom: 15px;
+        }
+
+        .estimated-delivery strong {
+            color: #183d25;
+        }
+
+        .tracking-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .tracking-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+            font-size: 13px;
+            font-weight: 600;
+            color: #8fa395;
+        }
+
+        .tracking-step.active {
+            color: #176b35;
+        }
+
+        .tracking-circle {
+            width: 32px;
+            height: 32px;
+            background: #e1eee1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #777;
+        }
+
+        .tracking-step.active .tracking-circle {
+            background: #176b35;
+            color: #ffffff;
+        }
+
+        .tracking-line {
+            flex: 1;
+            height: 4px;
+            background: #e1eee1;
+            margin: 0 5px;
+            position: relative;
+            top: -10px;
+        }
+
+        .tracking-line.active-line {
+            background: #176b35;
+        }
+
+        /* Ordered Products with Smart Icons */
+        .ordered-products {
+            margin-top: 25px;
+            padding: 22px;
+            background: #f7fbf8;
+            border: 1px solid #dcefe1;
+            border-radius: 14px;
+        }
+
+        .ordered-products h3 {
+            margin-bottom: 18px;
+            color: #176b35;
+            font-size: 18px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2ece5;
+        }
+
+        .order-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .order-item-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .order-product-icon {
+            width: 50px;
+            height: 50px;
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #d4e8d5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .order-product-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .order-item-info h4 {
+            margin: 0 0 4px;
+            color: #14251a;
+            font-size: 17px;
+        }
+
+        .order-item-info p {
+            margin: 0 0 6px;
+            color: #68756d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .rate-product-btn {
+            display: inline-block;
+            font-size: 13px;
+            color: #176b35;
+            font-weight: 700;
+        }
+
+        .rate-product-btn:hover {
+            text-decoration: underline;
+        }
+
+        .order-item-price {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .order-item-price strong {
+            display: block;
+            color: #176b35;
+            font-size: 17px;
+        }
+
+        .order-total {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 2px solid #dcefe1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-total span {
+            font-weight: 700;
+            color: #14251a;
+            font-size: 17px;
+        }
+
+        .order-total strong {
+            color: #176b35;
+            font-size: 20px;
+        }
+
+        .no-items {
+            color: #777;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        /* Order Details Grid */
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eef5ee;
+        }
+
+        .order-detail span {
+            display: block;
+            font-size: 12px;
+            color: #68756d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .order-detail strong {
+            font-size: 14px;
+            color: #183d25;
+        }
+
+        /* No Orders State */
+        .no-orders {
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 18px;
+            border: 1px solid #e1eee1;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(30, 80, 40, 0.05);
+        }
+
+        .no-orders-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .no-orders h2 {
+            font-size: 24px;
+            color: #183d25;
+            margin-bottom: 10px;
+        }
+
+        .no-orders p {
+            color: #5c6e60;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .success-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #176b35;
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .success-btn:hover {
+            background: #0e5127;
+        }
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
+            text-align: center;
+            margin-top: 65px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .nav-links {
+                gap: 4px !important;
+                padding: 9px 5px !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px !important;
+                padding: 7px 8px !important;
+            }
+
+            .tracking-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .tracking-line {
+                width: 4px;
+                height: 25px;
+                margin: 0 0 0 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <!-- LANGUAGE SELECTOR -->
+            <div class="language-box">
+                <label for="language-selector" data-en="Language:" data-mr="भाषा:" data-hi="भाषा:">Language:</label>
+                <select id="language-selector" class="language-selector" aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-i18n="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-i18n="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-i18n="ai">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-i18n="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-i18n="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-i18n="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-i18n="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-i18n="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-i18n="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-i18n="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" class="active" data-i18n="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-i18n="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-i18n="login">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-i18n="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-i18n="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- MY ORDERS -->
+    <section class="orders-page">
+        <div class="orders-header">
+            <h1 data-i18n="ordersTitle">📦 My Orders</h1>
+            <p data-i18n="ordersDesc">Track your orders, products and delivery status.</p>
+        </div>
+
+
+        {% if orders %}
+        <div class="orders-container">
+            {% for order in orders %}
+            <div class="order-card">
+                <!-- ORDER HEADER -->
+                <div class="order-top">
+                    <div>
+                        <h2>
+                            <span data-i18n="orderNumber">Order</span> #{{ forloop.revcounter }}
+                        </h2>
+                        <p>
+                            <span data-i18n="orderedOn">Ordered on:</span>
+                            {{ order.created_at|date:"d M Y, h:i A" }}
+                        </p>
+                    </div>
+
+                    <div class="order-status-box">
+                        <span class="order-status" data-status="{{ order.status }}">
+                            {{ order.status }}
+                        </span>
+
+                        <!-- Direct Cancel Order Button -->
+                        {% if order.status == 'Confirmed' or order.status == 'Packed' %}
+                        <form method="POST" action="{% url 'cancel_order' order.id %}" style="display:inline;"
+                            onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                            {% csrf_token %}
+                            <button type="submit" class="cancel-order-btn" data-i18n="cancelOrder">
+                                ✕ Cancel Order
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <!-- ORDER TRACKING -->
+                <div class="tracking-section">
+                    <h3 data-i18n="tracking">🚚 Order Tracking</h3>
+                    <div class="estimated-delivery">
+                        <span data-i18n="estimated">📅 Estimated Delivery</span>:
+                        <strong class="estimated-delivery-value"
+                            data-original-delivery="{{ order.estimated_delivery }}">
+                            {{ order.estimated_delivery }}
+                        </strong>
+                    </div>
+
+                    <div class="tracking-bar">
+                        <!-- CONFIRMED -->
+                        <div
+                            class="tracking-step {% if order.status == 'Confirmed' or order.status == 'Packed' or order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}">
+                            <div class="tracking-circle">✓</div>
+                            <span data-i18n="confirmed">Confirmed</span>
+                        </div>
+
+                        <!-- PACKED LINE -->
+                        <div
+                            class="tracking-line {% if order.status == 'Packed' or order.status == 'Shipped' or order.status == 'Delivered' %}active-line{% endif %}">
+                        </div>
+
+                        <!-- PACKED -->
+                        <div
+                            class="tracking-step {% if order.status == 'Packed' or order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}">
+                            <div class="tracking-circle">📦</div>
+                            <span data-i18n="packed">Packed</span>
+                        </div>
+
+                        <!-- SHIPPED LINE -->
+                        <div
+                            class="tracking-line {% if order.status == 'Shipped' or order.status == 'Delivered' %}active-line{% endif %}">
+                        </div>
+
+                        <!-- SHIPPED -->
+                        <div
+                            class="tracking-step {% if order.status == 'Shipped' or order.status == 'Delivered' %}active{% endif %}">
+                            <div class="tracking-circle">🚚</div>
+                            <span data-i18n="shipped">Shipped</span>
+                        </div>
+
+                        <!-- DELIVERED LINE -->
+                        <div class="tracking-line {% if order.status == 'Delivered' %}active-line{% endif %}"></div>
+
+                        <!-- DELIVERED -->
+                        <div class="tracking-step {% if order.status == 'Delivered' %}active{% endif %}">
+                            <div class="tracking-circle">🏠</div>
+                            <span data-i18n="delivered">Delivered</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ORDERED PRODUCTS -->
+                <div class="ordered-products">
+                    <h3 data-i18n="orderedProducts">🛍️ Ordered Products</h3>
+
+                    {% if order.has_items %}
+                    {% for item in order.items.all %}
+                    <div class="order-item">
+                        <div class="order-item-left">
+                            <div class="order-product-icon" data-product-name="{{ item.product.name }}">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                <span class="dynamic-order-logo">🌾</span>
+                                {% endif %}
+                            </div>
+                            <div class="order-item-info">
+                                <h4>{{ item.product.name }}</h4>
+                                <p>
+                                    <span data-i18n="category">Category:</span> {{ item.product.category }}<br>
+                                    <span data-i18n="quantity">Quantity:</span> {{ item.quantity }} × ₹{{ item.price }}
+                                </p>
+                                <a href="{% url 'product_detail' item.product.name|slugify %}" class="rate-product-btn"
+                                    data-i18n="rate">
+                                    ⭐ Rate Product
+                                </a>
+                            </div>
+                        </div>
+                        <div class="order-item-price">
+                            <strong>₹{{ item.total_price }}</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- ORDER TOTAL -->
+                    <div class="order-total">
+                        <span data-i18n="total">Order Total</span>
+                        <strong>₹{{ order.items_total }}</strong>
+                    </div>
+                    {% else %}
+                    <p class="no-items" data-i18n="unavailable">Product details are not available for this order.</p>
+                    {% endif %}
+                </div>
+
+
+                <!-- ORDER DETAILS -->
+                <div class="order-details">
+                    <div class="order-detail">
+                        <span data-i18n="customer">Customer</span>
+                        <strong>{{ order.full_name }}</strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="mobile">Mobile</span>
+                        <strong>{{ order.mobile }}</strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="address">Address</span>
+                        <strong>{{ order.address }}</strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="city">City</span>
+                        <strong>{{ order.city }}</strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="pin">PIN Code</span>
+                        <strong>{{ order.pin_code }}</strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="payment">Payment Method</span>
+                        <strong class="payment-method" data-payment="{{ order.payment_method }}">
+                            {{ order.payment_method }}
+                        </strong>
+                    </div>
+                    <div class="order-detail">
+                        <span data-i18n="paymentStatus">Payment Status</span>
+                        <strong class="payment-status" data-payment-status="{{ order.payment_status }}">
+                            {% if order.payment_status == 'Paid' %}
+                            ✅ Paid
+                            {% else %}
+                            ⏳ Pending
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- NO ORDERS -->
+        <div class="no-orders">
+            <div class="no-orders-icon">📦</div>
+            <h2 data-i18n="noOrders">No Orders Yet</h2>
+            <p data-i18n="noOrdersDesc">You haven't placed any orders yet.</p>
+            <a href="{% url 'products' %}" class="success-btn" data-i18n="explore">
+                🛒 Explore Products
+            </a>
+        </div>
+        {% endif %}
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <p data-i18n="footer">
+            © 2026 AgroHarvest Hub | Smart Farming Platform
+        </p>
+    </footer>
+
+
+    <!-- LANGUAGE SCRIPT -->
+    <script>
+        const myOrdersTranslations = {
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                ai: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                ordersTitle: "📦 My Orders",
+                ordersDesc: "Track your orders, products and delivery status.",
+                orderNumber: "Order",
+                orderedOn: "Ordered on:",
+                tracking: "🚚 Order Tracking",
+                estimated: "📅 Estimated Delivery",
+                deliveryDays: "3–5 Business Days",
+                confirmed: "Confirmed",
+                packed: "Packed",
+                shipped: "Shipped",
+                delivered: "Delivered",
+                orderedProducts: "🛍️ Ordered Products",
+                category: "Category:",
+                quantity: "Quantity:",
+                rate: "⭐ Rate Product",
+                total: "Order Total",
+                cancelOrder: "✕ Cancel Order",
+                customer: "Customer",
+                mobile: "Mobile",
+                address: "Address",
+                city: "City",
+                pin: "PIN Code",
+                payment: "Payment Method",
+                paymentStatus: "Payment Status",
+                paid: "✅ Paid",
+                pending: "⏳ Pending",
+                unavailable: "Product details are not available for this order.",
+                noOrders: "No Orders Yet",
+                noOrdersDesc: "You haven't placed any orders yet.",
+                explore: "🛒 Explore Products",
+                cod: "Cash on Delivery",
+                online: "Online Payment",
+                statusConfirmed: "Confirmed",
+                statusPacked: "Packed",
+                statusShipped: "Shipped",
+                statusDelivered: "Delivered",
+                statusCancelled: "Cancelled",
+                footer: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                ai: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा यादी",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                ordersTitle: "📦 माझ्या ऑर्डर्स",
+                ordersDesc: "तुमच्या ऑर्डर्स, उत्पादने आणि डिलिव्हरीची स्थिती तपासा.",
+                orderNumber: "ऑर्डर क्रमांक",
+                orderedOn: "ऑर्डरची तारीख:",
+                tracking: "🚚 ऑर्डर ट्रॅकिंग",
+                estimated: "📅 अंदाजे डिलिव्हरी",
+                deliveryDays: "३–५ कामाचे दिवस",
+                confirmed: "पुष्टी झाली",
+                packed: "पॅक केले",
+                shipped: "पाठवले",
+                delivered: "पोहोचवले",
+                orderedProducts: "🛍️ ऑर्डर केलेली उत्पादने",
+                category: "श्रेणी:",
+                quantity: "प्रमाण:",
+                rate: "⭐ उत्पादनाला रेटिंग द्या",
+                total: "एकूण ऑर्डर रक्कम",
+                cancelOrder: "✕ ऑर्डर रद्द करा",
+                customer: "ग्राहक",
+                mobile: "मोबाईल",
+                address: "पत्ता",
+                city: "शहर",
+                pin: "पिन कोड",
+                payment: "पेमेंट पद्धत",
+                paymentStatus: "पेमेंट स्थिती",
+                paid: "✅ भरलेले",
+                pending: "⏳ प्रलंबित",
+                unavailable: "या ऑर्डरसाठी उत्पादनाची माहिती उपलब्ध नाही.",
+                noOrders: "अद्याप कोणतीही ऑर्डर नाही",
+                noOrdersDesc: "तुम्ही अजून कोणतीही ऑर्डर केलेली नाही.",
+                explore: "🛒 उत्पादने पहा",
+                cod: "वस्तू मिळाल्यावर रोख पेमेंट",
+                online: "ऑनलाइन पेमेंट",
+                statusConfirmed: "पुष्टी झाली",
+                statusPacked: "पॅक केले",
+                statusShipped: "पाठवले",
+                statusDelivered: "पोहोचवले",
+                statusCancelled: "रद्द केले",
+                footer: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                ai: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल सिफारिश",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ पसंदीदा",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                ordersTitle: "📦 मेरे ऑर्डर",
+                ordersDesc: "अपने ऑर्डर, उत्पाद और डिलीवरी की स्थिति देखें।",
+                orderNumber: "ऑर्डर नंबर",
+                orderedOn: "ऑर्डर की तारीख:",
+                tracking: "🚚 ऑर्डर ट्रैकिंग",
+                estimated: "📅 अनुमानित डिलीवरी",
+                deliveryDays: "३–५ कार्यदिवस",
+                confirmed: "पुष्टि हुई",
+                packed: "पैक किया गया",
+                shipped: "भेजा गया",
+                delivered: "डिलीवर हुआ",
+                orderedProducts: "🛍️ ऑर्डर किए गए उत्पाद",
+                category: "श्रेणी:",
+                quantity: "मात्रा:",
+                rate: "⭐ उत्पाद को रेट करें",
+                total: "कुल ऑर्डर राशि",
+                cancelOrder: "✕ ऑर्डर रद्द करें",
+                customer: "ग्राहक",
+                mobile: "मोबाइल",
+                address: "पता",
+                city: "शहर",
+                pin: "पिन कोड",
+                payment: "भुगतान विधि",
+                paymentStatus: "भुगतान की स्थिति",
+                paid: "✅ भुगतान किया गया",
+                pending: "⏳ लंबित",
+                unavailable: "इस ऑर्डर के लिए उत्पाद की जानकारी उपलब्ध नहीं है।",
+                noOrders: "अभी कोई ऑर्डर नहीं",
+                noOrdersDesc: "आपने अभी तक कोई ऑर्डर नहीं किया है।",
+                explore: "🛒 उत्पाद देखें",
+                cod: "कैश ऑन डिलीवरी",
+                online: "ऑनलाइन पेमेंट",
+                statusConfirmed: "पुष्टि हुई",
+                statusPacked: "पैक किया गया",
+                statusShipped: "भेजा गया",
+                statusDelivered: "डिलीवर हुआ",
+                statusCancelled: "रद्द किया गया",
+                footer: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            }
+        };
+
+        const langSelector = document.getElementById("language-selector");
+
+        function applyLanguage(lang) {
+            const dict = myOrdersTranslations[lang] || myOrdersTranslations.en;
+
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            document.querySelectorAll(".order-status").forEach(el => {
+                const status = el.getAttribute("data-status");
+                if (status === "Confirmed") el.textContent = dict.statusConfirmed;
+                else if (status === "Packed") el.textContent = dict.statusPacked;
+                else if (status === "Shipped") el.textContent = dict.statusShipped;
+                else if (status === "Delivered") el.textContent = dict.statusDelivered;
+                else if (status === "Cancelled") el.textContent = dict.statusCancelled;
+            });
+
+            document.querySelectorAll(".payment-method").forEach(el => {
+                const method = el.getAttribute("data-payment");
+                if (method === "Cash on Delivery") el.textContent = dict.cod;
+                else if (method === "Online Payment") el.textContent = dict.online;
+            });
+
+            document.querySelectorAll(".payment-status").forEach(el => {
+                const pStatus = el.getAttribute("data-payment-status");
+                el.textContent = pStatus === "Paid" ? dict.paid : dict.pending;
+            });
+
+            document.querySelectorAll(".estimated-delivery-value").forEach(el => {
+                const orig = el.getAttribute("data-original-delivery");
+                if (!orig || orig === "None") {
+                    el.textContent = dict.deliveryDays;
+                }
+            });
+
+            localStorage.setItem("agroharvest_lang", lang);
+        }
+
+        const savedLang = localStorage.getItem("agroharvest_lang") || "en";
+        langSelector.value = savedLang;
+        applyLanguage(savedLang);
+
+        langSelector.addEventListener("change", function () {
+            applyLanguage(this.value);
+        });
+    </script>
+</body>
+
+</html>
