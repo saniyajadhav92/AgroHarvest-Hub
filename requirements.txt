@@ -1,1 +1,6 @@
-python -m pip freeze > requirements.txt
+Django==6.0.6
+gunicorn
+whitenoise
+dj-database-url
+psycopg[binary]
+Pillow
