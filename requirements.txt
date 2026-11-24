@@ -5,3 +5,4 @@ dj-database-url
 psycopg[binary]
 Pillow
 google-genai
+python-dotenv
