@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 
@@ -15,16 +14,16 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
-    "django-insecure-local-development-only-key"
+    "django-insecure-change-this-in-production"
 )
 
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1,agroharvest-hub.onrender.com"
+        "localhost,127.0.0.1,agroharvest-hub.onrender.com,*"
     ).split(",")
     if host.strip()
 ]
@@ -81,12 +80,12 @@ ROOT_URLCONF = 'config.urls'
 # TEMPLATES
 # ==================================================
 
+TEMPLATE_DIRS = [BASE_DIR / 'templates'] if (BASE_DIR / 'templates').exists() else []
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates'
-        ],
+        'DIRS': TEMPLATE_DIRS,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,20 +134,16 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -172,9 +167,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
