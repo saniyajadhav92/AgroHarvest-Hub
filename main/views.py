@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.files.storage import FileSystemStorage
 import os
+import time
 from google import genai
 from dotenv import load_dotenv
 
@@ -956,18 +957,32 @@ Question: {question}"""
 
             try:
                 client = genai.Client(api_key=api_key)
-                response = client.models.generate_content(
-                    model="gemini-3.8-flash",
-                    contents=prompt
-                )
+                response = None
 
-                answer = (response.text or "").strip()
+                for attempt in range(2):
+                    try:
+                        response = client.models.generate_content(
+                            model="gemini-3.8-flash",
+                            contents=prompt
+                        )
+                        break
+                    except Exception as e:
+                        err_str = str(e)
+                        if attempt == 0 and ("503" in err_str or "UNAVAILABLE" in err_str):
+                            time.sleep(2)
+                            continue
+                        raise e
+
+                answer = (response.text or "").strip() if response else ""
                 if not answer:
                     answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
 
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
-                answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {str(e)[:180]}"
+                if "503" in str(e) or "UNAVAILABLE" in str(e):
+                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया १ मिनिटानंतर पुन्हा प्रयत्न करा."
+                else:
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {str(e)[:180]}"
 
             chat_history.append({"question": question, "answer": answer})
             request.session["ai_chat_history"] = chat_history[-6:]
