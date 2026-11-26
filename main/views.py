@@ -894,7 +894,7 @@ def reviews(request):
     )
 
 
-def _call_gemini_rest(api_key: str, model: str, prompt: str, timeout: int = 18) -> str:
+def _call_gemini_rest(api_key: str, model: str, prompt: str, timeout: int = 25) -> str:
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{model}:generateContent?key={api_key}"
@@ -995,7 +995,7 @@ Question: {question}"""
                     api_key=api_key,
                     model="gemini-3.8-flash",
                     prompt=prompt,
-                    timeout=18,
+                    timeout=25,
                 )
                 if not answer:
                     answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
@@ -1006,7 +1006,13 @@ Question: {question}"""
                     err_body = e.read().decode("utf-8", errors="ignore")
                 except Exception:
                     pass
-                if e.code == 503 or "UNAVAILABLE" in err_body:
+                if e.code == 429 or "RESOURCE_EXHAUSTED" in err_body or "quota" in err_body.lower():
+                    answer = (
+                        "तुमच्या GEMINI_API_KEY चा कोटा / मर्यादा संपली आहे (HTTP 429). "
+                        "कृपया Google AI Studio मध्ये नवीन API key तयार करा किंवा कोटा/बिलिंग तपासा "
+                        "आणि Render मधील GEMINI_API_KEY अपडेट करा."
+                    )
+                elif e.code == 503 or "UNAVAILABLE" in err_body:
                     answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
                 else:
                     answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: HTTP {e.code} {err_body[:150]}"
@@ -1014,7 +1020,13 @@ Question: {question}"""
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
                 err_msg = str(e)
-                if "timed out" in err_msg.lower():
+                if "429" in err_msg or "quota" in err_msg.lower():
+                    answer = (
+                        "तुमच्या GEMINI_API_KEY चा कोटा / मर्यादा संपली आहे (HTTP 429). "
+                        "कृपया Google AI Studio मध्ये नवीन API key तयार करा किंवा कोटा/बिलिंग तपासा "
+                        "आणि Render मधील GEMINI_API_KEY अपडेट करा."
+                    )
+                elif "timed out" in err_msg.lower():
                     answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
                 else:
                     answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_msg[:180]}"
