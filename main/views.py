@@ -894,7 +894,7 @@ def reviews(request):
     )
 
 
-def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
+def _call_gemini_rest(api_key: str, model: str, prompt: str, timeout: int = 16) -> str:
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{model}:generateContent?key={api_key}"
@@ -917,7 +917,7 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=18) as resp:
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
         body = json.loads(resp.read().decode("utf-8"))
 
     candidates = body.get("candidates") or []
@@ -991,29 +991,43 @@ Do not invent products, prices, or unsafe chemical dosages.
 Question: {question}"""
 
             try:
-                answer = _call_gemini_rest(
-                    api_key=api_key,
-                    model="gemini-3.8-flash",
-                    prompt=prompt,
-                )
+                answer = ""
+                models_to_try = ["gemini-3.8-flash", "gemini-2.5-flash"]
+
+                for idx, model_name in enumerate(models_to_try):
+                    try:
+                        answer = _call_gemini_rest(
+                            api_key=api_key,
+                            model=model_name,
+                            prompt=prompt,
+                            timeout=14 if idx == 0 else 12,
+                        )
+                        if answer:
+                            break
+                    except urllib.error.HTTPError as e:
+                        err_body = ""
+                        try:
+                            err_body = e.read().decode("utf-8", errors="ignore")
+                        except Exception:
+                            pass
+                        if (e.code == 503 or "UNAVAILABLE" in err_body) and idx + 1 < len(models_to_try):
+                            continue
+                        raise RuntimeError(f"HTTP {e.code}: {err_body[:150]}")
+                    except Exception as e:
+                        err_text = str(e)
+                        if ("503" in err_text or "UNAVAILABLE" in err_text or "timed out" in err_text.lower()) and idx + 1 < len(models_to_try):
+                            continue
+                        raise e
+
                 if not answer:
                     answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
-
-            except urllib.error.HTTPError as e:
-                err_body = ""
-                try:
-                    err_body = e.read().decode("utf-8", errors="ignore")
-                except Exception:
-                    pass
-                if e.code == 503 or "UNAVAILABLE" in err_body:
-                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
-                else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: HTTP {e.code} {err_body[:150]}"
 
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
                 err_msg = str(e)
-                if "timed out" in err_msg.lower():
+                if "503" in err_msg or "UNAVAILABLE" in err_msg:
+                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
+                elif "timed out" in err_msg.lower():
                     answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
                 else:
                     answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_msg[:180]}"
