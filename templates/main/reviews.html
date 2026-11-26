@@ -35,109 +35,108 @@
         }
 
         /* ==========================================
-           NAVBAR - UNIFIED PLATFORM STANDARD DESIGN
+           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
         ========================================== */
         .navbar {
-            width: 100% !important;
-            background: #176b35 !important;
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 1000 !important;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
         }
 
         .navbar-top {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            padding: 13px 4% !important;
-            gap: 20px !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .logo {
-            display: flex !important;
-            align-items: center !important;
-            gap: 9px !important;
-            color: #ffffff !important;
-            font-size: 23px !important;
-            font-weight: 800 !important;
-            white-space: nowrap !important;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 23px;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
         .logo-icon {
-            font-size: 29px !important;
+            font-size: 29px;
         }
 
         .logo strong {
-            color: #b7e66d !important;
+            color: #b7e66d;
         }
 
         .checkout-language {
-            display: flex !important;
-            align-items: center !important;
-            gap: 9px !important;
-            color: #ffffff !important;
-            font-size: 14px !important;
-            font-weight: 600 !important;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         #language-selector {
-            padding: 8px 13px !important;
-            border: 1px solid #d4e8d5 !important;
-            border-radius: 6px !important;
-            background: #ffffff !important;
-            color: #176b35 !important;
-            font-size: 14px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            outline: none !important;
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #176b35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .nav-links {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            flex-wrap: wrap !important;
-            gap: 5px !important;
-            padding: 10px 3% !important;
-            background: #176b35 !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 3%;
+            background: #176b35;
         }
 
         .nav-links a {
-            color: #ffffff !important;
-            padding: 8px 10px !important;
-            border-radius: 6px !important;
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            transition: 0.3s !important;
-            white-space: nowrap !important;
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
         }
 
         .nav-links a:hover,
         .nav-links a.active {
-            background: #ffffff !important;
-            color: #176b35 !important;
+            background: #ffffff;
+            color: #176b35;
         }
 
         .nav-links form {
-            display: inline-flex !important;
-            margin: 0 !important;
+            display: inline-flex;
+            margin: 0;
         }
 
         .nav-links button {
-            color: #176b35 !important;
-            background: #ffffff !important;
-            border: 0 !important;
-            padding: 8px 12px !important;
-            border-radius: 6px !important;
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            cursor: pointer !important;
+            color: #176b35;
+            background: #ffffff;
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
         .nav-links button:hover {
-            background: #e5f2e5 !important;
+            background: #e5f2e5;
         }
 
         /* ==========================================
@@ -340,22 +339,22 @@
         /* RESPONSIVE DESIGN */
         @media (max-width: 1050px) {
             .nav-links {
-                padding-left: 2% !important;
-                padding-right: 2% !important;
+                padding-left: 2%;
+                padding-right: 2%;
             }
 
             .nav-links a,
             .nav-links button {
-                font-size: 12px !important;
-                padding: 7px 9px !important;
+                font-size: 12px;
+                padding: 7px 9px;
+            }
+
+            .reviews-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 760px) {
-            .reviews-grid {
-                grid-template-columns: 1fr;
-            }
-
             .reviews-header h1 {
                 font-size: 28px;
             }
@@ -373,23 +372,23 @@
 
         @media (max-width: 550px) {
             .navbar-top {
-                flex-direction: column !important;
-                gap: 10px !important;
+                flex-direction: column;
+                gap: 10px;
             }
 
             .logo {
-                font-size: 22px !important;
+                font-size: 22px;
             }
 
             .nav-links {
-                gap: 4px !important;
-                padding: 9px 5px !important;
+                gap: 4px;
+                padding: 9px 5px;
             }
 
             .nav-links a,
             .nav-links button {
-                font-size: 11px !important;
-                padding: 7px 8px !important;
+                font-size: 11px;
+                padding: 7px 8px;
             }
         }
     </style>
@@ -397,7 +396,7 @@
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
+    <!-- NAVBAR (EXACT MATCH WITH LANDING & PRODUCTS PAGE) -->
     <nav class="navbar">
         <div class="navbar-top">
             <a href="/" class="logo">
@@ -406,8 +405,8 @@
             </a>
 
             <div class="checkout-language">
-                <label for="language-selector" data-key="languageLabel">Language:</label>
-                <select id="language-selector" onchange="changeReviewsLanguage(this.value)">
+                <label for="language-selector">Language:</label>
+                <select id="language-selector" onchange="changeLanguage(this.value)">
                     <option value="en">English</option>
                     <option value="mr">मराठी</option>
                     <option value="hi">हिन्दी</option>
@@ -416,28 +415,28 @@
         </div>
 
         <div class="nav-links">
-            <a href="{% url 'landing' %}" data-key="home" data-translate="home">🏠 Home</a>
-            <a href="{% url 'products' %}" data-key="products" data-translate="products">📄 Products</a>
-            <a href="{% url 'ai_assistant' %}" data-key="aiAssistant" data-translate="ai">🤖 AI Assistant</a>
-            <a href="{% url 'reviews' %}" class="active" data-key="reviews" data-translate="reviews">⭐ Reviews</a>
-            <a href="{% url 'crop_recommendation' %}" data-key="crop" data-translate="crop">🤖 Crop Recommendation</a>
-            <a href="{% url 'disease_detection' %}" data-key="disease" data-translate="disease">🌿 Disease Detection</a>
-            <a href="{% url 'about' %}" data-key="about" data-translate="about">ℹ️ About</a>
-            <a href="{% url 'contact' %}" data-key="contact" data-translate="contact">📞 Contact</a>
-            <a href="{% url 'cart' %}" data-key="cart" data-translate="cart">🛒 Cart</a>
-            <a href="{% url 'wishlist' %}" data-key="wishlist" data-translate="wishlist">❤️ Wishlist</a>
-            <a href="{% url 'my_orders' %}" data-key="orders" data-translate="orders">📦 My Orders</a>
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" class="active" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="/about/" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
 
             {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}" data-key="dashboard" data-translate="dashboard">👤 Dashboard</a>
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
 
             <form method="POST" action="/logout/">
                 {% csrf_token %}
-                <button type="submit" data-key="logout" data-translate="logout">🚪 Logout</button>
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
             </form>
             {% else %}
-            <a href="/login/" data-key="login" data-translate="login">👤 Login</a>
-            <a href="{% url 'signup' %}" data-key="signup" data-translate="signup">👤 Sign Up</a>
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
             {% endif %}
         </div>
     </nav>
@@ -534,11 +533,11 @@
 
     <!-- LANGUAGE TRANSLATION SCRIPT -->
     <script>
-        const reviewsTranslations = {
+        const navTranslations = {
             en: {
                 home: "🏠 Home",
                 products: "📄 Products",
-                ai: "🤖 AI Assistant",
+                aiAssistant: "🤖 AI Assistant",
                 reviews: "⭐ Reviews",
                 crop: "🤖 Crop Recommendation",
                 disease: "🌿 Disease Detection",
@@ -550,24 +549,12 @@
                 dashboard: "👤 Dashboard",
                 login: "👤 Login",
                 signup: "👤 Sign Up",
-                logout: "🚪 Logout",
-                languageLabel: "Language:",
-
-                badge: "CUSTOMER FEEDBACK",
-                title: "⭐ Customer Reviews",
-                description: "See what farmers are saying about AgroHarvest Hub.",
-                noReviews: "⭐ No Reviews Yet",
-                firstReview: "Be the first to share your experience with AgroHarvest Hub.",
-                explore: "🛒 Explore Products →",
-
-                footerDescription: "Smart Farming & Agriculture Products Platform",
-                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+                logout: "🚪 Logout"
             },
-
             mr: {
                 home: "🏠 मुख्यपृष्ठ",
                 products: "📄 उत्पादने",
-                ai: "🤖 AI सहाय्यक",
+                aiAssistant: "🤖 AI सहाय्यक",
                 reviews: "⭐ अभिप्राय",
                 crop: "🤖 पीक शिफारस",
                 disease: "🌿 रोग ओळख",
@@ -579,24 +566,12 @@
                 dashboard: "👤 डॅशबोर्ड",
                 login: "👤 लॉगिन",
                 signup: "👤 नोंदणी",
-                logout: "🚪 लॉगआउट",
-                languageLabel: "भाषा:",
-
-                badge: "ग्राहकांचा अनुभव",
-                title: "⭐ ग्राहकांचे अभिप्राय",
-                description: "शेतकरी AgroHarvest Hub बद्दल काय सांगतात ते पहा.",
-                noReviews: "⭐ अजून कोणतेही अभिप्राय नाहीत",
-                firstReview: "AgroHarvest Hub बद्दलचा तुमचा अनुभव सर्वप्रथम शेअर करा.",
-                explore: "🛒 उत्पादने पहा →",
-
-                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
-                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+                logout: "🚪 लॉगआउट"
             },
-
             hi: {
                 home: "🏠 होम",
                 products: "📄 उत्पाद",
-                ai: "🤖 AI सहायक",
+                aiAssistant: "🤖 AI सहायक",
                 reviews: "⭐ समीक्षाएँ",
                 crop: "🤖 फसल की सिफारिश",
                 disease: "🌿 रोग पहचान",
@@ -608,33 +583,67 @@
                 dashboard: "👤 डैशबोर्ड",
                 login: "👤 लॉगिन",
                 signup: "👤 साइन अप",
-                logout: "🚪 लॉगआउट",
-                languageLabel: "भाषा:",
+                logout: "🚪 लॉगआउट"
+            }
+        };
 
+        const reviewsTranslations = {
+            en: {
+                badge: "CUSTOMER FEEDBACK",
+                title: "⭐ Customer Reviews",
+                description: "See what farmers are saying about AgroHarvest Hub.",
+                noReviews: "⭐ No Reviews Yet",
+                firstReview: "Be the first to share your experience with AgroHarvest Hub.",
+                explore: "🛒 Explore Products →",
+                footerDescription: "Smart Farming & Agriculture Products Platform",
+                footerCopyright: "© 2026 AgroHarvest Hub | Smart Farming Platform"
+            },
+            mr: {
+                badge: "ग्राहकांचा अनुभव",
+                title: "⭐ ग्राहकांचे अभिप्राय",
+                description: "शेतकरी AgroHarvest Hub बद्दल काय सांगतात ते पहा.",
+                noReviews: "⭐ अजून कोणतेही अभिप्राय नाहीत",
+                firstReview: "AgroHarvest Hub बद्दलचा तुमचा अनुभव सर्वप्रथम शेअर करा.",
+                explore: "🛒 उत्पादने पहा →",
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
+                footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म"
+            },
+            hi: {
                 badge: "ग्राहक प्रतिक्रिया",
                 title: "⭐ ग्राहक समीक्षाएँ",
                 description: "जानें कि किसान AgroHarvest Hub के बारे में क्या कह रहे हैं।",
                 noReviews: "⭐ अभी तक कोई समीक्षा नहीं",
                 firstReview: "AgroHarvest Hub के साथ अपना अनुभव सबसे पहले साझा करें।",
                 explore: "🛒 उत्पाद देखें →",
-
                 footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
                 footerCopyright: "© 2026 AgroHarvest Hub | स्मार्ट खेती प्लेटफॉर्म"
             }
         };
 
-        function changeReviewsLanguage(language) {
-            const t = reviewsTranslations[language] || reviewsTranslations.en;
+        function changeLanguage(language) {
+            localStorage.setItem("selectedLanguage", language);
+            applyReviewsLanguage(language);
+        }
 
-            document.querySelectorAll("[data-translate]").forEach(function (element) {
-                const key = element.getAttribute("data-translate");
-                if (t[key]) {
-                    element.textContent = t[key];
+        function applyReviewsLanguage(language) {
+            const navT = navTranslations[language] || navTranslations.en;
+            const pageT = reviewsTranslations[language] || reviewsTranslations.en;
+
+            document.documentElement.lang = language;
+
+            document.querySelectorAll("[data-nav-key]").forEach(function (element) {
+                const key = element.getAttribute("data-nav-key");
+                if (navT[key]) {
+                    element.textContent = navT[key];
                 }
             });
 
-            document.documentElement.lang = language;
-            localStorage.setItem("selectedLanguage", language);
+            document.querySelectorAll("[data-translate]").forEach(function (element) {
+                const key = element.getAttribute("data-translate");
+                if (pageT[key]) {
+                    element.textContent = pageT[key];
+                }
+            });
 
             const selector = document.getElementById("language-selector");
             if (selector) {
@@ -644,7 +653,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-            changeReviewsLanguage(savedLanguage);
+            applyReviewsLanguage(savedLanguage);
         });
     </script>
 
