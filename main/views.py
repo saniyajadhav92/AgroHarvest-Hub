@@ -904,7 +904,11 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
             {
                 "parts": [{"text": prompt}]
             }
-        ]
+        ],
+        "generationConfig": {
+            "maxOutputTokens": 450,
+            "temperature": 0.4,
+        },
     }
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -913,7 +917,7 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=12) as resp:
+    with urllib.request.urlopen(req, timeout=18) as resp:
         body = json.loads(resp.read().decode("utf-8"))
 
     candidates = body.get("candidates") or []
@@ -930,7 +934,7 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
 def ai_assistant(request):
     answer = None
     question = ""
-    chat_history = request.session.get("ai_chat_history", [])[-3:]
+    chat_history = request.session.get("ai_chat_history", [])[-2:]
 
     if request.method == "POST" and "clear_chat" in request.POST:
         request.session["ai_chat_history"] = []
@@ -957,7 +961,7 @@ def ai_assistant(request):
                     "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
                 )
                 chat_history.append({"question": question, "answer": error_msg})
-                request.session["ai_chat_history"] = chat_history[-3:]
+                request.session["ai_chat_history"] = chat_history[-2:]
                 request.session.modified = True
 
                 return render(
@@ -970,7 +974,7 @@ def ai_assistant(request):
                     }
                 )
 
-            product_rows = Product.objects.values_list("name", "category", "price")[:15]
+            product_rows = Product.objects.values_list("name", "category", "price")[:12]
             product_list = "\n".join(
                 f"- {name} | {category} | ₹{price}"
                 for name, category, price in product_rows
@@ -978,7 +982,7 @@ def ai_assistant(request):
 
             prompt = f"""You are AgroHarvest AI, a smart farming assistant for AgroHarvest Hub.
 Reply in Marathi if the question is in Marathi, Hindi if in Hindi, English if in English, or match mixed language.
-Give short, clear, practical agriculture answers.
+Give concise, clear, practical agriculture answers.
 Recommend at most 3 relevant products only from this list (exact name and price):
 {product_list}
 
@@ -1008,10 +1012,14 @@ Question: {question}"""
 
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
-                answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {str(e)[:180]}"
+                err_msg = str(e)
+                if "timed out" in err_msg.lower():
+                    answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
+                else:
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_msg[:180]}"
 
             chat_history.append({"question": question, "answer": answer})
-            request.session["ai_chat_history"] = chat_history[-3:]
+            request.session["ai_chat_history"] = chat_history[-2:]
             request.session.modified = True
 
     return render(
