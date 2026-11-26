@@ -35,7 +35,7 @@
         }
 
         /* ==========================================
-           NAVBAR - EXACT LANDING PAGE DESIGN (PROTECTED)
+           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
         ========================================== */
         .navbar {
             width: 100% !important;
@@ -101,16 +101,16 @@
             justify-content: center !important;
             align-items: center !important;
             flex-wrap: wrap !important;
-            gap: 5px !important;
-            padding: 10px 3% !important;
+            gap: 4px !important;
+            padding: 9px 2% !important;
             background: #176b35 !important;
         }
 
         .nav-links a {
             color: #ffffff !important;
-            padding: 8px 10px !important;
+            padding: 7px 8px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             transition: 0.3s !important;
             white-space: nowrap !important;
@@ -132,11 +132,12 @@
             color: #176b35 !important;
             background: #ffffff !important;
             border: 0 !important;
-            padding: 8px 12px !important;
+            padding: 7px 10px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 700 !important;
             cursor: pointer !important;
+            white-space: nowrap !important;
         }
 
         .nav-links button:hover {
@@ -382,6 +383,19 @@
             font-size: 12px;
         }
 
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2% !important;
+                padding-right: 2% !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px !important;
+                padding: 7px 8px !important;
+            }
+        }
+
         /* MOBILE */
         @media (max-width: 768px) {
             .disease-header h1 {
@@ -399,6 +413,10 @@
             .navbar-top {
                 flex-direction: column !important;
                 gap: 10px !important;
+            }
+
+            .logo {
+                font-size: 22px !important;
             }
 
             .nav-links {
