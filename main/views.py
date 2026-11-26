@@ -6,8 +6,10 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.files.storage import FileSystemStorage
 import os
+import json
 import time
-from google import genai
+import urllib.request
+import urllib.error
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -893,13 +895,43 @@ def reviews(request):
     )
 
 
+def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
+    url = (
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{model}:generateContent?key={api_key}"
+    )
+    payload = {
+        "contents": [
+            {
+                "parts": [{"text": prompt}]
+            }
+        ]
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        body = json.loads(resp.read().decode("utf-8"))
+
+    candidates = body.get("candidates") or []
+    if not candidates:
+        return ""
+    parts = (candidates[0].get("content") or {}).get("parts") or []
+    texts = [p.get("text", "") for p in parts if isinstance(p, dict)]
+    return "".join(texts).strip()
+
+
 # =========================
 # AI ASSISTANT
 # =========================
 def ai_assistant(request):
     answer = None
     question = ""
-    chat_history = request.session.get("ai_chat_history", [])[-6:]
+    chat_history = request.session.get("ai_chat_history", [])[-4:]
 
     if request.method == "POST" and "clear_chat" in request.POST:
         request.session["ai_chat_history"] = []
@@ -926,7 +958,7 @@ def ai_assistant(request):
                     "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
                 )
                 chat_history.append({"question": question, "answer": error_msg})
-                request.session["ai_chat_history"] = chat_history[-6:]
+                request.session["ai_chat_history"] = chat_history[-4:]
                 request.session.modified = True
 
                 return render(
@@ -939,7 +971,7 @@ def ai_assistant(request):
                     }
                 )
 
-            products = Product.objects.only("name", "category", "price")[:30]
+            products = Product.objects.only("name", "category", "price")[:20]
             product_list = "\n".join(
                 f"- {p.name} | {p.category} | ₹{p.price}"
                 for p in products
@@ -956,36 +988,48 @@ Do not invent products, prices, or unsafe chemical dosages.
 Question: {question}"""
 
             try:
-                client = genai.Client(api_key=api_key)
-                response = None
+                last_err = None
+                answer = ""
 
                 for attempt in range(2):
                     try:
-                        response = client.models.generate_content(
+                        answer = _call_gemini_rest(
+                            api_key=api_key,
                             model="gemini-3.8-flash",
-                            contents=prompt
+                            prompt=prompt,
                         )
                         break
+                    except urllib.error.HTTPError as e:
+                        err_body = ""
+                        try:
+                            err_body = e.read().decode("utf-8", errors="ignore")
+                        except Exception:
+                            pass
+                        last_err = f"HTTP {e.code}: {err_body[:160]}"
+                        if attempt == 0 and e.code == 503:
+                            time.sleep(2)
+                            continue
+                        raise RuntimeError(last_err)
                     except Exception as e:
-                        err_str = str(e)
-                        if attempt == 0 and ("503" in err_str or "UNAVAILABLE" in err_str):
+                        last_err = repr(e)
+                        if attempt == 0 and ("503" in last_err or "UNAVAILABLE" in last_err):
                             time.sleep(2)
                             continue
                         raise e
 
-                answer = (response.text or "").strip() if response else ""
                 if not answer:
                     answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
 
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
-                if "503" in str(e) or "UNAVAILABLE" in str(e):
+                err_text = str(e)
+                if "503" in err_text or "UNAVAILABLE" in err_text:
                     answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया १ मिनिटानंतर पुन्हा प्रयत्न करा."
                 else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {str(e)[:180]}"
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_text[:180]}"
 
             chat_history.append({"question": question, "answer": answer})
-            request.session["ai_chat_history"] = chat_history[-6:]
+            request.session["ai_chat_history"] = chat_history[-4:]
             request.session.modified = True
 
     return render(
