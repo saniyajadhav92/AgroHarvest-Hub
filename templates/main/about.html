@@ -35,7 +35,7 @@
         }
 
         /* ==========================================
-           NAVBAR - EXACT LANDING PAGE DESIGN (PROTECTED)
+           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
         ========================================== */
         .navbar {
             width: 100% !important;
@@ -101,16 +101,16 @@
             justify-content: center !important;
             align-items: center !important;
             flex-wrap: wrap !important;
-            gap: 5px !important;
-            padding: 10px 3% !important;
+            gap: 4px !important;
+            padding: 9px 2% !important;
             background: #176b35 !important;
         }
 
         .nav-links a {
             color: #ffffff !important;
-            padding: 8px 10px !important;
+            padding: 7px 8px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             transition: 0.3s !important;
             white-space: nowrap !important;
@@ -132,11 +132,12 @@
             color: #176b35 !important;
             background: #ffffff !important;
             border: 0 !important;
-            padding: 8px 12px !important;
+            padding: 7px 10px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 700 !important;
             cursor: pointer !important;
+            white-space: nowrap !important;
         }
 
         .nav-links button:hover {
@@ -273,6 +274,19 @@
             font-size: 12px;
         }
 
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2% !important;
+                padding-right: 2% !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px !important;
+                padding: 7px 8px !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .about-page {
                 padding: 30px 5%;
@@ -293,6 +307,10 @@
             .navbar-top {
                 flex-direction: column !important;
                 gap: 10px !important;
+            }
+
+            .logo {
+                font-size: 22px !important;
             }
 
             .nav-links {
@@ -337,27 +355,27 @@
         </div>
 
         <div class="nav-links">
-            <a href="/" data-translate="home">🏠 Home</a>
-            <a href="/products/" data-translate="products">📄 Products</a>
-            <a href="{% url 'ai_assistant' %}" data-translate="aiAssistant">🤖 AI Assistant</a>
-            <a href="{% url 'reviews' %}" data-translate="reviews">⭐ Reviews</a>
-            <a href="{% url 'crop_recommendation' %}" data-translate="crop">🤖 Crop Recommendation</a>
-            <a href="{% url 'disease_detection' %}" data-translate="disease">🌿 Disease Detection</a>
-            <a href="{% url 'about' %}" class="active" data-translate="about">ℹ️ About</a>
-            <a href="/contact/" data-translate="contact">📞 Contact</a>
-            <a href="/cart/" data-translate="cart">🛒 Cart</a>
-            <a href="/wishlist/" data-translate="wishlist">❤️ Wishlist</a>
-            <a href="{% url 'my_orders' %}" data-translate="orders">📦 My Orders</a>
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" class="active" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
 
             {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}" data-translate="dashboard">👤 Dashboard</a>
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
             <form method="POST" action="/logout/">
                 {% csrf_token %}
-                <button type="submit" data-translate="logout">🚪 Logout</button>
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
             </form>
             {% else %}
-            <a href="/login/" data-translate="login">👤 Login</a>
-            <a href="/signup/" data-translate="signup">👤 Sign Up</a>
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
             {% endif %}
         </div>
     </nav>
@@ -583,8 +601,8 @@
             document.documentElement.lang = language;
 
             // NAVBAR LINKS
-            document.querySelectorAll("[data-translate]").forEach(function (element) {
-                const key = element.getAttribute("data-translate");
+            document.querySelectorAll("[data-nav-key]").forEach(function (element) {
+                const key = element.getAttribute("data-nav-key");
                 if (t[key]) {
                     element.textContent = t[key];
                 }
