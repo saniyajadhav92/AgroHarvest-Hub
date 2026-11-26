@@ -1,1047 +1,1012 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth.models import User
-from django.utils.text import slugify
-from django.core.files.storage import FileSystemStorage
-import os
-import json
-import time
-import urllib.request
-import urllib.error
-from dotenv import load_dotenv
+{% load static %}
 
-load_dotenv()
+<!DOCTYPE html>
+<html lang="en">
 
-from .models import (
-    Product,
-    Cart,
-    Order,
-    OrderItem,
-    Contact,
-    Wishlist,
-    Review
-)
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>AI Farming Assistant | AgroHarvest Hub</title>
 
-# =========================
-# HOME / LANDING
-# =========================
-def landing(request):
-    reviews = Review.objects.select_related(
-        'user',
-        'product'
-    ).order_by('-created_at')[:3]
-
-    featured_products = Product.objects.all().order_by('-created_at')[:4]
-
-    return render(
-        request,
-        'main/landing.html',
-        {
-            'reviews': reviews,
-            'featured_products': featured_products
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
-    )
 
-
-# =========================
-# ABOUT US
-# =========================
-def about(request):
-    return render(request, 'main/about.html')
-
-
-# =========================
-# PRODUCTS
-# =========================
-def products(request):
-    category = request.GET.get('category')
-    search = request.GET.get('search')
-
-    products_queryset = Product.objects.all().order_by('-created_at')
-
-    if category:
-        products_queryset = products_queryset.filter(
-            category=category
-        )
-
-    if search:
-        products_queryset = products_queryset.filter(
-            name__icontains=search
-        )
-
-    for product in products_queryset:
-        product.slug = slugify(product.name)
-
-    return render(
-        request,
-        'main/products.html',
-        {
-            'products': products_queryset,
-            'selected_category': category,
-            'search_query': search
+        body {
+            background: #f4faf5;
+            color: #173d26;
         }
-    )
 
-
-# =========================
-# PRODUCT DETAIL
-# =========================
-def product_detail(request, slug):
-    product = None
-
-    for item in Product.objects.all():
-        if slugify(item.name) == slug:
-            product = item
-            break
-
-    if not product:
-        return redirect('/products/')
-
-    product.slug = slugify(product.name)
-
-    in_wishlist = False
-
-    if request.user.is_authenticated:
-        in_wishlist = Wishlist.objects.filter(
-            user=request.user,
-            product=product
-        ).exists()
-
-    return render(
-        request,
-        'main/product_detail.html',
-        {
-            'product': product,
-            'in_wishlist': in_wishlist
+        a {
+            text-decoration: none;
+            color: inherit;
         }
-    )
 
-
-# =========================
-# ADD TO CART
-# =========================
-@login_required(login_url='/login/')
-def add_to_cart(request, id):
-    product = get_object_or_404(Product, id=id)
-
-    cart_item, created = Cart.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
-
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-
-    return redirect('/cart/')
-
-
-# =========================
-# CART
-# =========================
-@login_required(login_url='/login/')
-def cart(request):
-    cart_items = Cart.objects.filter(
-        user=request.user
-    ).select_related('product')
-
-    total = sum(
-        item.total_price()
-        for item in cart_items
-    )
-
-    return render(
-        request,
-        'main/cart.html',
-        {
-            'cart_items': cart_items,
-            'total': total,
-            'total_price': total
+        button {
+            font-family: inherit;
         }
-    )
 
-
-# =========================
-# INCREASE QUANTITY
-# =========================
-@login_required(login_url='/login/')
-def increase_quantity(request, id):
-    cart_item = Cart.objects.filter(
-        id=id,
-        user=request.user
-    ).first()
-
-    if cart_item:
-        cart_item.quantity += 1
-        cart_item.save()
-
-    return redirect('/cart/')
-
-
-# =========================
-# DECREASE QUANTITY
-# =========================
-@login_required(login_url='/login/')
-def decrease_quantity(request, id):
-    cart_item = Cart.objects.filter(
-        id=id,
-        user=request.user
-    ).first()
-
-    if cart_item:
-        if cart_item.quantity > 1:
-            cart_item.quantity -= 1
-            cart_item.save()
-        else:
-            cart_item.delete()
-
-    return redirect('/cart/')
-
-
-# =========================
-# REMOVE FROM CART
-# =========================
-@login_required(login_url='/login/')
-def remove_from_cart(request, id):
-    Cart.objects.filter(
-        id=id,
-        user=request.user
-    ).delete()
-
-    return redirect('/cart/')
-
-
-# =========================
-# CHECKOUT
-# =========================
-@login_required(login_url='/login/')
-def checkout(request):
-    cart_items = Cart.objects.filter(
-        user=request.user
-    ).select_related('product')
-
-    if not cart_items.exists():
-        return redirect('/products/')
-
-    total = sum(
-        item.total_price()
-        for item in cart_items
-    )
-
-    return render(
-        request,
-        'main/checkout.html',
-        {
-            'cart_items': cart_items,
-            'total': total
+        /* ==========================================
+           NAVBAR - UNIFIED PLATFORM STANDARD DESIGN
+        ========================================== */
+        .navbar {
+            width: 100% !important;
+            background: #176b35 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12) !important;
         }
-    )
 
+        .navbar-top {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 13px 4% !important;
+            gap: 20px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
 
-# =========================
-# PLACE ORDER
-# =========================
-@login_required(login_url='/login/')
-def place_order(request):
-    if request.method != 'POST':
-        return redirect('/checkout/')
+        .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 23px !important;
+            font-weight: 800 !important;
+            white-space: nowrap !important;
+        }
 
-    cart_items = Cart.objects.filter(
-        user=request.user
-    ).select_related('product')
+        .logo-icon {
+            font-size: 29px !important;
+        }
 
-    if not cart_items.exists():
-        return redirect('/products/')
+        .logo strong {
+            color: #b7e66d !important;
+        }
 
-    full_name = request.POST.get('full_name', '').strip()
-    mobile = request.POST.get('mobile', '').strip()
-    address = request.POST.get('address', '').strip()
-    city = request.POST.get('city', '').strip()
-    pin_code = request.POST.get('pin_code', '').strip()
+        .checkout-language {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
 
-    payment_method = request.POST.get(
-        'payment_method',
-        'Cash on Delivery'
-    )
+        #language-selector {
+            padding: 8px 13px !important;
+            border: 1px solid #d4e8d5 !important;
+            border-radius: 6px !important;
+            background: #ffffff !important;
+            color: #176b35 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            outline: none !important;
+        }
 
-    total = sum(
-        item.total_price()
-        for item in cart_items
-    )
+        .nav-links {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            padding: 10px 3% !important;
+            background: #176b35 !important;
+        }
 
-    if payment_method == 'Online Payment':
-        payment_status = 'Paid'
-    else:
-        payment_status = 'Cash on Delivery'
+        .nav-links a {
+            color: #ffffff !important;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            transition: 0.3s !important;
+            white-space: nowrap !important;
+        }
 
-    if not all([
-        full_name,
-        mobile,
-        address,
-        city,
-        pin_code
-    ]):
-        return render(
-            request,
-            'main/checkout.html',
-            {
-                'cart_items': cart_items,
-                'total': total,
-                'error': 'Please fill all required fields.'
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff !important;
+            color: #176b35 !important;
+        }
+
+        .nav-links form {
+            display: inline-flex !important;
+            margin: 0 !important;
+        }
+
+        .nav-links button {
+            color: #176b35 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5 !important;
+        }
+
+        /* ================= PAGE ================= */
+
+        .assistant-page {
+            min-height: calc(100vh - 82px);
+            padding: 45px 20px 55px;
+        }
+
+        .assistant-header {
+            max-width: 760px;
+            margin: 0 auto 28px;
+            text-align: center;
+        }
+
+        .ai-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: #daf1dd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        .assistant-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #153c25;
+        }
+
+        .assistant-header h1 span {
+            color: #25813a;
+        }
+
+        .assistant-header p {
+            color: #65756a;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* ================= CHAT ================= */
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            border: 1px solid #dfece2;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(23, 107, 53, 0.10);
+        }
+
+        .chat-top {
+            padding: 18px 22px;
+            background: #176b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            color: #176b35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            flex-shrink: 0;
+        }
+
+        .bot-info {
+            flex: 1;
+        }
+
+        .bot-info h3 {
+            font-size: 17px;
+            margin-bottom: 3px;
+        }
+
+        .bot-info p {
+            font-size: 12px;
+            color: #d7efdc;
+        }
+
+        /* ================= CLEAR CHAT ================= */
+
+        .clear-form {
+            margin-left: auto;
+        }
+
+        .clear-btn {
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            padding: 9px 14px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: white;
+            color: #176b35;
+        }
+
+        .chat-area {
+            min-height: 340px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding: 25px;
+            background: #fbfefb;
+        }
+
+        /* ================= MESSAGES ================= */
+
+        .welcome-message,
+        .ai-message {
+            max-width: 680px;
+            padding: 15px 18px;
+            background: #e9f6eb;
+            border-radius: 5px 16px 16px 16px;
+            color: #294c35;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .welcome-message strong,
+        .ai-message strong {
+            color: #176b35;
+        }
+
+        .user-message {
+            max-width: 680px;
+            margin: 0 0 18px auto;
+            padding: 14px 18px;
+            background: #176b35;
+            color: white;
+            border-radius: 16px 5px 16px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .message-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .ai-answer {
+            white-space: pre-wrap;
+        }
+
+        /* ================= SUGGESTIONS ================= */
+
+        .suggestions {
+            margin-top: 24px;
+        }
+
+        .suggestions p {
+            margin-bottom: 10px;
+            color: #68786e;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .suggestion-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .suggestion {
+            border: 1px solid #cfe5d3;
+            background: white;
+            color: #28753d;
+            border-radius: 20px;
+            padding: 8px 13px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            background: #e7f5e9;
+        }
+
+        /* ================= INPUT ================= */
+
+        .chat-input {
+            padding: 18px;
+            border-top: 1px solid #e5eee7;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: 1px solid #d3e3d6;
+            border-radius: 10px;
+            padding: 14px 15px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input input:focus {
+            border-color: #25813a;
+            box-shadow: 0 0 0 3px rgba(37, 129, 58, 0.08);
+        }
+
+        .ask-btn {
+            border: none;
+            background: #21813b;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ask-btn:hover {
+            background: #176b35;
+        }
+
+        .language-note {
+            margin-top: 20px;
+            text-align: center;
+            color: #718078;
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 600px) {
+            .assistant-header h1 {
+                font-size: 28px;
             }
-        )
 
-    # CREATE ORDER
-    order = Order.objects.create(
-        user=request.user,
-        full_name=full_name,
-        mobile=mobile,
-        address=address,
-        city=city,
-        pin_code=pin_code,
-        payment_method=payment_method,
-        payment_status=payment_status,
-        status='Confirmed'
-    )
-
-    # CREATE ORDER ITEMS
-    for cart_item in cart_items:
-        OrderItem.objects.create(
-            order=order,
-            product=cart_item.product,
-            quantity=cart_item.quantity,
-            price=cart_item.product.price
-        )
-
-    # CLEAR CART
-    cart_items.delete()
-
-    # युजरचा सिरियल नंबर मोजण्यासाठी (उदा. #11)
-    user_order_number = Order.objects.filter(
-        user=request.user,
-        created_at__lte=order.created_at
-    ).count()
-
-    # ORDER SUCCESS
-    return render(
-        request,
-        'main/order_success.html',
-        {
-            'order': order,
-            'total': total,
-            'order_number': user_order_number,
-        }
-    )
-
-
-# =========================
-# MY ORDERS
-# =========================
-@login_required(login_url='/login/')
-def my_orders(request):
-    orders = Order.objects.filter(
-        user=request.user
-    ).prefetch_related(
-        'items__product'
-    ).order_by('-created_at')
-
-    for order in orders:
-        order.items_total = sum(
-            item.total_price()
-            for item in order.items.all()
-        )
-        order.has_items = order.items.exists()
-
-    return render(
-        request,
-        'main/my_orders.html',
-        {
-            'orders': orders
-        }
-    )
-
-
-# =========================
-# CANCEL ORDER (DIRECT)
-# =========================
-@login_required(login_url='/login/')
-def cancel_order(request, order_id):
-    if request.method == 'POST':
-        order = get_object_or_404(
-            Order,
-            id=order_id,
-            user=request.user
-        )
-
-        if order.status in ['Confirmed', 'Packed']:
-            order.status = 'Cancelled'
-            order.save()
-            messages.success(
-                request,
-                f'Order #{order.id} has been cancelled.'
-            )
-        else:
-            messages.warning(
-                request,
-                'This order can no longer be cancelled.'
-            )
-
-    return redirect('/my-orders/')
-
-
-# =========================
-# LOGIN
-# =========================
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
-
-        if user is not None:
-            login(request, user)
-            next_url = request.POST.get('next')
-
-            if next_url:
-                return redirect(next_url)
-
-            return redirect('/')
-
-        return render(
-            request,
-            'registration/login.html',
-            {
-                'error': 'Invalid username or password.',
-                'next': request.POST.get('next', '')
+            .chat-input {
+                flex-direction: column;
             }
-        )
 
-    next_url = request.GET.get('next', '')
+            .ask-btn {
+                width: 100%;
+            }
 
-    return render(
-        request,
-        'registration/login.html',
-        {
-            'next': next_url
+            .chat-top {
+                flex-wrap: wrap;
+            }
+
+            .clear-form {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .clear-btn {
+                width: 100%;
+            }
         }
-    )
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar">
+        <div class="navbar-top">
+            <a href="/" class="logo">
+                <span class="logo-icon">🌱</span>
+                <span>AgroHarvest <strong>Hub</strong></span>
+            </a>
+
+            <div class="checkout-language">
+                <label for="language-selector" data-key="languageLabel">Language:</label>
+                <select id="language-selector">
+                    <option value="en">English</option>
+                    <option value="mr">मराठी</option>
+                    <option value="hi">हिन्दी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'landing' %}" data-key="home">🏠 Home</a>
+            <a href="{% url 'products' %}" data-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" class="active" data-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-key="disease">🌿 Disease Detection</a>
+            <a href="{% url 'about' %}" data-key="about">ℹ️ About</a>
+            <a href="{% url 'contact' %}" data-key="contact">📞 Contact</a>
+            <a href="{% url 'cart' %}" data-key="cart">🛒 Cart</a>
+            <a href="{% url 'wishlist' %}" data-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-key="orders">📦 My Orders</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-key="login">👤 Login</a>
+            <a href="{% url 'signup' %}" data-key="signup">👤 Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
 
 
-# =========================
-# SIGNUP
-# =========================
-def signup_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+    <!-- ================= AI ASSISTANT ================= -->
 
-        if not username or not password:
-            return render(
-                request,
-                'registration/signup.html',
-                {
-                    'error': 'Username and password are required.'
+    <main class="assistant-page">
+
+        <div class="assistant-header">
+
+            <div class="ai-icon">
+                🤖
+            </div>
+
+            <h1 id="pageTitle">
+                AI <span>Farming Assistant</span>
+            </h1>
+
+            <p id="pageDescription">
+                Ask questions about crops, seeds, fertilizers, irrigation,
+                diseases and farming in Marathi, Hindi or English.
+            </p>
+
+        </div>
+
+
+        <div class="chat-container">
+
+            <div class="chat-top">
+
+                <div class="bot-avatar">
+                    🌱
+                </div>
+
+                <div class="bot-info">
+
+                    <h3>AgroHarvest AI</h3>
+
+                    <p id="statusText">
+                        ● Ready to help with farming questions
+                    </p>
+
+                </div>
+
+
+                <!-- CLEAR CHAT BUTTON -->
+
+                <form method="POST" action="{% url 'ai_assistant' %}" class="clear-form"
+                    onsubmit="return confirmClearChat();">
+
+                    {% csrf_token %}
+
+                    <button type="submit" name="clear_chat" value="1" class="clear-btn" id="clearButton">
+
+                        🗑️ Clear Chat
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ================= CHAT HISTORY ================= -->
+
+            <div class="chat-area" id="chatArea">
+
+                {% if chat_history %}
+
+                {% for chat in chat_history %}
+
+                <div class="user-message">
+
+                    <span class="message-label">
+                        👤 You
+                    </span>
+
+                    {{ chat.question }}
+
+                </div>
+
+
+                <div class="ai-message">
+
+                    <span class="message-label">
+                        🤖 AgroHarvest AI
+                    </span>
+
+                    <div class="ai-answer">
+                        {{ chat.answer }}
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+                {% else %}
+
+                <div class="welcome-message">
+
+                    <strong id="welcomeTitle">
+                        🤖 Hello! I am your AI Farming Assistant.
+                    </strong>
+
+                    <br><br>
+
+                    <span id="welcomeText">
+                        Ask me about crops, seeds, fertilizers,
+                        irrigation, plant diseases, pests and farming.
+                    </span>
+
+                    <br><br>
+
+                    तुम्ही तुमचा प्रश्न मराठीत विचारू शकता.
+
+                    <br>
+
+                    आप अपना सवाल हिंदी में भी पूछ सकते हैं.
+
+                </div>
+
+
+                <div class="suggestions">
+
+                    <p id="tryAsking">
+                        TRY ASKING:
+                    </p>
+
+                    <div class="suggestion-buttons">
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('Tomato leaves are turning yellow. What should I do?')">
+
+                            Tomato leaves turning yellow
+
+                        </button>
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('टोमॅटोची पाने पिवळी पडत आहेत, काय करावे?')">
+
+                            टोमॅटोची पाने पिवळी पडत आहेत
+
+                        </button>
+
+                        <button type="button" class="suggestion"
+                            onclick="setQuestion('गेहूं की फसल में कौन सा खाद उपयोग करें?')">
+
+                            गेहूं के लिए खाद
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================= QUESTION FORM ================= -->
+
+            <form method="POST" action="{% url 'ai_assistant' %}" class="chat-input">
+
+                {% csrf_token %}
+
+                <input type="text" id="questionInput" name="question" placeholder="Ask your farming question..."
+                    autocomplete="off" required>
+
+                <!-- 🎤 VOICE INPUT MIC BUTTON -->
+                <button type="button" id="micBtn" onclick="startVoiceInput()" title="Speak your question"
+                    style="background: #e6f4ea; color: #176b35; border: 1px solid #cde4ce; padding: 12px 16px; border-radius: 10px; cursor: pointer; font-size: 18px; transition: 0.2s;">
+                    🎤
+                </button>
+
+                <button type="submit" class="ask-btn" id="askButton">
+
+                    🤖 Ask AI
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="language-note">
+            🌐 English &nbsp;•&nbsp; मराठी &nbsp;•&nbsp; हिन्दी
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* ================= QUESTION SUGGESTION ================= */
+
+        function setQuestion(question) {
+            const input = document.getElementById("questionInput");
+
+            input.value = question;
+            input.focus();
+        }
+
+
+        /* ================= VOICE INPUT (MIC) FUNCTION ================= */
+
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert("Sorry, your browser does not support voice input. Please try using Google Chrome.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+
+            const currentLang = localStorage.getItem("selectedLanguage") || "en";
+            if (currentLang === "mr") {
+                recognition.lang = "mr-IN";
+            } else if (currentLang === "hi") {
+                recognition.lang = "hi-IN";
+            } else {
+                recognition.lang = "en-US";
+            }
+
+            const micBtn = document.getElementById("micBtn");
+            micBtn.style.background = "#ffc9c9";
+            micBtn.textContent = "🔴";
+
+            recognition.onstart = function () {
+                console.log("Voice listening started...");
+            };
+
+            recognition.onresult = function (event) {
+                const spokenText = event.results[0][0].transcript;
+                document.getElementById("questionInput").value = spokenText;
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error", event.error);
+                alert("Voice recognition error. Please try again.");
+            };
+
+            recognition.onend = function () {
+                micBtn.style.background = "#e6f4ea";
+                micBtn.textContent = "🎤";
+            };
+
+            recognition.start();
+        }
+
+
+        /* ================= TRANSLATIONS ================= */
+
+        const translations = {
+
+            en: {
+                home: "🏠 Home",
+                products: "📄 Products",
+                aiAssistant: "🤖 AI Assistant",
+                reviews: "⭐ Reviews",
+                crop: "🤖 Crop Recommendation",
+                disease: "🌿 Disease Detection",
+                about: "ℹ️ About",
+                contact: "📞 Contact",
+                cart: "🛒 Cart",
+                wishlist: "❤️ Wishlist",
+                orders: "📦 My Orders",
+                dashboard: "👤 Dashboard",
+                login: "👤 Login",
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout",
+                languageLabel: "Language:",
+
+                title: "AI Farming Assistant",
+
+                description:
+                    "Ask questions about crops, seeds, fertilizers, irrigation, diseases and farming in Marathi, Hindi or English.",
+
+                status:
+                    "● Ready to help with farming questions",
+
+                clear:
+                    "🗑️ Clear Chat",
+
+                ask:
+                    "🤖 Ask AI",
+
+                placeholder:
+                    "Ask your farming question...",
+
+                welcome:
+                    "🤖 Hello! I am your AI Farming Assistant.",
+
+                welcomeText:
+                    "Ask me about crops, seeds, fertilizers, irrigation, plant diseases, pests and farming.",
+
+                tryAsking:
+                    "TRY ASKING:",
+
+                confirmClear:
+                    "Do you want to clear the complete chat history?"
+            },
+
+
+            mr: {
+                home: "🏠 मुख्यपृष्ठ",
+                products: "📄 उत्पादने",
+                aiAssistant: "🤖 AI सहाय्यक",
+                reviews: "⭐ अभिप्राय",
+                crop: "🤖 पीक शिफारस",
+                disease: "🌿 रोग ओळख",
+                about: "ℹ️ आमच्याबद्दल",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ आवडती उत्पादने",
+                orders: "📦 माझ्या ऑर्डर्स",
+                dashboard: "👤 डॅशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "AI शेती सहाय्यक",
+
+                description:
+                    "पिके, बियाणे, खते, सिंचन, रोग आणि शेतीविषयी तुमचे प्रश्न विचारा.",
+
+                status:
+                    "● शेतीविषयक प्रश्नांसाठी मदतीस तयार",
+
+                clear:
+                    "🗑️ चॅट साफ करा",
+
+                ask:
+                    "🤖 AI ला विचारा",
+
+                placeholder:
+                    "तुमचा शेतीविषयक प्रश्न विचारा...",
+
+                welcome:
+                    "🤖 नमस्कार! मी तुमचा AI शेती सहाय्यक आहे.",
+
+                welcomeText:
+                    "पिके, बियाणे, खते, सिंचन, वनस्पती रोग, कीड आणि शेतीविषयी मला विचारा.",
+
+                tryAsking:
+                    "हे प्रश्न विचारून पहा:",
+
+                confirmClear:
+                    "संपूर्ण चॅट इतिहास साफ करायचा आहे का?"
+            },
+
+
+            hi: {
+                home: "🏠 होम",
+                products: "📄 उत्पाद",
+                aiAssistant: "🤖 AI सहायक",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल सुझाव",
+                disease: "🌿 रोग पहचान",
+                about: "ℹ️ हमारे बारे में",
+                contact: "📞 संपर्क",
+                cart: "🛒 कार्ट",
+                wishlist: "❤️ इच्छा सूची",
+                orders: "📦 मेरे ऑर्डर",
+                dashboard: "👤 डैशबोर्ड",
+                login: "👤 लॉगिन",
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट",
+                languageLabel: "भाषा:",
+
+                title: "AI कृषि सहायक",
+
+                description:
+                    "फसलों, बीजों, उर्वरकों, सिंचाई, रोगों और खेती के बारे में प्रश्न पूछें।",
+
+                status:
+                    "● खेती के सवालों में मदद के लिए तैयार",
+
+                clear:
+                    "🗑️ चैट साफ करें",
+
+                ask:
+                    "🤖 AI से पूछें",
+
+                placeholder:
+                    "खेती से जुड़ा अपना प्रश्न पूछें...",
+
+                welcome:
+                    "🤖 नमस्ते! मैं आपका AI कृषि सहायक हूँ।",
+
+                welcomeText:
+                    "फसलों, बीजों, उर्वरकों, सिंचाई, पौधों के रोग, कीट और खेती के बारे में पूछें।",
+
+                tryAsking:
+                    "ये प्रश्न पूछकर देखें:",
+
+                confirmClear:
+                    "क्या आप पूरी चैट हिस्ट्री साफ करना चाहते हैं?"
+            }
+
+        };
+
+
+        /* ================= APPLY LANGUAGE ================= */
+
+        function applyLanguage(language) {
+
+            const t = translations[language] || translations.en;
+
+            document.querySelectorAll("[data-key]").forEach(function (link) {
+
+                const key = link.getAttribute("data-key");
+
+                if (t[key]) {
+                    link.textContent = t[key];
                 }
-            )
 
-        if password != confirm_password:
-            return render(
-                request,
-                'registration/signup.html',
-                {
-                    'error': 'Passwords do not match.'
-                }
-            )
-
-        if User.objects.filter(
-            username=username
-        ).exists():
-            return render(
-                request,
-                'registration/signup.html',
-                {
-                    'error': 'Username already exists.'
-                }
-            )
-
-        User.objects.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-
-        return redirect('/login/')
-
-    return render(
-        request,
-        'registration/signup.html'
-    )
+            });
 
 
-# =========================
-# LOGOUT
-# =========================
-def logout_view(request):
-    logout(request)
-    return redirect('/')
+            const pageTitle =
+                document.getElementById("pageTitle");
 
-
-# =========================
-# CONTACT
-# =========================
-def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-
-        Contact.objects.create(
-            name=name,
-            email=email,
-            subject=subject,
-            message=message
-        )
-
-        messages.success(
-            request,
-            'Your message has been sent successfully! 📩'
-        )
-
-        return redirect('contact')
-
-    return render(
-        request,
-        'main/contact.html'
-    )
-
-
-# =========================
-# WISHLIST
-# =========================
-def add_to_wishlist(request, slug):
-    if not request.user.is_authenticated:
-        return redirect(
-            f'/login/?next=/wishlist/add/{slug}/'
-        )
-
-    product = None
-
-    for item in Product.objects.all():
-        if slugify(item.name) == slug:
-            product = item
-            break
-
-    if not product:
-        return redirect('/products/')
-
-    Wishlist.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
-
-    return redirect('/wishlist/')
-
-
-@login_required(login_url='/login/')
-def wishlist(request):
-    wishlist_items = Wishlist.objects.filter(
-        user=request.user
-    ).select_related(
-        'product'
-    ).order_by('-added_at')
-
-    return render(
-        request,
-        'main/wishlist.html',
-        {
-            'wishlist_items': wishlist_items
-        }
-    )
-
-
-@login_required(login_url='/login/')
-def remove_from_wishlist(request, id):
-    Wishlist.objects.filter(
-        id=id,
-        user=request.user
-    ).delete()
-
-    return redirect('/wishlist/')
-
-
-# =========================
-# PRODUCT REVIEWS & RATINGS
-# =========================
-def add_review(request, slug):
-    if not request.user.is_authenticated:
-        return redirect(
-            f'/login/?next=/product/{slug}/'
-        )
-
-    product = None
-
-    for item in Product.objects.all():
-        if slugify(item.name) == slug:
-            product = item
-            break
-
-    if not product:
-        return redirect('/products/')
-
-    if request.method == 'POST':
-        rating = request.POST.get('rating')
-        comment = request.POST.get('comment')
-        photo = request.FILES.get('photo')
-
-        if rating and comment:
-            Review.objects.create(
-                product=product,
-                user=request.user,
-                rating=int(rating),
-                comment=comment,
-                photo=photo
-            )
-
-    return redirect(f'/product/{slug}/')
-
-
-# =========================
-# DASHBOARD
-# =========================
-@login_required(login_url='/login/')
-def dashboard(request):
-    total_orders = Order.objects.filter(
-        user=request.user
-    ).count()
-
-    confirmed_orders = Order.objects.filter(
-        user=request.user,
-        status='Confirmed'
-    ).count()
-
-    delivered_orders = Order.objects.filter(
-        user=request.user,
-        status='Delivered'
-    ).count()
-
-    wishlist_count = Wishlist.objects.filter(
-        user=request.user
-    ).count()
-
-    recent_orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    context = {
-        'total_orders': total_orders,
-        'confirmed_orders': confirmed_orders,
-        'delivered_orders': delivered_orders,
-        'wishlist_count': wishlist_count,
-        'recent_orders': recent_orders,
-    }
-
-    return render(
-        request,
-        'main/dashboard.html',
-        context
-    )
-
-
-# =========================
-# SMART CROP RECOMMENDATION
-# =========================
-def crop_recommendation(request):
-    recommendation = None
-    reason = None
-    recommended_products = []
-
-    if request.method == 'POST':
-        season = request.POST.get('season')
-        soil = request.POST.get('soil')
-        water = request.POST.get('water')
-
-        if season == 'Kharif':
-            if soil == 'Black Soil' and water in ['Medium', 'High']:
-                recommendation = 'Cotton'
-                reason = 'Cotton is suitable for Black Soil and Kharif season.'
-            elif soil == 'Loamy Soil' and water == 'High':
-                recommendation = 'Rice'
-                reason = 'Rice requires good water availability and grows well in Kharif season.'
-            elif soil == 'Sandy Soil':
-                recommendation = 'Groundnut'
-                reason = 'Groundnut can perform well in Sandy Soil during Kharif season.'
-            else:
-                recommendation = 'Soybean'
-                reason = 'Soybean is a suitable Kharif crop for a wide range of soils.'
-
-        elif season == 'Rabi':
-            if soil == 'Black Soil' and water in ['Medium', 'High']:
-                recommendation = 'Wheat'
-                reason = 'Wheat grows well in Black Soil during Rabi season.'
-            elif soil == 'Loamy Soil':
-                recommendation = 'Chickpea'
-                reason = 'Chickpea is suitable for Loamy Soil during Rabi season.'
-            elif soil == 'Sandy Soil':
-                recommendation = 'Mustard'
-                reason = 'Mustard can grow well in lighter soils during Rabi season.'
-            else:
-                recommendation = 'Chickpea'
-                reason = 'Chickpea is a suitable Rabi crop.'
-
-        elif season == 'Summer':
-            if water == 'High':
-                recommendation = 'Watermelon'
-                reason = 'Watermelon requires good water availability during summer.'
-            elif soil == 'Sandy Soil' and water == 'Medium':
-                recommendation = 'Groundnut'
-                reason = 'Groundnut can perform well in Sandy Soil with moderate water.'
-            else:
-                recommendation = 'Moong'
-                reason = 'Moong is a short-duration crop suitable for summer cultivation.'
-
-        if recommendation:
-            keywords = []
-            if recommendation == 'Cotton':
-                keywords = ['cotton', 'fertilizer']
-            elif recommendation == 'Rice':
-                keywords = ['rice', 'fertilizer']
-            elif recommendation == 'Groundnut':
-                keywords = ['groundnut', 'fertilizer']
-            elif recommendation == 'Soybean':
-                keywords = ['soybean', 'fertilizer']
-            elif recommendation == 'Wheat':
-                keywords = ['wheat', 'fertilizer']
-            elif recommendation == 'Chickpea':
-                keywords = ['chickpea', 'fertilizer']
-            elif recommendation == 'Mustard':
-                keywords = ['mustard', 'fertilizer']
-            elif recommendation == 'Watermelon':
-                keywords = ['watermelon', 'fertilizer']
-            elif recommendation == 'Moong':
-                keywords = ['moong', 'fertilizer']
-
-            for product in Product.objects.all():
-                product_name = product.name.lower()
-                if any(keyword in product_name for keyword in keywords):
-                    product.slug = slugify(product.name)
-                    recommended_products.append(product)
-
-    return render(
-        request,
-        'main/crop_recommendation.html',
-        {
-            'recommendation': recommendation,
-            'reason': reason,
-            'recommended_products': recommended_products
-        }
-    )
-
-
-# =========================
-# PLANT DISEASE DETECTION
-# =========================
-def disease_detection(request):
-    if request.method == 'POST':
-        crop = request.POST.get('crop')
-        disease = request.POST.get('disease')
-        plant_image = request.FILES.get('plant_image')
-        image_url = None
-
-        if plant_image:
-            fs = FileSystemStorage()
-            filename = fs.save(
-                plant_image.name,
-                plant_image
-            )
-            image_url = fs.url(filename)
-
-        symptoms = (
-            "Brown spots and dark lesions may appear "
-            "on the plant leaves."
-        )
-
-        treatment = (
-            "Remove affected leaves, maintain proper air circulation "
-            "and use suitable crop protection treatment."
-        )
-
-        if crop == "Tomato":
-            if disease == "Early Blight":
-                symptoms = (
-                    "Brown circular spots with dark rings may appear "
-                    "on older tomato leaves. Leaves may gradually turn yellow."
-                )
-                treatment = (
-                    "Remove infected leaves, avoid overhead watering, "
-                    "maintain proper air circulation and use suitable "
-                    "fungicide as recommended by an agricultural expert."
-                )
-            elif disease == "Late Blight":
-                symptoms = (
-                    "Dark water-soaked spots may appear on leaves and "
-                    "stems. In humid conditions the disease can spread quickly."
-                )
-                treatment = (
-                    "Remove severely affected plant parts, avoid excess "
-                    "moisture on leaves and use suitable crop protection "
-                    "treatment."
-                )
-            elif disease == "Leaf Mold":
-                symptoms = (
-                    "Yellow patches may appear on the upper surface of "
-                    "leaves with olive-green or brown fungal growth underneath."
-                )
-                treatment = (
-                    "Improve ventilation, reduce leaf moisture and remove "
-                    "severely affected leaves."
-                )
-
-        elif crop == "Potato":
-            if disease == "Early Blight":
-                symptoms = (
-                    "Dark brown spots with concentric rings may appear "
-                    "on potato leaves."
-                )
-                treatment = (
-                    "Remove affected leaves, maintain proper field hygiene "
-                    "and use suitable fungicide according to expert advice."
-                )
-            elif disease == "Late Blight":
-                symptoms = (
-                    "Large dark brown or black patches may appear on "
-                    "potato leaves and stems."
-                )
-                treatment = (
-                    "Remove infected plant material, avoid excessive moisture "
-                    "and use recommended disease-control treatment."
-                )
-
-        elif crop == "Cotton":
-            if disease == "Leaf Spot":
-                symptoms = (
-                    "Small brown or dark spots may develop on cotton leaves "
-                    "and can increase in size over time."
-                )
-                treatment = (
-                    "Remove severely affected leaves, maintain field hygiene "
-                    "and use suitable crop protection treatment."
-                )
-            elif disease == "Bacterial Blight":
-                symptoms = (
-                    "Water-soaked or dark lesions may appear on cotton leaves. "
-                    "The affected areas may become brown and dry."
-                )
-                treatment = (
-                    "Remove severely affected plant parts, maintain good field "
-                    "hygiene and follow recommended bacterial disease management."
-                )
-
-        recommended_products = []
-
-        if crop == "Tomato":
-            keywords = ["tomato", "fertilizer", "seed"]
-        elif crop == "Potato":
-            keywords = ["potato", "fertilizer", "seed"]
-        elif crop == "Cotton":
-            keywords = ["cotton", "fertilizer", "seed"]
-        else:
-            keywords = ["fertilizer"]
-
-        for product in Product.objects.all():
-            product_name = product.name.lower()
-            if any(keyword in product_name for keyword in keywords):
-                recommended_products.append(product)
-
-        return render(
-            request,
-            'main/disease_result.html',
-            {
-                'image_url': image_url,
-                'crop': crop,
-                'disease': disease,
-                'symptoms': symptoms,
-                'treatment': treatment,
-                'recommended_products': recommended_products,
+            if (pageTitle) {
+                pageTitle.innerHTML = language === 'mr' ? 'AI <span>शेती सहाय्यक</span>' : (language === 'hi' ? 'AI <span>कृषि सहायक</span>' : 'AI <span>Farming Assistant</span>');
             }
-        )
-
-    return render(
-        request,
-        'main/disease_detection.html'
-    )
 
 
-# =========================
-# REVIEWS
-# =========================
-def reviews(request):
-    reviews = Review.objects.select_related(
-        'product',
-        'user'
-    ).order_by('-created_at')
+            const pageDescription =
+                document.getElementById("pageDescription");
 
-    return render(
-        request,
-        'main/reviews.html',
-        {'reviews': reviews}
-    )
-
-
-def _call_gemini_rest(api_key: str, model: str, prompt: str, timeout: int = 25) -> str:
-    url = (
-        f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{model}:generateContent?key={api_key}"
-    )
-    payload = {
-        "contents": [
-            {
-                "parts": [{"text": prompt}]
+            if (pageDescription) {
+                pageDescription.textContent = t.description;
             }
-        ],
-        "generationConfig": {
-            "maxOutputTokens": 450,
-            "temperature": 0.4,
-        },
-    }
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        body = json.loads(resp.read().decode("utf-8"))
-
-    candidates = body.get("candidates") or []
-    if not candidates:
-        return ""
-    parts = (candidates[0].get("content") or {}).get("parts") or []
-    texts = [p.get("text", "") for p in parts if isinstance(p, dict)]
-    return "".join(texts).strip()
 
 
-# =========================
-# AI ASSISTANT
-# =========================
-def ai_assistant(request):
-    answer = None
-    question = ""
-    chat_history = request.session.get("ai_chat_history", [])[-2:]
+            const statusText =
+                document.getElementById("statusText");
 
-    if request.method == "POST" and "clear_chat" in request.POST:
-        request.session["ai_chat_history"] = []
-        request.session.modified = True
-        return render(
-            request,
-            "main/ai_assistant.html",
-            {
-                "answer": None,
-                "question": "",
-                "chat_history": [],
+            if (statusText) {
+                statusText.textContent = t.status;
             }
-        )
 
-    if request.method == "POST":
-        question = request.POST.get("question", "").strip()
 
-        if question:
-            api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+            const clearButton =
+                document.getElementById("clearButton");
 
-            if not api_key:
-                error_msg = (
-                    "GEMINI_API_KEY सेट केलेली नाही. कृपया Render च्या Environment Variables मध्ये "
-                    "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
-                )
-                chat_history.append({"question": question, "answer": error_msg})
-                request.session["ai_chat_history"] = chat_history[-2:]
-                request.session.modified = True
+            if (clearButton) {
+                clearButton.textContent = t.clear;
+            }
 
-                return render(
-                    request,
-                    "main/ai_assistant.html",
-                    {
-                        "answer": error_msg,
-                        "question": question,
-                        "chat_history": chat_history,
-                    }
-                )
 
-            product_rows = Product.objects.values_list("name", "category", "price")[:12]
-            product_list = "\n".join(
-                f"- {name} | {category} | ₹{price}"
-                for name, category, price in product_rows
-            )
+            const askButton =
+                document.getElementById("askButton");
 
-            prompt = f"""You are AgroHarvest AI, a smart farming assistant for AgroHarvest Hub.
-Reply in Marathi if the question is in Marathi, Hindi if in Hindi, English if in English, or match mixed language.
-Give concise, clear, practical agriculture answers.
-Recommend at most 3 relevant products only from this list (exact name and price):
-{product_list}
+            if (askButton) {
+                askButton.textContent = t.ask;
+            }
 
-Do not invent products, prices, or unsafe chemical dosages.
 
-Question: {question}"""
+            const questionInput =
+                document.getElementById("questionInput");
 
-            try:
-                answer = ""
-                for attempt in range(2):
-                    try:
-                        answer = _call_gemini_rest(
-                            api_key=api_key,
-                            model="gemini-3.8-flash",
-                            prompt=prompt,
-                            timeout=25,
-                        )
-                        break
-                    except urllib.error.HTTPError as e:
-                        err_body = ""
-                        try:
-                            err_body = e.read().decode("utf-8", errors="ignore")
-                        except Exception:
-                            pass
-                        if attempt == 0 and (e.code == 503 or "UNAVAILABLE" in err_body):
-                            time.sleep(2)
-                            continue
-                        raise RuntimeError(f"HTTP {e.code}: {err_body[:150]}")
-                    except Exception as e:
-                        err_text = str(e)
-                        if attempt == 0 and ("503" in err_text or "UNAVAILABLE" in err_text):
-                            time.sleep(2)
-                            continue
-                        raise e
+            if (questionInput) {
+                questionInput.placeholder = t.placeholder;
+            }
 
-                if not answer:
-                    answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
 
-            except Exception as e:
-                print("GEMINI ERROR:", repr(e))
-                err_msg = str(e)
-                if "503" in err_msg or "UNAVAILABLE" in err_msg:
-                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
-                elif "timed out" in err_msg.lower():
-                    answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
-                else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_msg[:180]}"
+            const welcomeTitle =
+                document.getElementById("welcomeTitle");
 
-            chat_history.append({"question": question, "answer": answer})
-            request.session["ai_chat_history"] = chat_history[-2:]
-            request.session.modified = True
+            if (welcomeTitle) {
+                welcomeTitle.textContent = t.welcome;
+            }
 
-    return render(
-        request,
-        "main/ai_assistant.html",
-        {
-            "answer": answer,
-            "question": question,
-            "chat_history": chat_history,
+
+            const welcomeText =
+                document.getElementById("welcomeText");
+
+            if (welcomeText) {
+                welcomeText.textContent = t.welcomeText;
+            }
+
+
+            const tryAsking =
+                document.getElementById("tryAsking");
+
+            if (tryAsking) {
+                tryAsking.textContent = t.tryAsking;
+            }
         }
-    )
+
+
+        /* ================= LANGUAGE SELECTOR ================= */
+
+        const languageSelector =
+            document.getElementById("language-selector");
+
+        const savedLanguage =
+            localStorage.getItem("selectedLanguage") || "en";
+
+        languageSelector.value = savedLanguage;
+
+        applyLanguage(savedLanguage);
+
+
+        languageSelector.addEventListener(
+            "change",
+            function () {
+
+                const selectedLanguage = this.value;
+
+                localStorage.setItem(
+                    "selectedLanguage",
+                    selectedLanguage
+                );
+
+                applyLanguage(selectedLanguage);
+            }
+        );
+
+
+        /* ================= CLEAR CONFIRMATION ================= */
+
+        function confirmClearChat() {
+
+            const language =
+                localStorage.getItem("selectedLanguage") || "en";
+
+            const t =
+                translations[language] || translations.en;
+
+            return confirm(t.confirmClear);
+        }
+
+
+        /* ================= AUTO SCROLL ================= */
+
+        window.addEventListener("load", function () {
+
+            const chatArea =
+                document.getElementById("chatArea");
+
+            if (chatArea) {
+                chatArea.scrollTop =
+                    chatArea.scrollHeight;
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
