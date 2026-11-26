@@ -367,8 +367,13 @@
             font-weight: 700;
         }
 
-        .ask-btn:hover {
+        .ask-btn:hover:not(:disabled) {
             background: #176b35;
+        }
+
+        .ask-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .language-note {
@@ -614,7 +619,7 @@
 
             <!-- ================= QUESTION FORM ================= -->
 
-            <form method="POST" action="{% url 'ai_assistant' %}" class="chat-input">
+            <form method="POST" action="{% url 'ai_assistant' %}" class="chat-input" id="questionForm">
 
                 {% csrf_token %}
 
@@ -657,6 +662,26 @@
         }
 
 
+        /* ================= FORM SUBMIT FEEDBACK ================= */
+
+        const questionForm = document.getElementById("questionForm");
+        if (questionForm) {
+            questionForm.addEventListener("submit", function () {
+                const askBtn = document.getElementById("askButton");
+                const statusText = document.getElementById("statusText");
+                const lang = localStorage.getItem("selectedLanguage") || "en";
+
+                if (askBtn) {
+                    askBtn.disabled = true;
+                    askBtn.textContent = lang === "mr" ? "⏳ उत्तर येत आहे..." : (lang === "hi" ? "⏳ उत्तर आ रहा है..." : "⏳ Thinking...");
+                }
+                if (statusText) {
+                    statusText.textContent = lang === "mr" ? "● AI उत्तर तयार करत आहे..." : (lang === "hi" ? "● AI उत्तर तैयार कर रहा है..." : "● Generating response...");
+                }
+            });
+        }
+
+
         /* ================= VOICE INPUT (MIC) FUNCTION ================= */
 
         function startVoiceInput() {
@@ -688,7 +713,9 @@
 
             recognition.onresult = function (event) {
                 const spokenText = event.results[0][0].transcript;
-                document.getElementById("questionInput").value = spokenText;
+                const input = document.getElementById("questionInput");
+                input.value = spokenText;
+                input.focus();
             };
 
             recognition.onerror = function (event) {
@@ -910,7 +937,7 @@
             const askButton =
                 document.getElementById("askButton");
 
-            if (askButton) {
+            if (askButton && !askButton.disabled) {
                 askButton.textContent = t.ask;
             }
 
