@@ -32,7 +32,7 @@
         }
 
         /* ==========================================
-           NAVBAR - UNIFIED PLATFORM STANDARD DESIGN
+           NAVBAR - FULL GREEN SINGLE ROW LINKS
         ========================================== */
         .navbar {
             width: 100% !important;
@@ -47,23 +47,23 @@
             display: flex !important;
             justify-content: space-between !important;
             align-items: center !important;
-            padding: 13px 4% !important;
-            gap: 20px !important;
+            padding: 11px 3% !important;
+            gap: 15px !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
         }
 
         .logo {
             display: flex !important;
             align-items: center !important;
-            gap: 9px !important;
+            gap: 8px !important;
             color: #ffffff !important;
-            font-size: 23px !important;
+            font-size: 22px !important;
             font-weight: 800 !important;
             white-space: nowrap !important;
         }
 
         .logo-icon {
-            font-size: 29px !important;
+            font-size: 27px !important;
         }
 
         .logo strong {
@@ -73,19 +73,19 @@
         .checkout-language {
             display: flex !important;
             align-items: center !important;
-            gap: 9px !important;
+            gap: 8px !important;
             color: #ffffff !important;
-            font-size: 14px !important;
+            font-size: 13px !important;
             font-weight: 600 !important;
         }
 
         #language-selector {
-            padding: 8px 13px !important;
+            padding: 6px 11px !important;
             border: 1px solid #d4e8d5 !important;
             border-radius: 6px !important;
             background: #ffffff !important;
             color: #176b35 !important;
-            font-size: 14px !important;
+            font-size: 13px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
             outline: none !important;
@@ -95,20 +95,27 @@
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
-            flex-wrap: wrap !important;
-            gap: 5px !important;
-            padding: 10px 3% !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            gap: 3px !important;
+            padding: 8px 1.5% !important;
             background: #176b35 !important;
+            scrollbar-width: none !important;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            display: none !important;
         }
 
         .nav-links a {
             color: #ffffff !important;
-            padding: 8px 10px !important;
+            padding: 6px 7px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12px !important;
             font-weight: 600 !important;
             transition: 0.3s !important;
             white-space: nowrap !important;
+            flex-shrink: 0 !important;
         }
 
         .nav-links a:hover,
@@ -120,17 +127,20 @@
         .nav-links form {
             display: inline-flex !important;
             margin: 0 !important;
+            flex-shrink: 0 !important;
         }
 
         .nav-links button {
             color: #176b35 !important;
             background: #ffffff !important;
             border: 0 !important;
-            padding: 8px 12px !important;
+            padding: 6px 9px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12px !important;
             font-weight: 700 !important;
             cursor: pointer !important;
+            white-space: nowrap !important;
+            transition: 0.3s !important;
         }
 
         .nav-links button:hover {
@@ -379,6 +389,22 @@
         }
 
         /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 550px) {
+            .navbar-top {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .nav-links {
+                justify-content: flex-start;
+                padding: 8px 10px;
+            }
+        }
 
         @media (max-width: 600px) {
             .assistant-header h1 {
