@@ -14,97 +14,152 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: #f4f8f2;
             color: #263629;
             line-height: 1.6;
         }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* ==========================================
+           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
+        ========================================== */
         .navbar {
-            background: #176b36;
-            color: white;
-            padding: 12px 4%;
+            width: 100%;
+            background: #176b35;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
         }
 
         .navbar-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding-bottom: 10px;
+            padding: 13px 4%;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: #176b35;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 9px;
+            color: #ffffff;
             font-size: 23px;
-            font-weight: bold;
+            font-weight: 800;
             white-space: nowrap;
         }
 
         .logo-icon {
-            font-size: 30px;
+            font-size: 29px;
+        }
+
+        .logo strong {
+            color: #b7e66d;
         }
 
         .checkout-language {
             display: flex;
             align-items: center;
             gap: 9px;
-            margin-left: auto;
-        }
-
-        .checkout-language label {
+            color: #ffffff;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
         }
 
-        .checkout-language select {
-            padding: 9px 12px;
-            border: none;
+        #checkout-language-selector {
+            padding: 8px 13px;
+            border: 1px solid #d4e8d5;
             border-radius: 6px;
-            background: white;
-            color: #263629;
+            background: #ffffff;
+            color: #176b35;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
         }
 
         .nav-links {
             display: flex;
+            justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 6px;
-            border-top: 1px solid rgba(255, 255, 255, .25);
-            padding-top: 10px;
+            gap: 4px;
+            padding: 9px 2%;
+            background: #176b35;
         }
 
         .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 8px 10px;
+            color: #ffffff;
+            padding: 7px 8px;
             border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: 0.3s;
             white-space: nowrap;
         }
 
-        .nav-links a:hover {
-            background: #0e5128;
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #ffffff;
+            color: #176b35;
         }
 
+        .nav-links form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .nav-links button {
+            color: #176b35;
+            background: #ffffff;
+            border: 0;
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-links button:hover {
+            background: #e5f2e5;
+        }
+
+        /* ==========================================
+           CHECKOUT PAGE STYLES
+        ========================================== */
         .page-heading {
             text-align: center;
-            padding: 32px 15px 24px;
+            padding: 36px 15px 24px;
         }
 
         .page-heading h1 {
-            color: #176b36;
+            color: #183d25;
             font-size: 34px;
-            margin-bottom: 5px;
+            font-weight: 800;
+            margin-bottom: 6px;
         }
 
         .page-heading p {
-            color: #657267;
+            color: #5c6e60;
+            font-size: 15.5px;
         }
 
         .checkout-container {
@@ -118,17 +173,19 @@
         }
 
         .checkout-card {
-            background: white;
-            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e1eee1;
+            border-radius: 14px;
             padding: 26px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, .07);
+            box-shadow: 0 4px 18px rgba(30, 80, 40, 0.06);
             min-width: 0;
         }
 
         .checkout-card h2 {
-            color: #176b36;
-            font-size: 22px;
-            margin-bottom: 20px;
+            color: #176b35;
+            font-size: 21px;
+            font-weight: 800;
+            margin-bottom: 18px;
         }
 
         .form-group {
@@ -137,7 +194,8 @@
 
         .form-group label {
             display: block;
-            font-weight: bold;
+            font-weight: 700;
+            color: #245b32;
             margin-bottom: 6px;
             font-size: 14px;
         }
@@ -147,9 +205,11 @@
             width: 100%;
             padding: 12px;
             border: 1px solid #ccd8cd;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 15px;
-            background: white;
+            font-family: inherit;
+            color: #263629;
+            background: #ffffff;
         }
 
         .form-group textarea {
@@ -160,7 +220,7 @@
         .form-group input:focus,
         .form-group textarea:focus {
             outline: 2px solid #b4dfbe;
-            border-color: #176b36;
+            border-color: #176b35;
         }
 
         .payment-option {
@@ -172,7 +232,7 @@
             padding: 14px;
             margin-bottom: 10px;
             cursor: pointer;
-            background: white;
+            background: #ffffff;
             transition: background .2s;
         }
 
@@ -183,7 +243,7 @@
         .payment-option input {
             width: 17px;
             height: 17px;
-            accent-color: #176b36;
+            accent-color: #176b35;
             flex-shrink: 0;
         }
 
@@ -211,7 +271,7 @@
         }
 
         .online-payment-types h3 {
-            color: #176b36;
+            color: #176b35;
             margin-bottom: 12px;
             font-size: 18px;
         }
@@ -233,17 +293,19 @@
         .place-order-btn {
             width: 100%;
             border: none;
-            border-radius: 8px;
+            border-radius: 9px;
             padding: 14px;
-            background: #176b36;
-            color: white;
+            background: #176b35;
+            color: #ffffff;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 13px rgba(23, 107, 53, 0.18);
         }
 
         .place-order-btn:hover {
-            background: #10552a;
+            background: #0e5127;
         }
 
         .order-item {
@@ -255,7 +317,7 @@
         }
 
         .item-name {
-            font-weight: bold;
+            font-weight: 700;
             overflow-wrap: anywhere;
         }
 
@@ -266,7 +328,7 @@
 
         .item-price {
             white-space: nowrap;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .total-row {
@@ -277,20 +339,23 @@
             padding-top: 16px;
             border-top: 2px solid #dce7dc;
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 800;
         }
 
         .total-amount {
-            color: #176b36;
+            color: #176b35;
             white-space: nowrap;
         }
 
         .back-link {
             display: inline-block;
             margin-top: 18px;
-            color: #176b36;
-            text-decoration: none;
-            font-weight: bold;
+            color: #176b35;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
         }
 
         .empty-cart {
@@ -298,12 +363,49 @@
             padding: 25px 5px;
         }
 
-        .footer {
+        /* ==========================================
+           FOOTER - EXACT LANDING PAGE DESIGN
+        ========================================== */
+        footer {
+            background: #123d23;
+            color: #e7f2e8;
+            padding: 35px 7% 20px;
             text-align: center;
-            background: #e4eee3;
-            padding: 18px;
-            color: #526454;
+            margin-top: 65px;
+        }
+
+        .footer-logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #c5d9c8;
             font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 22px;
+            padding-top: 17px;
+            color: #c5d9c8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2%;
+                padding-right: 2%;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px;
+                padding: 7px 8px;
+            }
         }
 
         @media (max-width: 850px) {
@@ -317,21 +419,24 @@
             }
         }
 
-        @media (max-width: 520px) {
-            .navbar {
-                padding: 12px 4%;
+        @media (max-width: 550px) {
+            .navbar-top {
+                flex-direction: column;
+                gap: 10px;
             }
 
             .logo {
-                font-size: 19px;
+                font-size: 22px;
             }
 
-            .logo-icon {
-                font-size: 25px;
+            .nav-links {
+                gap: 4px;
+                padding: 9px 5px;
             }
 
-            .nav-links a {
-                font-size: 13px;
+            .nav-links a,
+            .nav-links button {
+                font-size: 11px;
                 padding: 7px 8px;
             }
 
@@ -359,69 +464,55 @@
 
     <!-- NAVBAR -->
     <nav class="navbar">
-
         <div class="navbar-top">
-
-            <div class="logo">
+            <a href="/" class="logo">
                 <span class="logo-icon">🌱</span>
                 <span>AgroHarvest <strong>Hub</strong></span>
-            </div>
+            </a>
 
             <div class="checkout-language">
                 <label for="checkout-language-selector" id="language-label">Language:</label>
-
-                <select id="checkout-language-selector">
+                <select id="checkout-language-selector" onchange="handleLanguageSelect(this.value)">
                     <option value="en">English</option>
                     <option value="mr">मराठी</option>
-                    <option value="hi">हिंदी</option>
+                    <option value="hi">हिन्दी</option>
                 </select>
             </div>
-
         </div>
 
         <div class="nav-links">
+            <a href="/" data-nav-key="home">🏠 Home</a>
+            <a href="/products/" data-nav-key="products">📄 Products</a>
+            <a href="{% url 'ai_assistant' %}" data-nav-key="aiAssistant">🤖 AI Assistant</a>
+            <a href="{% url 'reviews' %}" data-nav-key="reviews">⭐ Reviews</a>
+            <a href="{% url 'crop_recommendation' %}" data-nav-key="crop">🤖 Crop Recommendation</a>
+            <a href="{% url 'disease_detection' %}" data-nav-key="disease">🌿 Disease Detection</a>
+            <a href="/about/" data-nav-key="about">ℹ️ About</a>
+            <a href="/contact/" data-nav-key="contact">📞 Contact</a>
+            <a href="/cart/" data-nav-key="cart">🛒 Cart</a>
+            <a href="/wishlist/" data-nav-key="wishlist">❤️ Wishlist</a>
+            <a href="{% url 'my_orders' %}" data-nav-key="orders">📦 My Orders</a>
 
-            <a href="{% url 'landing' %}" data-nav="home">🏠 Home</a>
-
-            <a href="{% url 'products' %}" data-nav="products">📄 Products</a>
-
-            <a href="{% url 'ai_assistant' %}" data-nav="aiAssistant">🤖 AI Assistant</a>
-
-            <a href="{% url 'reviews' %}" data-nav="reviews">⭐ Reviews</a>
-
-            <a href="{% url 'crop_recommendation' %}" data-nav="crop">🤖 Crop Recommendation</a>
-
-            <a href="{% url 'disease_detection' %}" data-nav="disease">🌿 Disease Detection</a>
-
-            <a href="{% url 'about' %}" data-nav="about">ℹ️ About</a>
-
-            <a href="{% url 'contact' %}" data-nav="contact">📞 Contact</a>
-
-            <a href="{% url 'cart' %}" data-nav="cart">🛒 Cart</a>
-
-            <a href="{% url 'wishlist' %}" data-nav="wishlist">❤️ Wishlist</a>
-
-            <a href="{% url 'my_orders' %}" data-nav="orders">📦 My Orders</a>
-
-            <a href="{% url 'dashboard' %}" data-nav="dashboard">👤 Dashboard</a>
-
-            <a href="{% url 'login' %}" data-nav="login">👤 Login</a>
-
-            <a href="{% url 'signup' %}" data-nav="signup">👤 Sign Up</a>
-
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" data-nav-key="dashboard">👤 Dashboard</a>
+            <form method="POST" action="/logout/">
+                {% csrf_token %}
+                <button type="submit" data-nav-key="logout">🚪 Logout</button>
+            </form>
+            {% else %}
+            <a href="/login/" data-nav-key="login">👤 Login</a>
+            <a href="/signup/" data-nav-key="signup">👤 Sign Up</a>
+            {% endif %}
         </div>
     </nav>
 
 
     <!-- PAGE HEADING -->
     <header class="page-heading">
-
         <h1 id="checkout-title">Checkout</h1>
-
         <p id="checkout-subtitle">
             Enter your delivery details to complete your order.
         </p>
-
     </header>
 
 
@@ -437,45 +528,30 @@
                 {% csrf_token %}
 
                 <div class="form-group">
-
                     <label for="full_name" id="name-label">Full Name</label>
-
                     <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
-
                 </div>
 
                 <div class="form-group">
-
                     <label for="mobile" id="mobile-label">Mobile Number</label>
-
                     <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number"
                         pattern="[0-9]{10}" maxlength="10" required>
-
                 </div>
 
                 <div class="form-group">
-
                     <label for="address" id="address-label">Full Address</label>
-
                     <textarea id="address" name="address" placeholder="House number, street, area" required></textarea>
-
                 </div>
 
                 <div class="form-group">
-
                     <label for="city" id="city-label">City / Village</label>
-
                     <input type="text" id="city" name="city" placeholder="Enter city or village" required>
-
                 </div>
 
                 <div class="form-group">
-
                     <label for="pin_code" id="pin-label">PIN Code</label>
-
                     <input type="text" id="pin_code" name="pin_code" placeholder="Enter 6-digit PIN code"
                         pattern="[0-9]{6}" maxlength="6" required>
-
                 </div>
 
 
@@ -483,25 +559,19 @@
                 <h2 id="payment-heading">Payment Method</h2>
 
                 <label class="payment-option">
-
                     <input type="radio" name="payment_method" value="COD" checked required>
-
                     <span>
                         <strong id="cod-label">💵 Cash on Delivery</strong>
                         <small id="cod-description">Pay when your order arrives.</small>
                     </span>
-
                 </label>
 
                 <label class="payment-option">
-
                     <input type="radio" name="payment_method" value="Online" required>
-
                     <span>
                         <strong id="online-label">💳 Online Payment</strong>
                         <small id="online-description">UPI, Cards, Net Banking and Wallets</small>
                     </span>
-
                 </label>
 
 
@@ -570,53 +640,39 @@
             {% for item in cart_items %}
 
             <div class="order-item">
-
                 <div>
-
                     <div class="item-name" data-product-en="{{ item.product.name }}"
                         data-product-mr="{{ item.product.name_mr|default:item.product.name }}"
                         data-product-hi="{{ item.product.name_hi|default:item.product.name }}">
-
                         {{ item.product.name }}
-
                     </div>
 
                     <div class="item-quantity">
-
                         <span class="quantity-label">Quantity: </span>{{ item.quantity }}
-
                     </div>
-
                 </div>
 
                 <div class="item-price">
                     ₹{{ item.total_price }}
                 </div>
-
             </div>
 
             {% endfor %}
 
             <div class="total-row">
-
                 <span id="total-label">Total</span>
-
                 <span class="total-amount">
                     ₹{{ total|default:"0.00" }}
                 </span>
-
             </div>
 
             {% else %}
 
             <div class="empty-cart">
-
                 <p id="empty-cart-message">Your cart is empty.</p>
-
                 <a href="{% url 'products' %}" class="back-link" id="browse-products-link">
                     Browse Products
                 </a>
-
             </div>
 
             {% endif %}
@@ -627,21 +683,16 @@
 
 
     <!-- FOOTER -->
-    <footer class="footer" id="footer-text">
-        © 2026 AgroHarvest Hub | Smart Farming Platform
+    <footer>
+        <div class="footer-logo">🌱 AgroHarvest Hub</div>
+        <p id="footer-description">Smart Farming & Agriculture Products Platform</p>
+        <div class="footer-bottom" id="footer-text">© 2026 AgroHarvest Hub | Smart Farming Platform</div>
     </footer>
 
 
     <script>
-
-        // =====================================
-        // TRANSLATIONS
-        // =====================================
-
         const translations = {
-
             en: {
-
                 language: "Language:",
                 title: "Checkout",
                 subtitle: "Enter your delivery details to complete your order.",
@@ -670,13 +721,12 @@
                 total: "Total",
                 empty: "Your cart is empty.",
                 browse: "Browse Products",
+                footerDescription: "Smart Farming & Agriculture Products Platform",
                 footer: "© 2026 AgroHarvest Hub | Smart Farming Platform",
                 onlineAlert: "Online payment is not connected yet. Please choose Cash on Delivery for now."
-
             },
 
             mr: {
-
                 language: "भाषा:",
                 title: "चेकआउट",
                 subtitle: "ऑर्डर पूर्ण करण्यासाठी डिलिव्हरीची माहिती भरा.",
@@ -705,13 +755,12 @@
                 total: "एकूण",
                 empty: "तुमची कार्ट रिकामी आहे.",
                 browse: "उत्पादने पहा",
+                footerDescription: "स्मार्ट शेती आणि कृषी उत्पादने प्लॅटफॉर्म",
                 footer: "© 2026 AgroHarvest Hub | स्मार्ट शेती प्लॅटफॉर्म",
                 onlineAlert: "ऑनलाइन पेमेंट अजून जोडलेले नाही. सध्या कृपया वस्तू मिळाल्यावर पैसे द्या हा पर्याय निवडा."
-
             },
 
             hi: {
-
                 language: "भाषा:",
                 title: "चेकआउट",
                 subtitle: "ऑर्डर पूरी करने के लिए डिलीवरी की जानकारी भरें।",
@@ -740,20 +789,13 @@
                 total: "कुल",
                 empty: "आपकी कार्ट खाली है।",
                 browse: "उत्पाद देखें",
+                footerDescription: "स्मार्ट खेती और कृषि उत्पाद प्लेटफॉर्म",
                 footer: "© 2026 AgroHarvest Hub | स्मार्ट फार्मिंग प्लेटफ़ॉर्म",
                 onlineAlert: "ऑनलाइन भुगतान अभी जुड़ा नहीं है। फिलहाल कृपया डिलीवरी पर नकद भुगतान चुनें।"
-
             }
-
         };
 
-
-        // =====================================
-        // NAVBAR TRANSLATIONS
-        // =====================================
-
         const navTranslations = {
-
             en: {
                 home: "🏠 Home",
                 products: "📄 Products",
@@ -768,61 +810,52 @@
                 orders: "📦 My Orders",
                 dashboard: "👤 Dashboard",
                 login: "👤 Login",
-                signup: "👤 Sign Up"
+                signup: "👤 Sign Up",
+                logout: "🚪 Logout"
             },
-
             mr: {
                 home: "🏠 मुख्यपृष्ठ",
                 products: "📄 उत्पादने",
                 aiAssistant: "🤖 AI सहाय्यक",
-                reviews: "⭐ पुनरावलोकने",
+                reviews: "⭐ अभिप्राय",
                 crop: "🤖 पीक शिफारस",
-                disease: "🌿 रोग निदान",
+                disease: "🌿 रोग ओळख",
                 about: "ℹ️ आमच्याबद्दल",
                 contact: "📞 संपर्क",
                 cart: "🛒 कार्ट",
-                wishlist: "❤️ इच्छा यादी",
+                wishlist: "❤️ आवडती उत्पादने",
                 orders: "📦 माझ्या ऑर्डर्स",
                 dashboard: "👤 डॅशबोर्ड",
                 login: "👤 लॉगिन",
-                signup: "👤 साइन अप"
+                signup: "👤 नोंदणी",
+                logout: "🚪 लॉगआउट"
             },
-
             hi: {
                 home: "🏠 होम",
                 products: "📄 उत्पाद",
                 aiAssistant: "🤖 AI सहायक",
-                reviews: "⭐ समीक्षाएं",
-                crop: "🤖 फसल सुझाव",
+                reviews: "⭐ समीक्षाएँ",
+                crop: "🤖 फसल सिफारिश",
                 disease: "🌿 रोग पहचान",
                 about: "ℹ️ हमारे बारे में",
                 contact: "📞 संपर्क",
                 cart: "🛒 कार्ट",
-                wishlist: "❤️ इच्छा सूची",
+                wishlist: "❤️ पसंदीदा",
                 orders: "📦 मेरे ऑर्डर",
                 dashboard: "👤 डैशबोर्ड",
                 login: "👤 लॉगिन",
-                signup: "👤 साइन अप"
+                signup: "👤 साइन अप",
+                logout: "🚪 लॉगआउट"
             }
-
         };
 
-
-        // =====================================
-        // APPLY LANGUAGE
-        // =====================================
-
         function applyLanguage(language) {
-
             const t = translations[language] || translations.en;
             const nav = navTranslations[language] || navTranslations.en;
 
             document.documentElement.lang = language;
 
-
-            // TEXT ELEMENTS
             const textMap = {
-
                 "language-label": t.language,
                 "checkout-title": t.title,
                 "checkout-subtitle": t.subtitle,
@@ -845,85 +878,60 @@
                 "total-label": t.total,
                 "empty-cart-message": t.empty,
                 "browse-products-link": t.browse,
+                "footer-description": t.footerDescription,
                 "footer-text": t.footer
-
             };
 
-
             Object.entries(textMap).forEach(([id, value]) => {
-
                 const element = document.getElementById(id);
-
                 if (element) {
                     element.textContent = value;
                 }
-
             });
 
-
-            // INPUT PLACEHOLDERS
             document.getElementById("full_name").placeholder = t.namePlaceholder;
             document.getElementById("mobile").placeholder = t.mobilePlaceholder;
             document.getElementById("address").placeholder = t.addressPlaceholder;
             document.getElementById("city").placeholder = t.cityPlaceholder;
             document.getElementById("pin_code").placeholder = t.pinPlaceholder;
 
-
-            // QUANTITY
             document.querySelectorAll(".quantity-label").forEach(element => {
-
                 element.textContent = t.quantity;
-
             });
 
-
-            // PRODUCT NAMES
             document.querySelectorAll(".item-name").forEach(element => {
-
                 const productName = element.getAttribute("data-product-" + language);
-
                 if (productName) {
                     element.textContent = productName;
                 }
-
             });
 
-
-            // NAVBAR
-            document.querySelectorAll(".nav-links a[data-nav]").forEach(element => {
-
-                const key = element.dataset.nav;
-
+            document.querySelectorAll("[data-nav-key]").forEach(element => {
+                const key = element.dataset.navKey;
                 if (nav[key]) {
                     element.textContent = nav[key];
                 }
-
             });
 
-
             document.title = t.title + " | AgroHarvest Hub";
-
         }
 
+        function handleLanguageSelect(language) {
+            try {
+                localStorage.setItem("selectedLanguage", language);
+            } catch (error) {
+                // Ignore storage restrictions
+            }
+            applyLanguage(language);
+        }
 
-        // =====================================
-        // LOAD SAVED LANGUAGE
-        // =====================================
-
-        const languageSelector = document.getElementById(
-            "checkout-language-selector"
-        );
-
+        const languageSelector = document.getElementById("checkout-language-selector");
         let savedLanguage = "en";
 
         try {
-
             savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-
         } catch (error) {
-
             savedLanguage = "en";
-
         }
 
         if (!translations[savedLanguage]) {
@@ -931,104 +939,42 @@
         }
 
         languageSelector.value = savedLanguage;
-
         applyLanguage(savedLanguage);
 
-
-        languageSelector.addEventListener("change", function () {
-
-            const language = this.value;
-
-            try {
-
-                localStorage.setItem("selectedLanguage", language);
-
-            } catch (error) {
-
-                // Language change still works without localStorage.
-
-            }
-
-            applyLanguage(language);
-
-        });
-
-
-        // =====================================
-        // ONLINE PAYMENT OPTIONS
-        // =====================================
-
-        const paymentRadios = document.querySelectorAll(
-            'input[name="payment_method"]'
-        );
-
-        const onlineTypes = document.getElementById(
-            "online-payment-types"
-        );
-
-        const typeRadios = document.querySelectorAll(
-            'input[name="payment_type"]'
-        );
-
+        const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+        const onlineTypes = document.getElementById("online-payment-types");
+        const typeRadios = document.querySelectorAll('input[name="payment_type"]');
 
         function updatePaymentOptions() {
-
-            const selected = document.querySelector(
-                'input[name="payment_method"]:checked'
-            );
-
+            const selected = document.querySelector('input[name="payment_method"]:checked');
             const isOnline = selected && selected.value === "Online";
 
             onlineTypes.hidden = !isOnline;
 
             typeRadios.forEach(radio => {
-
                 radio.required = Boolean(isOnline);
-
                 if (!isOnline) {
                     radio.checked = false;
                 }
-
             });
-
         }
 
-
         paymentRadios.forEach(radio => {
-
             radio.addEventListener("change", updatePaymentOptions);
-
         });
 
         updatePaymentOptions();
 
+        document.getElementById("checkout-form").addEventListener("submit", function (event) {
+            const selected = document.querySelector('input[name="payment_method"]:checked');
 
-        // =====================================
-        // ONLINE PAYMENT WARNING
-        // =====================================
-
-        document.getElementById("checkout-form").addEventListener(
-            "submit",
-            function (event) {
-
-                const selected = document.querySelector(
-                    'input[name="payment_method"]:checked'
-                );
-
-                if (selected && selected.value === "Online") {
-
-                    event.preventDefault();
-
-                    const language = languageSelector.value;
-                    const t = translations[language] || translations.en;
-
-                    alert(t.onlineAlert);
-
-                }
-
+            if (selected && selected.value === "Online") {
+                event.preventDefault();
+                const language = languageSelector.value;
+                const t = translations[language] || translations.en;
+                alert(t.onlineAlert);
             }
-        );
-
+        });
     </script>
 
 </body>
