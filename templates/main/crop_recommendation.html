@@ -35,7 +35,7 @@
         }
 
         /* ==========================================
-           NAVBAR
+           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
         ========================================== */
         .navbar {
             width: 100% !important;
@@ -101,16 +101,16 @@
             justify-content: center !important;
             align-items: center !important;
             flex-wrap: wrap !important;
-            gap: 5px !important;
-            padding: 10px 3% !important;
+            gap: 4px !important;
+            padding: 9px 2% !important;
             background: #176b35 !important;
         }
 
         .nav-links a {
             color: #ffffff !important;
-            padding: 8px 10px !important;
+            padding: 7px 8px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             transition: 0.3s !important;
             white-space: nowrap !important;
@@ -132,11 +132,12 @@
             color: #176b35 !important;
             background: #ffffff !important;
             border: 0 !important;
-            padding: 8px 12px !important;
+            padding: 7px 10px !important;
             border-radius: 6px !important;
-            font-size: 13px !important;
+            font-size: 12.5px !important;
             font-weight: 700 !important;
             cursor: pointer !important;
+            white-space: nowrap !important;
         }
 
         .nav-links button:hover {
@@ -376,6 +377,19 @@
             font-size: 12px;
         }
 
+        @media (max-width: 1050px) {
+            .nav-links {
+                padding-left: 2% !important;
+                padding-right: 2% !important;
+            }
+
+            .nav-links a,
+            .nav-links button {
+                font-size: 12px !important;
+                padding: 7px 8px !important;
+            }
+        }
+
         @media (max-width: 600px) {
             .recommendation-container {
                 margin: 20px auto;
@@ -393,6 +407,10 @@
             .navbar-top {
                 flex-direction: column !important;
                 gap: 10px !important;
+            }
+
+            .logo {
+                font-size: 22px !important;
             }
 
             .nav-links {
@@ -475,7 +493,7 @@
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <label id="seasonLabel">🌤️ Select Season</label>
+                    <label id="seasonLabel" for="seasonSelect">🌤️ Select Season</label>
                     <select name="season" id="seasonSelect" required>
                         <option value="">-- Select Season --</option>
                         <option value="Kharif">Kharif</option>
@@ -485,7 +503,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label id="soilLabel">🌱 Select Soil Type</label>
+                    <label id="soilLabel" for="soilSelect">🌱 Select Soil Type</label>
                     <select name="soil" id="soilSelect" required>
                         <option value="">-- Select Soil Type --</option>
                         <option value="Black Soil">Black Soil</option>
@@ -496,7 +514,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label id="waterLabel">💧 Water Availability</label>
+                    <label id="waterLabel" for="waterSelect">💧 Water Availability</label>
                     <select name="water" id="waterSelect" required>
                         <option value="">-- Select Water Availability --</option>
                         <option value="Low">Low</option>
@@ -515,9 +533,8 @@
             {% if recommendation %}
             <div class="result-box">
                 <h2 id="recommendedCropTitle">🌾 Recommended Crop</h2>
-                
+
                 <div style="display: flex; align-items: center; gap: 18px; margin: 15px 0;">
-                    <!-- डायनॅमिक पिकाचा सुंदर इमोजी लोगो -->
                     <div style="font-size: 38px; width: 70px; height: 70px; border-radius: 14px; border: 1px solid #d4e8d5; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(30, 80, 40, 0.05); flex-shrink: 0;">
                         {% if recommendation == 'Cotton' %} 🌾
                         {% elif recommendation == 'Rice' %} 🍚
@@ -556,14 +573,14 @@
                     <div class="product-card">
                         <h3>{{ product.name }}</h3>
                         <p>
-                            <span class="category-label" id="categoryLabel">Category:</span>
+                            <span class="category-label">Category:</span>
                             {{ product.category }}
                         </p>
                         <p>
                             <strong>₹{{ product.price }}</strong>
                         </p>
-                        <a href="{% url 'product_detail' product.name|slugify %}" class="view-btn" id="viewProductText">
-                            View Product
+                        <a href="{% url 'product_detail' product.name|slugify %}" class="view-btn">
+                            <span class="view-product-text">View Product</span>
                         </a>
                     </div>
                     {% endfor %}
@@ -827,7 +844,7 @@
             if (recommendedProductsTitle) recommendedProductsTitle.textContent = t.recommendedProductsTitle;
 
             document.querySelectorAll(".category-label").forEach(el => el.textContent = t.category);
-            document.querySelectorAll("#viewProductText").forEach(el => el.textContent = t.viewProduct);
+            document.querySelectorAll(".view-product-text").forEach(el => el.textContent = t.viewProduct);
 
             const noProducts = document.getElementById("noProducts");
             if (noProducts) noProducts.textContent = t.noProducts;
