@@ -7,7 +7,6 @@ from django.utils.text import slugify
 from django.core.files.storage import FileSystemStorage
 import os
 import json
-import time
 import urllib.request
 import urllib.error
 from dotenv import load_dotenv
@@ -914,7 +913,7 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
+    with urllib.request.urlopen(req, timeout=12) as resp:
         body = json.loads(resp.read().decode("utf-8"))
 
     candidates = body.get("candidates") or []
@@ -931,7 +930,7 @@ def _call_gemini_rest(api_key: str, model: str, prompt: str) -> str:
 def ai_assistant(request):
     answer = None
     question = ""
-    chat_history = request.session.get("ai_chat_history", [])[-4:]
+    chat_history = request.session.get("ai_chat_history", [])[-3:]
 
     if request.method == "POST" and "clear_chat" in request.POST:
         request.session["ai_chat_history"] = []
@@ -958,7 +957,7 @@ def ai_assistant(request):
                     "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
                 )
                 chat_history.append({"question": question, "answer": error_msg})
-                request.session["ai_chat_history"] = chat_history[-4:]
+                request.session["ai_chat_history"] = chat_history[-3:]
                 request.session.modified = True
 
                 return render(
@@ -971,15 +970,15 @@ def ai_assistant(request):
                     }
                 )
 
-            products = Product.objects.only("name", "category", "price")[:20]
+            product_rows = Product.objects.values_list("name", "category", "price")[:15]
             product_list = "\n".join(
-                f"- {p.name} | {p.category} | ₹{p.price}"
-                for p in products
+                f"- {name} | {category} | ₹{price}"
+                for name, category, price in product_rows
             )
 
-            prompt = f"""You are AgroHarvest AI, a smart farming and agriculture assistant for AgroHarvest Hub.
+            prompt = f"""You are AgroHarvest AI, a smart farming assistant for AgroHarvest Hub.
 Reply in Marathi if the question is in Marathi, Hindi if in Hindi, English if in English, or match mixed language.
-Give clear, practical agriculture answers.
+Give short, clear, practical agriculture answers.
 Recommend at most 3 relevant products only from this list (exact name and price):
 {product_list}
 
@@ -988,48 +987,31 @@ Do not invent products, prices, or unsafe chemical dosages.
 Question: {question}"""
 
             try:
-                last_err = None
-                answer = ""
-
-                for attempt in range(2):
-                    try:
-                        answer = _call_gemini_rest(
-                            api_key=api_key,
-                            model="gemini-3.8-flash",
-                            prompt=prompt,
-                        )
-                        break
-                    except urllib.error.HTTPError as e:
-                        err_body = ""
-                        try:
-                            err_body = e.read().decode("utf-8", errors="ignore")
-                        except Exception:
-                            pass
-                        last_err = f"HTTP {e.code}: {err_body[:160]}"
-                        if attempt == 0 and e.code == 503:
-                            time.sleep(2)
-                            continue
-                        raise RuntimeError(last_err)
-                    except Exception as e:
-                        last_err = repr(e)
-                        if attempt == 0 and ("503" in last_err or "UNAVAILABLE" in last_err):
-                            time.sleep(2)
-                            continue
-                        raise e
-
+                answer = _call_gemini_rest(
+                    api_key=api_key,
+                    model="gemini-3.8-flash",
+                    prompt=prompt,
+                )
                 if not answer:
                     answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
 
+            except urllib.error.HTTPError as e:
+                err_body = ""
+                try:
+                    err_body = e.read().decode("utf-8", errors="ignore")
+                except Exception:
+                    pass
+                if e.code == 503 or "UNAVAILABLE" in err_body:
+                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
+                else:
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: HTTP {e.code} {err_body[:150]}"
+
             except Exception as e:
                 print("GEMINI ERROR:", repr(e))
-                err_text = str(e)
-                if "503" in err_text or "UNAVAILABLE" in err_text:
-                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया १ मिनिटानंतर पुन्हा प्रयत्न करा."
-                else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_text[:180]}"
+                answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {str(e)[:180]}"
 
             chat_history.append({"question": question, "answer": answer})
-            request.session["ai_chat_history"] = chat_history[-4:]
+            request.session["ai_chat_history"] = chat_history[-3:]
             request.session.modified = True
 
     return render(
