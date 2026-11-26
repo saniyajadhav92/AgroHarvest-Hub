@@ -903,6 +903,7 @@ def ai_assistant(request):
 
     if request.method == "POST" and "clear_chat" in request.POST:
         request.session["ai_chat_history"] = []
+        request.session.modified = True
         chat_history = []
 
         return render(
@@ -919,6 +920,30 @@ def ai_assistant(request):
         question = request.POST.get("question", "").strip()
 
         if question:
+            api_key = os.environ.get("GEMINI_API_KEY")
+
+            if not api_key:
+                error_msg = (
+                    "GEMINI_API_KEY सेट केलेली नाही. कृपया Render च्या Environment Variables मध्ये "
+                    "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
+                )
+                chat_history.append({
+                    "question": question,
+                    "answer": error_msg
+                })
+                request.session["ai_chat_history"] = chat_history
+                request.session.modified = True
+
+                return render(
+                    request,
+                    "main/ai_assistant.html",
+                    {
+                        "answer": error_msg,
+                        "question": question,
+                        "chat_history": chat_history,
+                    }
+                )
+
             products = Product.objects.all()
 
             product_list = "\n".join(
@@ -926,12 +951,7 @@ def ai_assistant(request):
                 for product in products
             )
 
-            try:
-                client = genai.Client(
-                    api_key=os.environ.get("GEMINI_API_KEY")
-                )
-
-                prompt = f"""
+            prompt = f"""
 You are AgroHarvest AI, a smart farming and agriculture assistant
 for the AgroHarvest Hub website.
 
@@ -981,39 +1001,48 @@ User question:
 {question}
 """
 
+            try:
+                client = genai.Client(api_key=api_key)
+
                 for attempt in range(3):
                     try:
                         response = client.models.generate_content(
-                            model="gemini-3.5-flash-lite",
+                            model="gemini-2.5-flash",
                             contents=prompt
                         )
 
-                        answer = response.text
+                        answer = (response.text or "").strip()
+                        if not answer:
+                            answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
+
                         chat_history.append({
                             "question": question,
                             "answer": answer
                         })
-
                         request.session["ai_chat_history"] = chat_history
+                        request.session.modified = True
                         break
 
                     except Exception as e:
-                        print(
-                            f"GEMINI ATTEMPT {attempt + 1} ERROR:",
-                            e
-                        )
-
+                        print(f"GEMINI ATTEMPT {attempt + 1} ERROR:", repr(e))
                         if attempt < 2:
-                            time.sleep(3)
+                            time.sleep(2)
                         else:
                             raise e
 
             except Exception as e:
-                print("GEMINI FINAL ERROR:", e)
-                answer = (
-                    "AI service is temporarily busy. "
-                    "Please try again after a moment."
+                print("GEMINI FINAL ERROR:", repr(e))
+                error_reply = (
+                    "AI उत्तर देताना तांत्रिक अडचण आली आहे. "
+                    f"तपशील: {str(e)[:180]}"
                 )
+                answer = error_reply
+                chat_history.append({
+                    "question": question,
+                    "answer": answer
+                })
+                request.session["ai_chat_history"] = chat_history
+                request.session.modified = True
 
     return render(
         request,
