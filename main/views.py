@@ -920,4 +920,136 @@ def ai_assistant(request):
         question = request.POST.get("question", "").strip()
 
         if question:
-            api_key = os.environ.get("
+            api_key = os.environ.get("GEMINI_API_KEY")
+
+            if not api_key:
+                error_msg = (
+                    "GEMINI_API_KEY सेट केलेली नाही. कृपया Render च्या Environment Variables मध्ये "
+                    "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
+                )
+                chat_history.append({
+                    "question": question,
+                    "answer": error_msg
+                })
+                request.session["ai_chat_history"] = chat_history
+                request.session.modified = True
+
+                return render(
+                    request,
+                    "main/ai_assistant.html",
+                    {
+                        "answer": error_msg,
+                        "question": question,
+                        "chat_history": chat_history,
+                    }
+                )
+
+            products = Product.objects.all()
+
+            product_list = "\n".join(
+                f"- {product.name} | Category: {product.category} | Price: ₹{product.price}"
+                for product in products
+            )
+
+            prompt = f"""
+You are AgroHarvest AI, a smart farming and agriculture assistant
+for the AgroHarvest Hub website.
+
+Answer agriculture-related questions clearly and practically.
+
+LANGUAGE RULES:
+- If the question is in Marathi, answer in Marathi.
+- If the question is in Hindi, answer in Hindi.
+- If the question is in English, answer in English.
+- If the question uses mixed languages, reply naturally in the same style.
+
+You can answer questions about:
+- Crops
+- Seeds
+- Fertilizers
+- Soil
+- Irrigation
+- Plant diseases
+- Pests
+- Farming tools
+- Crop care
+- General agriculture
+
+AGROHARVEST HUB PRODUCTS:
+{product_list}
+
+PRODUCT RECOMMENDATION RULES:
+- When the user asks for a product, seed, fertilizer, farming tool,
+  or irrigation product, recommend relevant products from the
+  AgroHarvest Hub product list above.
+- Mention the exact product name and price from the list.
+- Do not invent products or prices that are not in the list.
+- Recommend only products relevant to the user's question.
+- Recommend a maximum of 3 most relevant AgroHarvest Hub products.
+- Do not list every product from the category unless the user specifically asks for all products.
+- If no suitable product exists, clearly say that a matching product
+  is currently not available on AgroHarvest Hub.
+- Do not claim that a product will cure a crop disease.
+- For fertilizers, pesticides and chemicals, do not invent unsafe dosages.
+- Recommend following the product label or consulting a local
+  agriculture expert when necessary.
+
+If important information is missing, ask a short follow-up question
+instead of guessing.
+
+User question:
+{question}
+"""
+
+            try:
+                client = genai.Client(api_key=api_key)
+
+                for attempt in range(3):
+                    try:
+                        response = client.models.generate_content(
+                            model="gemini-3.8-flash",
+                            contents=prompt
+                        )
+
+                        answer = (response.text or "").strip()
+                        if not answer:
+                            answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
+
+                        chat_history.append({
+                            "question": question,
+                            "answer": answer
+                        })
+                        request.session["ai_chat_history"] = chat_history
+                        request.session.modified = True
+                        break
+
+                    except Exception as e:
+                        print(f"GEMINI ATTEMPT {attempt + 1} ERROR:", repr(e))
+                        if attempt < 2:
+                            time.sleep(2)
+                        else:
+                            raise e
+
+            except Exception as e:
+                print("GEMINI FINAL ERROR:", repr(e))
+                error_reply = (
+                    "AI उत्तर देताना तांत्रिक अडचण आली आहे. "
+                    f"तपशील: {str(e)[:180]}"
+                )
+                answer = error_reply
+                chat_history.append({
+                    "question": question,
+                    "answer": answer
+                })
+                request.session["ai_chat_history"] = chat_history
+                request.session.modified = True
+
+    return render(
+        request,
+        "main/ai_assistant.html",
+        {
+            "answer": answer,
+            "question": question,
+            "chat_history": chat_history,
+        }
+    )
