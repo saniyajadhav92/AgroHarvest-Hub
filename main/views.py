@@ -953,9 +953,16 @@ def ai_assistant(request):
         question = request.POST.get("question", "").strip()
 
         if question:
-            api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+            api_keys = [
+                k.strip()
+                for k in [
+                    os.environ.get("GEMINI_API_KEY", ""),
+                    os.environ.get("GEMINI_API_KEY_2", ""),
+                ]
+                if k and k.strip()
+            ]
 
-            if not api_key:
+            if not api_keys:
                 error_msg = (
                     "GEMINI_API_KEY सेट केलेली नाही. कृपया Render च्या Environment Variables मध्ये "
                     "GEMINI_API_KEY जोडून सेवा पुन्हा सुरू करा."
@@ -990,34 +997,62 @@ Do not invent products, prices, or unsafe chemical dosages.
 
 Question: {question}"""
 
-            try:
-                answer = _call_gemini_rest(
-                    api_key=api_key,
-                    model="gemini-3.8-flash",
-                    prompt=prompt,
-                    timeout=18,
-                )
-                if not answer:
-                    answer = "उत्तर जनरेट होऊ शकले नाही. कृपया पुन्हा प्रश्न विचारा."
+            models = [
+                "gemini-2.5-flash",
+                "gemini-2.0-flash",
+                "gemini-2.0-flash-lite",
+                "gemini-1.5-flash",
+            ]
 
-            except urllib.error.HTTPError as e:
-                err_body = ""
-                try:
-                    err_body = e.read().decode("utf-8", errors="ignore")
-                except Exception:
-                    pass
-                if e.code == 503 or "UNAVAILABLE" in err_body:
-                    answer = "सध्या AI सर्व्हरवर खूप जास्त मागणी आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
-                else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: HTTP {e.code} {err_body[:150]}"
+            hit_quota = False
+            last_error = ""
+            resolved = False
 
-            except Exception as e:
-                print("GEMINI ERROR:", repr(e))
-                err_msg = str(e)
-                if "timed out" in err_msg.lower():
+            for api_key in api_keys:
+                for model in models:
+                    try:
+                        text = _call_gemini_rest(
+                            api_key=api_key,
+                            model=model,
+                            prompt=prompt,
+                            timeout=18,
+                        )
+                        if text:
+                            answer = text
+                            resolved = True
+                            break
+                    except urllib.error.HTTPError as e:
+                        err_body = ""
+                        try:
+                            err_body = e.read().decode("utf-8", errors="ignore")
+                        except Exception:
+                            pass
+                        last_error = f"HTTP {e.code} {err_body[:120]}"
+                        if e.code == 429:
+                            hit_quota = True
+                            continue
+                        if e.code in (404, 503) or "UNAVAILABLE" in err_body:
+                            continue
+                        break
+                    except Exception as e:
+                        print("GEMINI ERROR:", repr(e))
+                        last_error = str(e)
+                        if "timed out" in last_error.lower():
+                            continue
+                        continue
+                if resolved:
+                    break
+
+            if not resolved:
+                if hit_quota:
+                    answer = (
+                        "सध्या API ची मर्यादा (Quota / HTTP 429) पूर्ण झाली आहे. "
+                        "कृपया १ मिनिटाने पुन्हा प्रयत्न करा किंवा Render मध्ये नवीन/दुसरी GEMINI_API_KEY_2 जोडा."
+                    )
+                elif "timed out" in last_error.lower():
                     answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
                 else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {err_msg[:180]}"
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {last_error[:180]}"
 
             chat_history.append({"question": question, "answer": answer})
             request.session["ai_chat_history"] = chat_history[-2:]
