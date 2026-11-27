@@ -998,14 +998,14 @@ Do not invent products, prices, or unsafe chemical dosages.
 Question: {question}"""
 
             models = [
+                "gemini-3.5-flash-lite",
+                "gemini-3.8-flash",
+                "gemini-2.5-flash-lite",
                 "gemini-2.5-flash",
-                "gemini-2.0-flash",
-                "gemini-2.0-flash-lite",
-                "gemini-1.5-flash",
             ]
 
             hit_quota = False
-            last_error = ""
+            meaningful_error = ""
             resolved = False
 
             for api_key in api_keys:
@@ -1027,18 +1027,24 @@ Question: {question}"""
                             err_body = e.read().decode("utf-8", errors="ignore")
                         except Exception:
                             pass
-                        last_error = f"HTTP {e.code} {err_body[:120]}"
+
                         if e.code == 429:
                             hit_quota = True
+                            if not meaningful_error:
+                                meaningful_error = f"HTTP 429 ({model}): {err_body[:140]}"
                             continue
                         if e.code in (404, 503) or "UNAVAILABLE" in err_body:
+                            if not meaningful_error and e.code != 404:
+                                meaningful_error = f"HTTP {e.code} ({model}): {err_body[:140]}"
                             continue
+
+                        meaningful_error = f"HTTP {e.code} ({model}): {err_body[:140]}"
                         break
                     except Exception as e:
                         print("GEMINI ERROR:", repr(e))
-                        last_error = str(e)
-                        if "timed out" in last_error.lower():
-                            continue
+                        err_str = str(e)
+                        if not meaningful_error:
+                            meaningful_error = err_str[:160]
                         continue
                 if resolved:
                     break
@@ -1047,12 +1053,12 @@ Question: {question}"""
                 if hit_quota:
                     answer = (
                         "सध्या API ची मर्यादा (Quota / HTTP 429) पूर्ण झाली आहे. "
-                        "कृपया १ मिनिटाने पुन्हा प्रयत्न करा किंवा Render मध्ये नवीन/दुसरी GEMINI_API_KEY_2 जोडा."
+                        "कृपया १ मिनिटाने पुन्हा प्रयत्न करा किंवा Render मध्ये दुसऱ्या अकाउंटची GEMINI_API_KEY_2 जोडा."
                     )
-                elif "timed out" in last_error.lower():
-                    answer = "उत्तर येण्यास वेळ लागत आहे. कृपया काही सेकंदांनी पुन्हा प्रयत्न करा."
+                elif meaningful_error:
+                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {meaningful_error}"
                 else:
-                    answer = f"AI उत्तर देताना तांत्रिक अडचण आली आहे. तपशील: {last_error[:180]}"
+                    answer = "AI उत्तर देताना तांत्रिक अडचण आली आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा."
 
             chat_history.append({"question": question, "answer": answer})
             request.session["ai_chat_history"] = chat_history[-2:]
