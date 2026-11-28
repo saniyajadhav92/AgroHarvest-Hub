@@ -296,7 +296,7 @@
         }
 
         .ai-answer {
-            white-space: pre-wrap;
+            line-height: 1.7;
         }
 
         /* ================= SUGGESTIONS ================= */
@@ -540,9 +540,7 @@
                         🤖 AgroHarvest AI
                     </span>
 
-                    <div class="ai-answer">
-                        {{ chat.answer }}
-                    </div>
+                    <div class="ai-answer">{{ chat.answer }}</div>
 
                 </div>
 
@@ -654,6 +652,27 @@
 
             input.value = question;
             input.focus();
+        }
+
+
+        /* ================= FORMAT AI ANSWERS ================= */
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function formatAiAnswers() {
+            document.querySelectorAll(".ai-answer").forEach(function (el) {
+                const raw = el.textContent || "";
+                const formatted = escapeHtml(raw)
+                    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                    .replace(/\r?\n/g, "<br>");
+                el.innerHTML = formatted;
+            });
         }
 
 
@@ -991,9 +1010,11 @@
         }
 
 
-        /* ================= AUTO SCROLL ================= */
+        /* ================= INIT ON LOAD ================= */
 
         window.addEventListener("load", function () {
+
+            formatAiAnswers();
 
             const chatArea =
                 document.getElementById("chatArea");
