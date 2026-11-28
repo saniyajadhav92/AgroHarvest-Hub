@@ -35,7 +35,7 @@
         }
 
         /* ==========================================
-           NAVBAR - EXACT LANDING & PRODUCTS PAGE DESIGN
+           NAVBAR - UNIFIED PLATFORM STANDARD DESIGN
         ========================================== */
         .navbar {
             width: 100%;
@@ -50,23 +50,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 13px 4%;
-            gap: 20px;
+            padding: 11px 3%;
+            gap: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 8px;
             color: #ffffff;
-            font-size: 23px;
+            font-size: 22px;
             font-weight: 800;
             white-space: nowrap;
         }
 
         .logo-icon {
-            font-size: 29px;
+            font-size: 27px;
         }
 
         .logo strong {
@@ -76,19 +76,19 @@
         .checkout-language {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 8px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         #language-selector {
-            padding: 8px 13px;
+            padding: 6px 11px;
             border: 1px solid #d4e8d5;
             border-radius: 6px;
             background: #ffffff;
             color: #176b35;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
         }
@@ -97,20 +97,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 4px;
-            padding: 9px 2%;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 3px;
+            padding: 8px 1.5%;
             background: #176b35;
+            scrollbar-width: none;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-links a {
             color: #ffffff;
-            padding: 7px 8px;
+            padding: 6px 7px;
             border-radius: 6px;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
             transition: 0.3s;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .nav-links a:hover,
@@ -122,18 +129,20 @@
         .nav-links form {
             display: inline-flex;
             margin: 0;
+            flex-shrink: 0;
         }
 
         .nav-links button {
             color: #176b35;
             background: #ffffff;
             border: 0;
-            padding: 7px 10px;
+            padding: 6px 9px;
             border-radius: 6px;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
+            transition: 0.3s;
         }
 
         .nav-links button:hover {
@@ -339,17 +348,6 @@
 
         /* RESPONSIVE DESIGN */
         @media (max-width: 1050px) {
-            .nav-links {
-                padding-left: 2%;
-                padding-right: 2%;
-            }
-
-            .nav-links a,
-            .nav-links button {
-                font-size: 12px;
-                padding: 7px 8px;
-            }
-
             .reviews-grid {
                 grid-template-columns: 1fr;
             }
@@ -378,18 +376,12 @@
             }
 
             .logo {
-                font-size: 22px;
+                font-size: 21px;
             }
 
             .nav-links {
-                gap: 4px;
-                padding: 9px 5px;
-            }
-
-            .nav-links a,
-            .nav-links button {
-                font-size: 11px;
-                padding: 7px 8px;
+                justify-content: flex-start;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -397,7 +389,7 @@
 
 <body>
 
-    <!-- NAVBAR (EXACT MATCH WITH LANDING & PRODUCTS PAGE) -->
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-top">
             <a href="/" class="logo">
@@ -406,7 +398,7 @@
             </a>
 
             <div class="checkout-language">
-                <label for="language-selector">Language:</label>
+                <label for="language-selector" data-nav-key="languageLabel">Language:</label>
                 <select id="language-selector" onchange="changeLanguage(this.value)">
                     <option value="en">English</option>
                     <option value="mr">मराठी</option>
@@ -484,7 +476,8 @@
 
                     {% if review.photo %}
                     <div class="review-photo">
-                        <img src="{{ review.photo.url }}" alt="Customer Product Photo" loading="lazy">
+                        <img src="{{ review.photo.url }}" alt="Customer Product Photo" loading="lazy"
+                            onerror="this.parentElement.style.display='none';">
                     </div>
                     {% endif %}
                 </div>
@@ -518,7 +511,7 @@
     </main>
 
 
-    <!-- FOOTER (EXACT MATCH WITH LANDING PAGE) -->
+    <!-- FOOTER -->
     <footer>
         <div class="footer-logo">
             🌱 AgroHarvest Hub
@@ -536,6 +529,7 @@
     <script>
         const navTranslations = {
             en: {
+                languageLabel: "Language:",
                 home: "🏠 Home",
                 products: "📄 Products",
                 aiAssistant: "🤖 AI Assistant",
@@ -553,6 +547,7 @@
                 logout: "🚪 Logout"
             },
             mr: {
+                languageLabel: "भाषा:",
                 home: "🏠 मुख्यपृष्ठ",
                 products: "📄 उत्पादने",
                 aiAssistant: "🤖 AI सहाय्यक",
@@ -570,16 +565,17 @@
                 logout: "🚪 लॉगआउट"
             },
             hi: {
+                languageLabel: "भाषा:",
                 home: "🏠 होम",
                 products: "📄 उत्पाद",
                 aiAssistant: "🤖 AI सहायक",
                 reviews: "⭐ समीक्षाएँ",
-                crop: "🤖 फसल की सिफारिश",
+                crop: "🤖 फसल सुझाव",
                 disease: "🌿 रोग पहचान",
                 about: "ℹ️ हमारे बारे में",
                 contact: "📞 संपर्क",
                 cart: "🛒 कार्ट",
-                wishlist: "❤️ पसंदीदा",
+                wishlist: "❤️ इच्छा सूची",
                 orders: "📦 मेरे ऑर्डर",
                 dashboard: "👤 डैशबोर्ड",
                 login: "👤 लॉगिन",
